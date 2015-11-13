@@ -118,9 +118,6 @@ var Views = {
 		},
 		
 		'confirm' : function () {
-			document.getElementById( 'confirm-buttons-1' ).style.display = '';
-			document.getElementById( 'confirm-buttons-2' ).style.display = 'none';
-		
 			document.getElementById( 'photo-comparison' ).style.visibility = 'hidden';
 			document.getElementById( 'photo-comparison' ).style.paddingTop = '0';
 		},
@@ -146,6 +143,13 @@ var Views = {
 
 				// Force the new photo to be taken in the same orientation as the old photo.
 				var photoIsLandscape = realImageWidth > realImageHeight;
+				
+				if ( photoIsLandscape ) {
+					document.body.setAttribute( 'photo-orientation', 'landscape' );
+				}
+				else {
+					document.body.setAttribute( 'photo-orientation', 'portrait' );
+				}
 				
 				console.log( "photoIsLandscape: ", photoIsLandscape );
 
@@ -480,6 +484,8 @@ var Camera = {
 
 		activity.onerror = function () {
 			console.log(this.error);
+			
+			App.loaded();
 		};
 	},
 
@@ -526,8 +532,8 @@ var Camera = {
 window.addEventListener( 'DOMContentLoaded', function () {
 	console.log( "event: window.DOMContentLoaded" );
 
-	document.getElementById( 'intro-content' ).addEventListener( 'click', function () {
-		console.log( "event: intro-content.click" );
+	document.getElementById( 'screen-intro' ).addEventListener( 'click', function () {
+		console.log( "event: screen-intro.click" );
 
 		Camera.chooseOriginalPhoto();
 	} );
@@ -535,32 +541,125 @@ window.addEventListener( 'DOMContentLoaded', function () {
 	document.getElementById( 'restart-button' ).addEventListener( 'click', function () {
 		console.log( "event: restart-button.click" );
 
-		Camera.chooseOriginalPhoto();
+		Views.show( 'intro' );
 	} );
 
 	document.getElementById( 'back-button' ).addEventListener( 'click', function () {
 		console.log( "event: back-button.click" );
 
-		Camera.chooseOriginalPhoto();
+		Views.show( 'intro' );
 	} );
 
 	document.getElementById( 'confirm-button' ).addEventListener( 'click', function ( evt ) {
 		console.log( "event: confirm-button.click" );
-
-		document.getElementById( 'confirm-buttons-1' ).style.display = 'none';
-		document.getElementById( 'confirm-buttons-2' ).style.display = '';
-	} );
-	
-	document.getElementById( 'save-normal-button' ).addEventListener( 'click', function ( evt ) {
-		console.log( "event: save-normal-button.click" );
 		
+		App.loading();
+
+		// Save the normal photo by itself.
 		App.persistentVar( 'final-photo-blob', App.persistentVar( 'last-photo' ) );
 		
 		var pics = navigator.getDeviceStorage( 'pictures' );
 		var request = pics.addNamed( App.persistentVar( 'last-photo' ), "reenact-" + Date.now() + ".jpg" );
 
 		request.onsuccess = function () {
-			Views.show( 'next-step' );
+			// Save merged image.
+	
+			// Find the smaller image.
+			var oldImageDataURL = App.persistentVar( 'original-photo-data-url' );
+	
+			console.log( oldImageDataURL );
+	
+			var newImageDataURL = App.persistentVar( 'last-photo-data-url' );
+	
+			console.log( newImageDataURL );
+	
+			var oldImageEl = document.createElement( 'img' );
+	
+			oldImageEl.onload = function () {
+				console.log( "oldImageEl loaded" );
+		
+				var newImageEl = document.createElement( 'img' );
+		
+				var oldImageWidth = oldImageEl.naturalWidth;
+				var oldImageHeight = oldImageEl.naturalHeight;
+		
+				newImageEl.onload = function () {
+					console.log( "newImageEl loaded" );
+		
+					var newImageWidth = newImageEl.naturalWidth;
+					var newImageHeight = newImageEl.naturalHeight;
+			
+					console.log( "width / height", newImageWidth, newImageHeight );
+			
+					var canvas = document.createElement( 'canvas' );
+					var context = canvas.getContext( '2d' );
+			
+					if ( newImageWidth < newImageHeight ) {
+						console.log( "Portrait orientation." );
+				
+						// Portrait.
+						var smallestHeight = Math.min( oldImageHeight, newImageHeight );
+						var totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth );
+						var totalHeight = smallestHeight;
+				
+						canvas.height = totalHeight;
+						canvas.width = totalWidth;
+				
+						console.log( "canvas height/width", canvas.height, canvas.width );
+				
+						context.drawImage( oldImageEl, 0, 0, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), ( ( smallestHeight / oldImageHeight ) * oldImageHeight ) );
+						context.drawImage( newImageEl, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), 0, ( ( smallestHeight / newImageHeight ) * newImageWidth ), ( ( smallestHeight / newImageHeight ) * newImageHeight ) );
+					}
+					else {
+						// Landscape
+						console.log( "Landscape orientation." );
+
+						// Portrait.
+						var smallestWidth = Math.min( oldImageWidth, newImageWidth );
+						var totalHeight = ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) + ( ( smallestWidth / newImageWidth ) * newImageHeight );
+						var totalWidth = smallestWidth;
+				
+						canvas.height = totalHeight;
+						canvas.width = totalWidth;
+				
+						console.log( "canvas height/width", canvas.height, canvas.width );
+				
+						context.drawImage( oldImageEl, 0, 0, ( ( smallestWidth / oldImageWidth ) * oldImageWidth ), ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) );
+						context.drawImage( newImageEl, 0, ( ( smallestWidth / oldImageWidth ) * oldImageHeight ), ( ( smallestWidth / newImageWidth ) * newImageWidth ), ( ( smallestWidth / newImageWidth ) * newImageHeight ) );
+					}
+				
+					console.log( "Finished drawing." );
+			
+					canvas.toBlob( function ( blob ) {
+						console.log( "Blob received: ", blob );
+				
+						App.persistentVar( 'final-photo-blob', blob );
+				
+						var pics = navigator.getDeviceStorage( 'pictures' );
+						var request = pics.addNamed( blob, "reenact-" + Date.now() + ".jpg" );
+				
+						request.onsuccess = function () {
+							console.log( "addNamed succeeded" );
+					
+							Views.show( 'next-step' );
+						};
+
+						request.onerror = function () {
+							console.log( "addNamed failed, ",  this.error );
+					
+							var errorName = this.error.name;
+					
+							navigator.mozL10n.formatValue( "generic-error", { 'error' : errorName } ).then( (string) => {
+								alert(string);
+							} );
+						};
+					}, "image/jpeg" );
+				};
+		
+				newImageEl.setAttribute( 'src', newImageDataURL );
+			};
+	
+			oldImageEl.setAttribute( 'src', oldImageDataURL );
 		};
 
 		request.onerror = function () {
@@ -572,9 +671,8 @@ window.addEventListener( 'DOMContentLoaded', function () {
 			
 			console.log( this.error );
 		};
-
 	} );
-
+	
 	document.getElementById( 'cancel-button' ).addEventListener( 'click', function ( evt ) {
 		console.log( "event: cancel-button.click" );
 
@@ -600,111 +698,6 @@ window.addEventListener( 'DOMContentLoaded', function () {
 		console.log( "event: shutter-release.click" );
 
 		Camera.capture();
-	} );
-	
-	document.getElementById( 'save-side-by-side-button' ).addEventListener( 'click', function ( evt ) {
-		console.log( "event: save-side-by-side-button.click" );
-
-		App.loading();
-
-		// Save merged image.
-		
-		// Find the smaller image.
-		var oldImageDataURL = App.persistentVar( 'original-photo-data-url' );
-		
-		console.log( oldImageDataURL );
-		
-		var newImageDataURL = App.persistentVar( 'last-photo-data-url' );
-		
-		console.log( newImageDataURL );
-		
-		var oldImageEl = document.createElement( 'img' );
-		
-		oldImageEl.onload = function () {
-			console.log( "oldImageEl loaded" );
-			
-			var newImageEl = document.createElement( 'img' );
-			
-			var oldImageWidth = oldImageEl.naturalWidth;
-			var oldImageHeight = oldImageEl.naturalHeight;
-			
-			newImageEl.onload = function () {
-				console.log( "newImageEl loaded" );
-			
-				var newImageWidth = newImageEl.naturalWidth;
-				var newImageHeight = newImageEl.naturalHeight;
-				
-				console.log( "width / height", newImageWidth, newImageHeight );
-				
-				var canvas = document.createElement( 'canvas' );
-				var context = canvas.getContext( '2d' );
-				
-				if ( newImageWidth < newImageHeight ) {
-					console.log( "Portrait orientation." );
-					
-					// Portrait.
-					var smallestHeight = Math.min( oldImageHeight, newImageHeight );
-					var totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth );
-					var totalHeight = smallestHeight;
-					
-					canvas.height = totalHeight;
-					canvas.width = totalWidth;
-					
-					console.log( "canvas height/width", canvas.height, canvas.width );
-					
-					context.drawImage( oldImageEl, 0, 0, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), ( ( smallestHeight / oldImageHeight ) * oldImageHeight ) );
-					context.drawImage( newImageEl, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), 0, ( ( smallestHeight / newImageHeight ) * newImageWidth ), ( ( smallestHeight / newImageHeight ) * newImageHeight ) );
-				}
-				else {
-					// Landscape
-					console.log( "Landscape orientation." );
-
-					// Portrait.
-					var smallestWidth = Math.min( oldImageWidth, newImageWidth );
-					var totalHeight = ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) + ( ( smallestWidth / newImageWidth ) * newImageHeight );
-					var totalWidth = smallestWidth;
-					
-					canvas.height = totalHeight;
-					canvas.width = totalWidth;
-					
-					console.log( "canvas height/width", canvas.height, canvas.width );
-					
-					context.drawImage( oldImageEl, 0, 0, ( ( smallestWidth / oldImageWidth ) * oldImageWidth ), ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) );
-					context.drawImage( newImageEl, 0, ( ( smallestWidth / oldImageWidth ) * oldImageHeight ), ( ( smallestWidth / newImageWidth ) * newImageWidth ), ( ( smallestWidth / newImageWidth ) * newImageHeight ) );
-				}
-					
-				console.log( "Finished drawing." );
-				
-				canvas.toBlob( function ( blob ) {
-					console.log( "Blob received: ", blob );
-					
-					App.persistentVar( 'final-photo-blob', blob );
-					
-					var pics = navigator.getDeviceStorage( 'pictures' );
-					var request = pics.addNamed( blob, "reenact-" + Date.now() + ".jpg" );
-					
-					request.onsuccess = function () {
-						console.log( "addNamed succeeded" );
-						
-						Views.show( 'next-step' );
-					};
-
-					request.onerror = function () {
-						console.log( "addNamed failed, ",  this.error );
-						
-						var errorName = this.error.name;
-						
-						navigator.mozL10n.formatValue( "generic-error", { 'error' : errorName } ).then( (string) => {
-							alert(string);
-						} );
-					};
-				}, "image/jpeg" );
-			};
-			
-			newImageEl.setAttribute( 'src', newImageDataURL );
-		};
-		
-		oldImageEl.setAttribute( 'src', oldImageDataURL );
 	} );
 	
 	document.getElementById( 'restart-button' ).addEventListener( 'click', function ( evt ) {

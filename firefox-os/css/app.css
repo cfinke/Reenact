@@ -56,8 +56,29 @@ body {
 	box-sizing: border-box;
 }
 
+#screen-intro {
+	background-color: #00c755;
+	background-image: url(/img/icons/icon512x512.png);
+	background-size: 50%;
+	background-position: center 33%;
+	background-repeat: no-repeat;
+	text-align: center;
+}
+
 #screen-intro p {
-	padding: 3ex;
+	position: absolute;
+	left: 50%;
+	bottom: 15%;
+	background-color: #000;
+	border-radius: 2px;
+	border-color: transparent;
+	border-style: solid;
+	text-transform: uppercase;
+	transform: translateX(-50%);
+	font-size: 80%;
+	white-space: nowrap;
+	padding: .75ex 3ex;
+	box-shadow: 0px 3px 9px -3px rgba(0,0,0,0.5);
 }
 
 #viewfinder {
@@ -80,88 +101,82 @@ body {
 	transform: translateY(-50%);
 }
 
-div.buttons button {
+div.buttons {
+	background-color: #1b1b1b;
+}
+
+#screen-next-step div.buttons {
+	background-color: #000;
+}
+
+button {
 	background-repeat: no-repeat;
 	background-position: center center;
-	background-size: 50% 50%;
+	background-size: 75%;
+	background-color: transparent;
+	border: none;
 }
 
-div.buttons .primary, div.buttons .secondary, div.buttons .tertiary, #launch-picker {
-	border-radius: 50%;
-	background-color: #fff;
-}
-
-div.buttons .primary, #launch-picker {
-	border: 10px solid #fff;
+button.primary {
+	background-size: 100%;
 	width: 1in;
 	height: 1in;
 }
 
-div.buttons .primary:active, div.buttons .secondary:active, div.buttons .tertiary:active, #launch-picker:active {
-	background-color: #ccc;
+button.secondary {
+	width: .6in;
+	height: .6in;
 }
 
-#launch-picker {
-	background-image: url(/img/open-iconic/svg/image.svg);
-	background-size: 75% 75%;
-	background-repeat: no-repeat;
-	background-position: center center;
+button.tertiary {
+	width: .6in;
+	height: .6in;
+}
+
+button:active {
+	opacity: .75;
+}
+
+button.primary:active {
+	background-size: 100%;
 }
 
 #back-button {
-	background-image: url(/img/open-iconic/svg/action-undo.svg);
+	background-image: url(/img/icons/back.png);
 }
 
 #restart-button {
-	background-image: url(/img/open-iconic/svg/reload.svg);
+	background-image: url(/img/icons/arrow-back.png);
+	position: absolute;
+	top: .1in;
+	left: 0;
+	z-index: 20;
+	background-color: rgba( 0, 0, 0, .75 );
 }
 
 #share-button {
-	background-image: url(/img/open-iconic/svg/share-boxed.svg);
+	background-image: url(/img/icons/share.png);
+	border-radius: 50%;
+	background-color: #00c755;
+	background-size: 75%;
+	width: .75in;
+	height: .75in;
 }
 
 #camera-switch {
-	background-image: url(/img/open-iconic/svg/camera-slr.svg);
+	background-image: url(/img/icons/camera-switch.png);
 }
 
 #shutter-release {
-	background-image: url(/img/open-iconic/svg/aperture.svg);
-	background-size: 100% 100%;
-}
-
-#shutter-release:active {
-	background-size: 75% 75%;
+	background-image: url(/img/icons/camera.png);
 }
 
 #cancel-button {
-	background-image: url(/img/open-iconic/svg/action-undo.svg);
+	background-image: url(/img/icons/back.png);
 }
 
 #confirm-button {
-	background-image: url(/img/open-iconic/svg/thumb-up.svg);
-	background-size: 75% 75%;
-}
-
-#save-normal-button {
-	background-image: url(/img/open-iconic/svg/image.svg);
-}
-
-#intro-content {
-	width: 90%;
-	height: 90%; 
-	margin: 5% 5% 5% 5%;
-	border-radius: .5in;
-	border-style: dashed;
-	border-width: .125in;
-	border-color: #fff;
-	box-sizing: border-box;
-	text-align: center;
-}
-
-#intro-content > * {
-	position: relative;
-	top: 50%;
-	transform: translateY(-50%);
+	background-image: url(/img/icons/checkmark.png);
 }
 
 .content-area h1 {
@@ -170,19 +185,23 @@ div.buttons .primary:active, div.buttons .secondary:active, div.buttons .tertiar
 	text-align: center
 }
 
+body[photo-orientation='landscape'] #photo-then, body[photo-orientation='landscape'] #photo-now {
+	max-width: 100%;
+	height: auto;
+}
+
+body[photo-orientation='portrait'] #photo-then, body[photo-orientation='landscape'] #photo-now {
+	max-height: 100%;
+	width: auto;
+}
+
 @media screen and (orientation: landscape) {
 	.content-area {
 		height: 100%;
 		width: calc( 100% - 10% - 1in );
 	}
 
-	#photo-then, #photo-now {
-		display: block;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	div.buttons, div.button-list {
+	div.buttons {
 		margin: 0 5%;
 		height: 100%;
 		width: 1in;
@@ -198,16 +217,12 @@ div.buttons .primary:active, div.buttons .secondary:active, div.buttons .tertiar
 	}
 	
 	div.buttons .secondary {
-		width: .6in;
-		height: .6in;
 		position: absolute;
 		left: calc( ( 1in - .6in ) / 2 );
 		bottom: 5%;
 	}
 	
 	div.buttons .tertiary {
-		width: .6in;
-		height: .6in;
 		position: absolute;
 		right: calc( ( 1in - .6in ) / 2 );
 		top: 5%;
@@ -220,28 +235,6 @@ div.buttons .primary:active, div.buttons .secondary:active, div.buttons .tertiar
 		top: 50%;
 		transform: translateY(-50%);
 	}
-	
-	#save-side-by-side-button {
-		background-image: url(/img/open-iconic/svg/image-top-bottom.svg);
-		background-size: 40% 80%;
-	}
-	
-	div.button-list {
-		margin-right: 0;
-	}
-	
-	div.button-list button {
-		width: 0.45in;
-		height: 100%;
-		background-position: center .1in;
-		background-size: .3in .3in;
-		background-repeat: no-repeat;
-		text-align: left;
-		padding-top: .5in;
-		color: #000;
-		font-size: .2in;
-		margin-left: .05in;
-	}
 }
 
 @media screen and (orientation: portrait) {
@@ -250,7 +243,7 @@ div.buttons .primary:active, div.buttons .secondary:active, div.buttons .tertiar
 		height: calc( 100% - 10% - 1in );
 	}
 
-	div.buttons, div.button-list {
+	div.buttons {
 		margin: 5% 0;
 		width: 100%;
 		height: 1in;
@@ -265,16 +258,12 @@ div.buttons .primary:active, div.buttons .secondary:active, div.buttons .tertiar
 	}
 	
 	div.buttons .secondary {
-		width: .6in;
-		height: .6in;
 		position: absolute;
 		top: calc( ( 1in - .6in ) / 2 );
 		left: 5%;
 	}
 	
 	div.buttons .tertiary {
-		width: .6in;
-		height: .6in;
 		position: absolute;
 		top: calc( ( 1in - .6in ) / 2 );
 		right: 5%;
@@ -286,27 +275,6 @@ div.buttons .primary:active, div.buttons .secondary:active, div.buttons .tertiar
 		position: relative;
 		top: 50%;
 		transform: translateY(-50%);
-	}
-	
-	#save-side-by-side-button {
-		background-image: url(/img/open-iconic/svg/image-side-by-side.svg);
-	}
-	
-	div.button-list {
-		margin-bottom: 0;
-	}
-	
-	div.button-list button {
-		height: 0.45in;
-		width: 100%;
-		background-position: .1in center;
-		background-size: .3in .3in;
-		background-repeat: no-repeat;
-		text-align: left;
-		padding-left: .5in;
-		color: #000;
-		font-size: .2in;
-		margin-top: .05in;
 	}
 }
 

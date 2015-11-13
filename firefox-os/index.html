@@ -3,21 +3,16 @@
     <head>
         <meta charset="utf-8">
         <title>Reenact</title>
-        <meta name="description" content="Reenact photos with Reenact.">
+        <meta name="description" content="Reenact photos with Reenact">
         <meta name="viewport" content="width=device-width">
-        <link rel="stylesheet" href="css/app.css">
+        <link rel="stylesheet" href="/css/app.css">
 		<link rel="localization" href="/locales/reenact.{locale}.properties" />
 		<script type="text/javascript" src="/js/l10n.js" defer></script>
         <script type="text/javascript" src="/js/app.js" defer></script>
     </head>
     <body>
 		<section id="screen-intro" class="app-screen">
-			<div id="intro-content">
-				<div>
-					<p data-l10n-id="choose-instructions"></p>
-					<button id="launch-picker"></button>
-				</div>
-			</div>
+			<p data-l10n-id="choose-instructions"></p>
 		</section>
 		<section id="screen-capture" class="app-screen">
 			<div id="reenacter" class="content-area">
@@ -35,23 +30,19 @@
 				<img id="photo-then" />
 				<img id="photo-now" />
 			</div>
-			<div class="buttons" id="confirm-buttons-1">
+			<div class="buttons">
 				<button id="cancel-button" class="secondary"></button>
 				<button id="confirm-button" class="primary"></button>
-			</div>
-			<div class="button-list" id="confirm-buttons-2">
-				<button id="save-normal-button" class="dual" data-l10n-id="save-separate-label"></button>
-				<button id="save-side-by-side-button" class="dual" data-l10n-id="save-combined-label"></button>
 			</div>
 		</section>
 		<section id="screen-next-step" class="app-screen">
 			<div class="content-area">
 				<img id="photo-final" />
 			</div>
-			<div class="button-list">
-				<button id="share-button" class="secondary labeled" data-l10n-id="share-label"></button>
-				<button id="restart-button" class="primary labeled" data-l10n-id="restart-label"></button>
+			<div class="buttons">
+				<button id="share-button" class="primary"></button>
 			</div>
+			<button id="restart-button" class="secondary"></button>
 		</section>
 		<div id="loading">
 			<img src="/img/icons/loading.svg" />

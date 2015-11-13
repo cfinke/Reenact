@@ -14,5 +14,5 @@ Reenact can be installed on Firefox OS by visiting the Firefox Marketplace: http
 ![](screenshots/firefox-os/save-type.png)
 ![](screenshots/firefox-os/share.png)
 
-The `/img/open-iconic/*` files are from the Open Iconic project: https://useiconic.com/open/
+The icons in `/img/icons/` (except the app icons) are from the Android Asset Studio (https://romannurik.github.io/AndroidAssetStudio/) and are licensed under the Apache license.
 `/audio/shutter.opus` is from the stock Firefox OS camera app: https://github.com/mozilla-b2g/gaia/blob/master/apps/camera/resources/sounds/shutter.opus
