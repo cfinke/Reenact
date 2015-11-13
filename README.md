@@ -11,7 +11,6 @@ Reenact can be installed on Firefox OS by visiting the Firefox Marketplace: http
 ![](screenshots/firefox-os/capture-init.png)
 ![](screenshots/firefox-os/capture.png)
 ![](screenshots/firefox-os/confirm.png)
-![](screenshots/firefox-os/save-type.png)
 ![](screenshots/firefox-os/share.png)
 
 The icons in `/img/icons/` (except the app icons) are from the Android Asset Studio (https://romannurik.github.io/AndroidAssetStudio/) and are licensed under the Apache license.
