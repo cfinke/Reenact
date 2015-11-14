@@ -1,9 +1,12 @@
 package com.chrisfinke.reenact;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -181,11 +185,40 @@ public class CaptureActivity extends Activity {
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
+            // The taken photo will be rotated based on the rotation of the device.
+            // Rotate it to the orientation that we expect.
+            int deviceOrientation = getResources().getConfiguration().orientation;
+
+            Log.d(Constants.LOG_TAG, "Orientation: " + deviceOrientation);
+
+            if ( deviceOrientation != android.content.res.Configuration.ORIENTATION_LANDSCAPE ) {
+                Bitmap storedBitmap = BitmapFactory.decodeByteArray(data, 0, data.length, null);
+                Matrix mat = new Matrix();
+
+                // @todo Use this in combinationg with getRotation() for tablets
+                switch (deviceOrientation) {
+                    case android.content.res.Configuration.ORIENTATION_PORTRAIT:
+                        Log.d(Constants.LOG_TAG, "Rotating 90.");
+                        mat.postRotate(90);
+                        break;
+                }
+
+                storedBitmap = Bitmap.createBitmap(storedBitmap, 0, 0, storedBitmap.getWidth(), storedBitmap.getHeight(), mat, true);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                storedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                data = stream.toByteArray();
+
+                storedBitmap = null;
+                mat = null;
+            }
+
             // Start the confirmation activity.
             Intent intent = new Intent(CaptureActivity.this, ConfirmActivity.class);
             intent.putExtra(Constants.ORIGINAL_PHOTO_PATH, originalPhotoUri);
             intent.putExtra(Constants.NEW_PHOTO_BYTES, data);
             startActivity(intent);
+
+            data = null;
         }
     };
 }
