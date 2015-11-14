@@ -9,18 +9,18 @@
     android:background="#000"
     >
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="5">
         <FrameLayout
             android:id="@+id/camera_preview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             />
         <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/original_image"
             android:alpha="0.5"/>
     </RelativeLayout>
@@ -31,7 +31,7 @@
         android:orientation="horizontal">
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:id="@+id/back_button"
             android:layout_gravity="center"
             android:layout_weight="1"
@@ -40,7 +40,7 @@
             android:onClick="goBack"/>
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:id="@+id/capture_button"
             android:layout_gravity="center"
             android:layout_weight="1"
