@@ -27,12 +27,30 @@
             android:id="@+id/original_image"
             android:alpha="0.5"/>
     </RelativeLayout>
-    <ImageButton
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1in"
         android:layout_weight="1"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/capture_button"
-        android:layout_gravity="center"
-        android:background="#000"
-        android:src="@drawable/ic_action_image_photo_camera" />
+        android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/back_button"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="#000"
+            android:src="@drawable/ic_action_hardware_keyboard_return" />
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/capture_button"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="#000"
+            android:src="@drawable/ic_action_image_photo_camera" />
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
 </LinearLayout>
