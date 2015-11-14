@@ -21,11 +21,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CaptureActivity"
-            android:parentActivityName=".IntroActivity">
+        <activity
+            android:name=".CaptureActivity"
+            android:parentActivityName=".IntroActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chrisfinke.reenact.IntroActivity" />
+        </activity>
+        <activity android:name=".ConfirmActivity"
+            android:parentActivityName=".CaptureActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.chrisfinke.reenact.CaptureActivity" />
         </activity>
     </application>
 

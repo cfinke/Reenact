@@ -72,6 +72,19 @@ public class CaptureActivity extends Activity {
         }
 
         startCamera();
+
+        // Add a listener to the Capture button
+        ImageButton captureButton = (ImageButton) findViewById(R.id.capture_button);
+        captureButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // get an image from the camera
+                        mCamera.takePicture(null, null, mPicture);
+
+                    }
+                }
+        );
     }
 
     public void goBack(View view) {
@@ -163,4 +176,16 @@ public class CaptureActivity extends Activity {
 
         mCamera.setParameters(parameters);
     }
+
+    private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
+
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            // Start the confirmation activity.
+            Intent intent = new Intent(CaptureActivity.this, ConfirmActivity.class);
+            intent.putExtra(Constants.ORIGINAL_PHOTO_PATH, originalPhotoUri);
+            intent.putExtra(Constants.NEW_PHOTO_BYTES, data);
+            startActivity(intent);
+        }
+    };
 }

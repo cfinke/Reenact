@@ -4,26 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context="com.chrisfinke.reenact.ConfirmActivity"
     android:orientation="vertical"
-    tools:context="com.chrisfinke.reenact.CaptureActivity"
     android:background="#000"
     >
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="5">
-        <FrameLayout
-            android:id="@+id/camera_preview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:orientation="horizontal">
         <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/original_image"
-            android:alpha="0.5"/>
-    </RelativeLayout>
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/image_then"
+            android:layout_gravity="center"/>
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:id="@+id/image_now"
+            android:layout_gravity="center"/>
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="1in"
@@ -41,11 +43,11 @@
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:id="@+id/capture_button"
+            android:id="@+id/confirm_button"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#000"
-            android:src="@drawable/ic_action_image_photo_camera" />
+            android:src="@drawable/ic_action_navigation_check" />
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="0dp"
