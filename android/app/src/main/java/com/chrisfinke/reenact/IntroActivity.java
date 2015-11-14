@@ -8,11 +8,6 @@ import android.util.Log;
 import android.view.View;
 
 public class IntroActivity extends Activity {
-    public final static Integer PICK_IMAGE_TO_REENACT = 1;
-    public final static String ORIGINAL_PHOTO_PATH = "com.chrisfinke.reenact.ORIGINAL_PHOTO_PATH";
-
-    private String LOG_TAG = "reenact";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,32 +20,32 @@ public class IntroActivity extends Activity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(
                 Intent.createChooser(intent, getResources().getText(R.string.choose_photo_label)),
-                PICK_IMAGE_TO_REENACT
+                Constants.PICK_IMAGE_TO_REENACT
         );
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        Log.d(LOG_TAG, "Activity ended.");
+        Log.d(Constants.LOG_TAG, "Activity ended.");
 
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK){
-            Log.d(LOG_TAG, "Result code ok.");
+            Log.d(Constants.LOG_TAG, "Result code ok.");
 
-            if (requestCode == PICK_IMAGE_TO_REENACT){
-                Log.d(LOG_TAG, "Requestcode ok.");
+            if (requestCode == Constants.PICK_IMAGE_TO_REENACT){
+                Log.d(Constants.LOG_TAG, "Requestcode ok.");
 
                 Uri selectedImageUri = data.getData();
 
-                Log.d(LOG_TAG, selectedImageUri.toString());
+                Log.d(Constants.LOG_TAG, selectedImageUri.toString());
 
                 Intent intent = new Intent(this, CaptureActivity.class);
-                intent.putExtra(ORIGINAL_PHOTO_PATH, selectedImageUri);
+                intent.putExtra(Constants.ORIGINAL_PHOTO_PATH, selectedImageUri);
                 startActivity(intent);
             }
         }
         else {
-            Log.d(LOG_TAG, "activityResult was not OK.");
+            Log.d(Constants.LOG_TAG, "activityResult was not OK.");
             // @todo
         }
     }

@@ -22,7 +22,6 @@ import java.io.InputStream;
 
 public class CaptureActivity extends Activity {
     private Uri originalPhotoUri;
-    private String LOG_TAG = "reenact";
 
     public String orientation = "portrait";
 
@@ -35,9 +34,9 @@ public class CaptureActivity extends Activity {
         setContentView(R.layout.activity_capture);
 
         Intent intent = getIntent();
-        originalPhotoUri = intent.getParcelableExtra(IntroActivity.ORIGINAL_PHOTO_PATH);
+        originalPhotoUri = intent.getParcelableExtra(Constants.ORIGINAL_PHOTO_PATH);
 
-        Log.d(LOG_TAG, "Received original photo URI: " + originalPhotoUri.toString());
+        Log.d(Constants.LOG_TAG, "Received original photo URI: " + originalPhotoUri.toString());
 
         ImageView imageView = (ImageView) findViewById(R.id.original_image);
 
@@ -78,7 +77,7 @@ public class CaptureActivity extends Activity {
     public void goBack(View view) {
         super.onBackPressed();
 
-        Log.d(LOG_TAG, "Going back.");
+        Log.d(Constants.LOG_TAG, "Going back.");
 
         finish();
     }
