@@ -10,8 +10,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.io.FileNotFoundException;
@@ -71,6 +73,14 @@ public class CaptureActivity extends Activity {
         }
 
         startCamera();
+    }
+
+    public void goBack(View view) {
+        super.onBackPressed();
+
+        Log.d(LOG_TAG, "Going back.");
+
+        finish();
     }
 
     @Override

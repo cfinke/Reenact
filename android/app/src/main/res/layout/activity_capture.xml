@@ -39,7 +39,8 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#000"
-            android:src="@drawable/ic_action_hardware_keyboard_return" />
+            android:src="@drawable/ic_action_hardware_keyboard_return"
+            android:onClick="goBack"/>
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="fill_parent"
