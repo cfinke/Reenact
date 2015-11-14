@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Reenact</string>
-    <string name="intro_message">Choose a photo to Reenact</string>
+    <string name="choose_photo_label">Choose a photo to Reenact</string>
 </resources>
 

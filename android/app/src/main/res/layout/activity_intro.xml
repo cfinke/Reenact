@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#00c755">
+    android:background="#00c755"
+    android:onClick="choosePhoto"
+    >
     <LinearLayout
         android:id="@+id/intro_container"
         android:layout_width="fill_parent"
@@ -32,7 +34,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/intro_message"
+                android:text="@string/choose_photo_label"
                 android:textColor="#fff"
                 android:background="#000"
                 android:paddingEnd="20dp"
@@ -41,6 +43,7 @@
                 android:paddingBottom="10dp"
                 android:layout_weight="0.5"
                 android:textAllCaps="true"
+                android:clickable="false"
                 />
         </RelativeLayout>
     </LinearLayout>
