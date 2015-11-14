@@ -127,4 +127,31 @@ public class CaptureActivity extends Activity {
             mPreview = null;
         }
     }
+
+    public void updatePreviewSize( int width, int height ) {
+        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        Camera.Parameters parameters = mCamera.getParameters();
+
+        if(display.getRotation() == Surface.ROTATION_0)
+        {
+            parameters.setPreviewSize(height, width);
+        }
+
+        if(display.getRotation() == Surface.ROTATION_90)
+        {
+            parameters.setPreviewSize(width, height);
+        }
+
+        if(display.getRotation() == Surface.ROTATION_180)
+        {
+            parameters.setPreviewSize(height, width);
+        }
+
+        if(display.getRotation() == Surface.ROTATION_270)
+        {
+            parameters.setPreviewSize(width, height);
+        }
+
+        mCamera.setParameters(parameters);
+    }
 }

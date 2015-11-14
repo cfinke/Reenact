@@ -56,6 +56,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
 
         // Update the preview here.
+        activityContext.updatePreviewSize(width, height);
 
         try {
             mCamera.startPreview();
