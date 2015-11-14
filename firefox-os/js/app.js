@@ -636,7 +636,7 @@ window.addEventListener( 'DOMContentLoaded', function () {
 						App.persistentVar( 'final-photo-blob', blob );
 				
 						var pics = navigator.getDeviceStorage( 'pictures' );
-						var request = pics.addNamed( blob, "reenact-" + Date.now() + ".jpg" );
+						var request = pics.addNamed( blob, "reenact-merged-" + Date.now() + ".jpg" );
 				
 						request.onsuccess = function () {
 							console.log( "addNamed succeeded" );
