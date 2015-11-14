@@ -43,6 +43,10 @@ public class IntroActivity extends Activity {
                 Uri selectedImageUri = data.getData();
 
                 Log.d(LOG_TAG, selectedImageUri.toString());
+
+                Intent intent = new Intent(this, CaptureActivity.class);
+                intent.putExtra(ORIGINAL_PHOTO_PATH, selectedImageUri);
+                startActivity(intent);
             }
         }
         else {
