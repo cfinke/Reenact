@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
+import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import java.io.FileNotFoundException;
@@ -18,6 +23,9 @@ public class CaptureActivity extends Activity {
     private String LOG_TAG = "reenact";
 
     public String orientation = "portrait";
+
+    private Camera mCamera;
+    private CameraPreview mPreview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +68,63 @@ public class CaptureActivity extends Activity {
         }
         else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
+        startCamera();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releaseCamera();              // release the camera immediately on pause event
+    }
+
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        startCamera();
+    }
+
+    protected void startCamera() {
+        // Create an instance of Camera
+        mCamera = getCameraInstance();
+
+        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        Camera.Parameters parameters = mCamera.getParameters();
+
+        if(display.getRotation() == Surface.ROTATION_0)
+        {
+            mCamera.setDisplayOrientation(90);
+        }
+        if(display.getRotation() == Surface.ROTATION_270)
+        {
+            mCamera.setDisplayOrientation(180);
+        }
+
+        mCamera.setParameters(parameters);
+
+        // Create our Preview view and set it as the content of our activity.
+        mPreview = new CameraPreview(this, mCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(mPreview);
+    }
+
+    public static Camera getCameraInstance(){
+        Camera c = null;
+
+        try {
+            c = Camera.open();
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+        }
+        return c;
+    }
+
+    private void releaseCamera() {
+        if (mCamera != null) {
+            mCamera.release();        // release the camera for other applications
+            mCamera = null;
+            mPreview = null;
         }
     }
 }
