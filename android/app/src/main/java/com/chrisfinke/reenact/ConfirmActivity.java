@@ -38,7 +38,6 @@ public class ConfirmActivity extends Activity {
         Intent intent = getIntent();
         originalPhotoUri = intent.getParcelableExtra(Constants.ORIGINAL_PHOTO_PATH);
         newPhotoBytes = intent.getByteArrayExtra(Constants.NEW_PHOTO_BYTES);
-
         ImageView imageViewThen = (ImageView) findViewById(R.id.image_then);
         ImageView imageViewNow = (ImageView) findViewById(R.id.image_now);
 
@@ -266,6 +265,7 @@ public class ConfirmActivity extends Activity {
         startActivity(intent);
 
         pictureFile = null;
+        finish();
     }
 
     /**

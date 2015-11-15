@@ -35,7 +35,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chrisfinke.reenact.CaptureActivity" />
         </activity>
-        <activity android:name=".ShareActivity" >
+        <activity android:name=".ShareActivity"
+            android:parentActivityName=".IntroActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.chrisfinke.reenact.IntroActivity" />
         </activity>
     </application>
 
