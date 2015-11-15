@@ -51,4 +51,15 @@ public class ShareActivity extends Activity {
         shareIntent.putExtra(Intent.EXTRA_STREAM, mergedPhotoUri);
         startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.share_dialog_label)));
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, IntroActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    public void startOver(View view) {
+        onBackPressed();
+    }
 }

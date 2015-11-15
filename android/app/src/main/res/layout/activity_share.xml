@@ -8,12 +8,25 @@
     android:orientation="vertical"
     android:background="#000"
     >
-    <ImageView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="5"
-        android:id="@+id/image_merged"
-        android:layout_gravity="center"/>
+        android:layout_weight="5">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/image_merged"
+            android:layout_gravity="center"/>
+        <ImageButton
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="fitCenter"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_action_navigation_arrow_back"
+            android:background="#000000"
+            android:onClick="startOver"/>
+    </FrameLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
