@@ -61,6 +61,8 @@ public class ConfirmActivity extends Activity {
         Bitmap bMap = BitmapFactory.decodeByteArray(newPhotoBytes, 0, newPhotoBytes.length);
         imageViewNow.setImageBitmap(bMap);
 
+        // Adjust the sizes of the thumbnails so that portrait images are the same height
+        // as each other and landscape are the same width.
         int oldImageHeight = imageViewThen.getDrawable().getIntrinsicHeight();
         int newImageHeight = imageViewNow.getDrawable().getIntrinsicHeight();
 
@@ -73,12 +75,14 @@ public class ConfirmActivity extends Activity {
         Log.d(Constants.LOG_TAG, "oldImageHeight: " + oldImageHeight);
         Log.d(Constants.LOG_TAG, "newImageHeight: " + newImageHeight);
 
+        LinearLayout previewContainer = (LinearLayout) findViewById(R.id.preview_container);
+
         if ( newImageWidth < newImageHeight ) {
             // Portrait.
-            int shorterHeight = Math.min( oldImageHeight, newImageHeight );
+            // Ensure that the thumbnails are side-by-side.
+            previewContainer.setOrientation(LinearLayout.HORIZONTAL);
 
-            int sameHeightOldImageHeight = ( shorterHeight / oldImageHeight ) * oldImageHeight;
-            int sameHeightNewImageHeight = ( shorterHeight / newImageHeight ) * newImageHeight;
+            int shorterHeight = Math.min( oldImageHeight, newImageHeight );
 
             int sameHeightOldImageWidth = Math.round( ( (float) shorterHeight / oldImageHeight ) * oldImageWidth);
             int sameHeightNewImageWidth = Math.round( ( (float) shorterHeight / newImageHeight ) * newImageWidth);
@@ -94,13 +98,39 @@ public class ConfirmActivity extends Activity {
 
             LinearLayout.LayoutParams oldParams = (LinearLayout.LayoutParams) imageViewThen.getLayoutParams();
             oldParams.weight = oldImageWeight;
+            oldParams.width = 0;
+            oldParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
             imageViewThen.setLayoutParams( oldParams );
 
             LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams) imageViewNow.getLayoutParams();
             newParams.weight = newImageWeight;
+            newParams.width = 0;
+            newParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
             imageViewNow.setLayoutParams( newParams );
         }
         else {
+            // Ensure that the thumbnails are top-to-bottom.
+            previewContainer.setOrientation(LinearLayout.VERTICAL);
+
+            int shorterWidth = Math.min( oldImageWidth, newImageWidth );
+
+            int sameWidthOldImageHeight = ( shorterWidth / oldImageWidth ) * oldImageHeight;
+            int sameWidthNewImageHeight = ( shorterWidth / newImageWidth ) * newImageHeight;
+
+            float oldImageWeight = ( (float) sameWidthOldImageHeight ) / ( sameWidthOldImageHeight + sameWidthNewImageHeight );
+            float newImageWeight = ( (float) sameWidthNewImageHeight ) / ( sameWidthOldImageHeight + sameWidthNewImageHeight );
+
+            LinearLayout.LayoutParams oldParams = (LinearLayout.LayoutParams) imageViewThen.getLayoutParams();
+            oldParams.weight = oldImageWeight;
+            oldParams.height = 0;
+            oldParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            imageViewThen.setLayoutParams( oldParams );
+
+            LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams) imageViewNow.getLayoutParams();
+            newParams.weight = newImageWeight;
+            newParams.height = 0;
+            newParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            imageViewNow.setLayoutParams(newParams);
         }
     }
 
