@@ -45,6 +45,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#000"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_action_image_photo_camera" />
         <ImageButton
             android:layout_width="0dp"

@@ -48,6 +48,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#000"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_action_navigation_check"
             android:onClick="confirm"/>
         <ImageButton

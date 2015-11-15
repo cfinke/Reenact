@@ -19,14 +19,26 @@
         android:layout_height="1in"
         android:layout_weight="1"
         android:orientation="horizontal">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            />
         <ImageButton
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:id="@+id/share_button"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="#000"
+            android:background="@drawable/share_background"
             android:src="@drawable/ic_action_social_share"
-            android:onClick="share"/>
+            android:onClick="share"
+            android:scaleType="fitCenter"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
     </LinearLayout>
 </LinearLayout>
