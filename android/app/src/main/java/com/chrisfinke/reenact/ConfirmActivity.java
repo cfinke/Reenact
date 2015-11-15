@@ -181,8 +181,8 @@ public class ConfirmActivity extends Activity {
 
         Log.d(Constants.LOG_TAG, "Single image: " + pictureFile.toString());
 
-        if (pictureFile == null){
-            Log.d(Constants.LOG_TAG, "Error creating media file, check storage permissions: " );
+        if (pictureFile == null) {
+            Log.d(Constants.LOG_TAG, "Error creating media file, check storage permissions: ");
             return;
         }
 
@@ -211,7 +211,7 @@ public class ConfirmActivity extends Activity {
 
         try {
             fileDescriptor = getContentResolver().openAssetFileDescriptor(originalPhotoUri, "r");
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             Log.d(Constants.LOG_TAG, "File not found", e);
             return;
         }
@@ -236,13 +236,13 @@ public class ConfirmActivity extends Activity {
         imageViewThen.setImageBitmap(combinedImage);
         imageViewNow.setImageBitmap(combinedImage);
         */
-        
+
         pictureFile = getOutputMediaFile(Constants.MEDIA_TYPE_IMAGE, "Reenacted_IMG_");
 
         Log.d(Constants.LOG_TAG, "Merged image: " + pictureFile.toString());
 
-        if (pictureFile == null){
-            Log.d(Constants.LOG_TAG, "Error creating media file, check storage permissions: " );
+        if (pictureFile == null) {
+            Log.d(Constants.LOG_TAG, "Error creating media file, check storage permissions: ");
             return;
         }
 
@@ -259,6 +259,11 @@ public class ConfirmActivity extends Activity {
         } finally {
             Log.d(Constants.LOG_TAG, "Finished writing file.");
         }
+
+        Uri mergedPhotoUri = Uri.fromFile(pictureFile);
+        Intent intent = new Intent(this, ShareActivity.class);
+        intent.putExtra(Constants.MERGED_PHOTO_PATH, mergedPhotoUri);
+        startActivity(intent);
 
         pictureFile = null;
     }

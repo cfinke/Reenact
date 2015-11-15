@@ -8,6 +8,7 @@ public class Constants {
 
     public final static String NEW_PHOTO_BYTES = "com.chrisfinke.reenact.NEW_PHOTO_BYTES";
     public final static String ORIGINAL_PHOTO_PATH = "com.chrisfinke.reenact.ORIGINAL_PHOTO_PATH";
+    public final static String MERGED_PHOTO_PATH = "com.chrisfinke.reenact.MERGED_PHOTO_PATH";
 
     public final static String LOG_TAG = "reenact";
 
