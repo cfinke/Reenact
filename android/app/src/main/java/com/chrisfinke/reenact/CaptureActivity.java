@@ -1,5 +1,7 @@
 package com.chrisfinke.reenact;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +17,11 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -43,6 +50,7 @@ public class CaptureActivity extends Activity {
         Log.d(Constants.LOG_TAG, "Received original photo URI: " + originalPhotoUri.toString());
 
         ImageView imageView = (ImageView) findViewById(R.id.original_image);
+        fadeOriginalImageInAndOut(imageView);
 
         InputStream imageStream = null;
 
@@ -89,6 +97,8 @@ public class CaptureActivity extends Activity {
                     }
                 }
         );
+
+
     }
 
     public void goBack(View view) {
@@ -221,4 +231,45 @@ public class CaptureActivity extends Activity {
             data = null;
         }
     };
+
+    private void fadeOriginalImageInAndOut(final ImageView img) {
+        fadeOutImage(img);
+    }
+
+    private void fadeOutImage(final ImageView img) {
+        Animation fadeOut = new AlphaAnimation(.75f, 0);
+        fadeOut.setInterpolator(new LinearInterpolator());
+        fadeOut.setDuration(2500);
+
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationEnd(Animation animation) {
+                fadeInImage(img);
+            }
+
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            public void onAnimationStart(Animation animation) {
+            }
+        });
+
+        img.startAnimation(fadeOut);
+    }
+
+    private void fadeInImage(final ImageView img){
+        final Animation fadeIn = new AlphaAnimation(0, .75f);
+        fadeIn.setInterpolator(new LinearInterpolator());
+        fadeIn.setDuration(2500);
+
+        fadeIn.setAnimationListener(new Animation.AnimationListener()
+        {
+            public void onAnimationEnd(Animation animation) {
+                fadeOutImage(img);
+            }
+            public void onAnimationRepeat(Animation animation) {}
+            public void onAnimationStart(Animation animation) {}
+        });
+
+        img.startAnimation(fadeIn);
+    }
 }
