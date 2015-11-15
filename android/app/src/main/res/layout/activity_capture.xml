@@ -25,12 +25,12 @@
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1in"
+        android:layout_height="80dp"
         android:layout_weight="1"
         android:orientation="horizontal">
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:id="@+id/back_button"
             android:layout_gravity="center"
             android:layout_weight="1"
@@ -39,14 +39,14 @@
             android:onClick="goBack"/>
         <ImageButton
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="80dp"
             android:id="@+id/capture_button"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:background="#000"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_action_image_photo_camera" />
-        <ImageButton
+        <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"/>
