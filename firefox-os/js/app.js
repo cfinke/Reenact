@@ -595,9 +595,9 @@ window.addEventListener( 'DOMContentLoaded', function () {
 					var context = canvas.getContext( '2d' );
 			
 					if ( newImageWidth < newImageHeight ) {
+						// Portrait.
 						console.log( "Portrait orientation." );
 				
-						// Portrait.
 						var smallestHeight = Math.min( oldImageHeight, newImageHeight );
 						var totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth );
 						var totalHeight = smallestHeight;
@@ -614,7 +614,6 @@ window.addEventListener( 'DOMContentLoaded', function () {
 						// Landscape
 						console.log( "Landscape orientation." );
 
-						// Portrait.
 						var smallestWidth = Math.min( oldImageWidth, newImageWidth );
 						var totalHeight = ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) + ( ( smallestWidth / newImageWidth ) * newImageHeight );
 						var totalWidth = smallestWidth;

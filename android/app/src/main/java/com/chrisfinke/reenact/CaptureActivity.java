@@ -93,12 +93,9 @@ public class CaptureActivity extends Activity {
                     public void onClick(View v) {
                         // get an image from the camera
                         mCamera.takePicture(null, null, mPicture);
-
                     }
                 }
         );
-
-
     }
 
     public void goBack(View view) {
