@@ -109,7 +109,10 @@ public class CaptureActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        releaseCamera();              // release the camera immediately on pause event
+
+        Log.d(Constants.LOG_TAG, "onPause");
+
+        releaseCamera();
     }
 
     public void onAttachedToWindow() {
@@ -162,6 +165,10 @@ public class CaptureActivity extends Activity {
     }
 
     public void updatePreviewSize( int width, int height ) {
+        if (null == mCamera) {
+            return;
+        }
+
         Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         Camera.Parameters parameters = mCamera.getParameters();
 
@@ -268,5 +275,19 @@ public class CaptureActivity extends Activity {
         });
 
         img.startAnimation(fadeIn);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(Constants.LOG_TAG, "onStop");
+        releaseCamera();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(Constants.LOG_TAG, "onResume");
+        startCamera();
     }
 }
