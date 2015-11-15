@@ -69,9 +69,6 @@ public class ConfirmActivity extends Activity {
         int oldImageWidth = imageViewThen.getDrawable().getIntrinsicWidth();
         int newImageWidth = imageViewNow.getDrawable().getIntrinsicWidth();
 
-        int adjustedOldImageHeight = Math.round((float) oldImageWidth / newImageWidth * oldImageHeight);
-        int adjustedNewImageHeight = Math.round((float) oldImageWidth / newImageWidth * newImageHeight);
-
         Log.d(Constants.LOG_TAG, "oldImageHeight: " + oldImageHeight);
         Log.d(Constants.LOG_TAG, "newImageHeight: " + newImageHeight);
 
