@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class CaptureActivity extends Activity {
     private Uri originalPhotoUri;
@@ -171,28 +172,56 @@ public class CaptureActivity extends Activity {
 
         Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         Camera.Parameters parameters = mCamera.getParameters();
+        List<Camera.Size> supportedSizes = parameters.getSupportedPreviewSizes();
+
+        for (Camera.Size size : supportedSizes) {
+            Log.d(Constants.LOG_TAG, "Supported Size: " + size.width + "x" + size.height);
+        }
+
+        Camera.Size bestPreviewSize = getBestPreviewSize(supportedSizes, width, height);
 
         if(display.getRotation() == Surface.ROTATION_0)
         {
-            parameters.setPreviewSize(height, width);
+            Log.d(Constants.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
+            parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
         }
 
         if(display.getRotation() == Surface.ROTATION_90)
         {
-            parameters.setPreviewSize(width, height);
+            Log.d(Constants.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+            parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
         }
 
         if(display.getRotation() == Surface.ROTATION_180)
         {
-            parameters.setPreviewSize(height, width);
+            Log.d(Constants.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
+            parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
         }
 
         if(display.getRotation() == Surface.ROTATION_270)
         {
-            parameters.setPreviewSize(width, height);
+            Log.d(Constants.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+            parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
         }
 
         mCamera.setParameters(parameters);
+    }
+
+    private Camera.Size getBestPreviewSize(List<Camera.Size> sizes, int w, int h) {
+        Camera.Size bestSize = sizes.get(0);
+        double bestRatio = 0;
+        double ratioToMatch = (double) w / h;
+
+        for (Camera.Size size : sizes) {
+            double thisRatio = (double) size.width / size.height;
+
+            if (bestRatio == 0 || Math.abs(thisRatio - ratioToMatch) < Math.abs(bestRatio - ratioToMatch)) {
+                bestRatio = thisRatio;
+                bestSize = size;
+            }
+        }
+
+        return bestSize;
     }
 
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
