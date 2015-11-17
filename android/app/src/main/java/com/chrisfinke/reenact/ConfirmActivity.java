@@ -36,8 +36,6 @@ public class ConfirmActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
         Intent intent = getIntent();
         originalPhotoUri = intent.getParcelableExtra(Constants.ORIGINAL_PHOTO_PATH);
         newPhotoBytes = intent.getByteArrayExtra(Constants.NEW_PHOTO_BYTES);
