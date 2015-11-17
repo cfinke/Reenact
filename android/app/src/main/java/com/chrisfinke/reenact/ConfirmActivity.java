@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.net.Uri;
@@ -17,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -189,7 +192,6 @@ public class ConfirmActivity extends Activity {
             FileOutputStream fos = new FileOutputStream(pictureFile);
             fos.write(newPhotoBytes);
             fos.close();
-            fos = null;
         } catch (FileNotFoundException e) {
             Log.d(Constants.LOG_TAG, "File not found: " + e.getMessage());
         } catch (IOException e) {
@@ -198,43 +200,7 @@ public class ConfirmActivity extends Activity {
             Log.d(Constants.LOG_TAG, "Finished writing file.");
         }
 
-        pictureFile = null;
-
-        ImageView oldImageView = (ImageView) findViewById(R.id.image_then);
-        ImageView newImageView = (ImageView) findViewById(R.id.image_now);
-
-        // Save the merged image pair.
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        AssetFileDescriptor fileDescriptor;
-
-        try {
-            fileDescriptor = getContentResolver().openAssetFileDescriptor(originalPhotoUri, "r");
-        } catch (FileNotFoundException e) {
-            Log.d(Constants.LOG_TAG, "File not found", e);
-            return;
-        }
-
-        options.inJustDecodeBounds = false;
-        options.inSampleSize = 4;
-
-        BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
-        Bitmap oldImage = BitmapFactory.decodeFileDescriptor(fileDescriptor.getFileDescriptor(), null, options);
-
-        Bitmap newImage;
-        options = new BitmapFactory.Options();
-        options.inMutable = true;
-        newImage = BitmapFactory.decodeByteArray(newPhotoBytes, 0, newPhotoBytes.length, options);
-
-        Bitmap combinedImage = combineImages(oldImage, newImage);
-
-        /*
-        ImageView imageViewThen = (ImageView) findViewById(R.id.image_then);
-        ImageView imageViewNow = (ImageView) findViewById(R.id.image_now);
-
-        imageViewThen.setImageBitmap(combinedImage);
-        imageViewNow.setImageBitmap(combinedImage);
-        */
+        Bitmap combinedImage = combineImages(originalPhotoUri, Uri.fromFile(pictureFile));
 
         pictureFile = getOutputMediaFile(Constants.MEDIA_TYPE_IMAGE, "Reenacted_IMG_");
 
@@ -273,20 +239,28 @@ public class ConfirmActivity extends Activity {
      * images, put them top and bottom; if they're portrait, side-by-side.
      */
 
-    public Bitmap combineImages(Bitmap c, Bitmap s) {
-        Bitmap cs = null;
+    public Bitmap combineImages(Uri thenImage, Uri nowImage) {
+        int[] thenImageDimensions = getImageDimensions(thenImage);
+        int[] nowImageDimensions = getImageDimensions(nowImage);
 
-        int cWidth = c.getWidth();
-        int cHeight = c.getHeight();
-        int sWidth = s.getWidth();
-        int sHeight = s.getHeight();
+        int cWidth = thenImageDimensions[0];
+        int cHeight = thenImageDimensions[1];
+        int sWidth = nowImageDimensions[0];
+        int sHeight = nowImageDimensions[1];
 
-        if ( cWidth < cHeight ) {
-            // Portrait
+        int totalHeight;
+        int totalWidth;
+        float oldRatio;
+        float newRatio;
+
+        Rect oldImageDest;
+        Rect newImageDest;
+
+        if (cWidth < cHeight) {
             Log.d(Constants.LOG_TAG, "Saving combination image in side-by-side format.");
 
-            int smallestHeight = Math.min(cHeight, sHeight);
-            int totalHeight = smallestHeight;
+            int smallestHeight = Math.min(1024, Math.min(cHeight, sHeight));
+            totalHeight = smallestHeight;
 
             int newOldHeight = totalHeight;
             int newOldWidth = Math.round(((float) smallestHeight / cHeight) * cWidth);
@@ -294,20 +268,19 @@ public class ConfirmActivity extends Activity {
             int newNewHeight = totalHeight;
             int newNewWidth = Math.round(((float) smallestHeight / sHeight) * sWidth);
 
-            int totalWidth = newOldWidth + newNewWidth;
+            totalWidth = newOldWidth + newNewWidth;
 
-            cs = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888);
+            oldRatio = (float) smallestHeight / cHeight;
+            newRatio = (float) smallestHeight / sHeight;
 
-            Canvas comboImage = new Canvas(cs);
-            comboImage.drawBitmap(c, new Rect(0, 0, cWidth, cHeight), new Rect(0, 0, newOldWidth, newOldHeight), null);
-            comboImage.drawBitmap(s, new Rect(0, 0, sWidth, sHeight), new Rect(newOldWidth, 0, newOldWidth + newNewWidth, newNewHeight), null);
+            oldImageDest = new Rect(0, 0, newOldWidth, newOldHeight);
+            newImageDest = new Rect(newOldWidth, 0, newOldWidth + newNewWidth, newNewHeight);
         }
         else {
-            // Landscape
             Log.d(Constants.LOG_TAG, "Saving combination image in top-to-bottom format.");
 
-            int smallestWidth = Math.min(cWidth, sWidth);
-            int totalWidth = smallestWidth;
+            int smallestWidth = Math.min(1024, Math.min(cWidth, sWidth));
+            totalWidth = smallestWidth;
 
             int newOldWidth = totalWidth;
             int newOldHeight = Math.round(((float) smallestWidth / cWidth) * cHeight);
@@ -315,17 +288,107 @@ public class ConfirmActivity extends Activity {
             int newNewWidth = totalWidth;
             int newNewHeight = Math.round(((float) smallestWidth / sWidth) * sHeight);
 
-            int totalHeight = newOldHeight + newNewHeight;
+            totalHeight = newOldHeight + newNewHeight;
 
-            cs = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888);
+            oldRatio = (float) smallestWidth / cWidth;
+            newRatio = (float) smallestWidth / sWidth;
 
-            Canvas comboImage = new Canvas(cs);
-            comboImage.drawBitmap(c, new Rect(0, 0, cWidth, cHeight), new Rect(0, 0, newOldWidth, newOldHeight), null);
-            comboImage.drawBitmap(s, new Rect(0, 0, sWidth, sHeight), new Rect(0, newOldHeight, newNewWidth, newOldHeight + newNewHeight), null);
+            oldImageDest = new Rect(0, 0, newOldWidth, newOldHeight);
+            newImageDest = new Rect(0, newOldHeight, newNewWidth, newOldHeight + newNewHeight);
         }
 
-        Log.d(Constants.LOG_TAG, "Finished combining images.");
+        Bitmap cs = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888);
+
+        Canvas comboImage = new Canvas(cs);
+
+        int oldSampleSize = (int) Math.max(1, Math.floor((float) 1 / oldRatio));
+        int newSampleSize = (int) Math.max(1, Math.floor((float) 1 / newRatio));
+
+        Log.d(Constants.LOG_TAG, "oldRatio:" + oldRatio);
+        Log.d(Constants.LOG_TAG, "newRatio:" + newRatio);
+
+        Log.d(Constants.LOG_TAG, "oldSampleSize:" + oldSampleSize);
+        Log.d(Constants.LOG_TAG, "newSampleSize:" + newSampleSize);
+
+        BitmapFactory.Options oldOptions = new BitmapFactory.Options();
+        oldOptions.inSampleSize = oldSampleSize;
+
+        AssetFileDescriptor oldFileDescriptor;
+
+        try {
+            oldFileDescriptor = getContentResolver().openAssetFileDescriptor(thenImage, "r");
+        } catch (FileNotFoundException e) {
+            Log.d(Constants.LOG_TAG, "File not found", e);
+            return null;
+        }
+
+        BitmapFactory.decodeFileDescriptor(oldFileDescriptor.getFileDescriptor(), null, oldOptions);
+        Bitmap oldImage = BitmapFactory.decodeFileDescriptor(oldFileDescriptor.getFileDescriptor(), null, oldOptions);
+
+        comboImage.drawBitmap(oldImage, new Rect(0, 0, oldImage.getWidth(), oldImage.getHeight()), oldImageDest, null);
+
+        oldImage.recycle();
+        oldImage = null;
+        oldOptions = null;
+        oldFileDescriptor = null;
+
+        BitmapFactory.Options newOptions = new BitmapFactory.Options();
+        newOptions.inSampleSize = newSampleSize;
+
+        AssetFileDescriptor newFileDescriptor;
+
+        try {
+            newFileDescriptor = getContentResolver().openAssetFileDescriptor(nowImage, "r");
+        } catch (FileNotFoundException e) {
+            Log.d(Constants.LOG_TAG, "File not found", e);
+            return null;
+        }
+
+        BitmapFactory.decodeFileDescriptor(newFileDescriptor.getFileDescriptor(), null, newOptions);
+        Bitmap newImage = BitmapFactory.decodeFileDescriptor(newFileDescriptor.getFileDescriptor(), null, newOptions);
+
+        comboImage.drawBitmap(newImage, new Rect(0, 0, newImage.getWidth(), newImage.getHeight()), newImageDest, null);
+
+        newImage.recycle();
+        newImage = null;
+        newOptions = null;
+        newFileDescriptor = null;
 
         return cs;
+    }
+
+    private int[] getImageDimensions(Uri imageUri) {
+        InputStream imageStream;
+
+        int[] dimensions = new int[2];
+        dimensions[0] = 0;
+        dimensions[1] = 0;
+
+        try {
+            imageStream = getContentResolver().openInputStream(imageUri);
+        } catch (FileNotFoundException e ){
+            Log.d(Constants.LOG_TAG, "FileNotFound", e);
+            return dimensions;
+        }
+
+        try {
+            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imageStream, false);
+
+            Log.d(Constants.LOG_TAG, "Image dimensions: " + decoder.getWidth() + "x" + decoder.getHeight());
+
+            dimensions[0] = decoder.getWidth();
+            dimensions[1] = decoder.getHeight();
+        } catch (IOException e){
+            Log.d(Constants.LOG_TAG, "IOException", e);
+            return dimensions;
+        } finally {
+            try {
+                imageStream.close();
+            } catch (IOException e) {
+                //
+            }
+        }
+
+        return dimensions;
     }
 }
