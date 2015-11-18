@@ -178,6 +178,7 @@ public class CaptureActivity extends Activity {
         if (mCamera != null) {
             mCamera.release();
             mCamera = null;
+            ((FrameLayout) findViewById(R.id.camera_preview)).removeView(mPreview);
             mPreview = null;
         }
     }
