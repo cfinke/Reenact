@@ -5,5 +5,6 @@
     <string name="app_description">Reenact photos with Reenact. Choose a photo, align the camera, and take the shot.</string>
     <string name="help_instructions">For help, email help@reenact.me</string>
     <string name="twitter_handle">\@ReenactApp on Twitter</string>
+    <string name="photo_saved_alert">Photo saved</string>
 </resources>
 

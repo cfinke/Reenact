@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,6 +20,8 @@ public class ShareActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share);
+
+        Toast.makeText(getApplicationContext(), getResources().getText(R.string.photo_saved_alert), Toast.LENGTH_SHORT).show();
 
         Intent intent = getIntent();
         mergedPhotoUri = intent.getParcelableExtra(Constants.MERGED_PHOTO_PATH);
