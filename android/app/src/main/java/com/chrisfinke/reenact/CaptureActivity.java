@@ -126,6 +126,11 @@ public class CaptureActivity extends Activity {
 
     protected void startCamera() {
         // Create an instance of Camera
+
+        if (mCamera != null){
+            return;
+        }
+
         mCamera = getCameraInstance();
 
         Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();

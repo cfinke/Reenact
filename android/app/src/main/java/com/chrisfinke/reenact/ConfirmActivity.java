@@ -145,10 +145,14 @@ public class ConfirmActivity extends Activity {
                 "Reenact"
         );
 
-        if (! Environment.getExternalStorageState(mediaStorageDir).equals(Environment.MEDIA_MOUNTED)) {
-            Log.d(Constants.LOG_TAG, "External media storage is not mounted.");
-            // @todo Handle all null returns.
-            return null;
+        try {
+            if ( ! Environment.getExternalStorageState(mediaStorageDir).equals(Environment.MEDIA_MOUNTED)) {
+                Log.d(Constants.LOG_TAG, "External media storage is not mounted.");
+                // @todo Handle all null returns.
+                return null;
+            }
+        } catch (java.lang.NoSuchMethodError e) {
+            Log.d(Constants.LOG_TAG, "Running in a pre-getExternalStorageState context.", e);
         }
 
         // Create the storage directory if it does not exist
