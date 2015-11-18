@@ -13,4 +13,6 @@ public class Constants {
     public final static String LOG_TAG = "reenact";
 
     public static final int MEDIA_TYPE_IMAGE = 1;
+
+    public static final String PREFS_NAME = "ReenactPrefs";
 }

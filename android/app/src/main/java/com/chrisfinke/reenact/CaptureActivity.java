@@ -2,6 +2,7 @@ package com.chrisfinke.reenact;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -79,6 +80,13 @@ public class CaptureActivity extends Activity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
+        ImageView switchButton = (ImageView) findViewById(R.id.switch_camera);
+
+        if (Camera.getNumberOfCameras() == 1) {
+            Log.d(Constants.LOG_TAG, "Only one camera. Hiding switch button.");
+            switchButton.setVisibility(View.INVISIBLE);
+        }
+
         startCamera();
 
         // Add a listener to the Capture button
@@ -140,21 +148,28 @@ public class CaptureActivity extends Activity {
         preview.addView(mPreview);
     }
 
-    public static Camera getCameraInstance(){
+    public Camera getCameraInstance(){
+        SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
+        int cameraId = settings.getInt("cameraId", 0);
+
+        Log.d(Constants.LOG_TAG, "Getting camera #" + cameraId);
+
         Camera c = null;
 
         try {
-            c = Camera.open();
+            c = Camera.open(cameraId);
         }
         catch (Exception e){
             // Camera is not available (in use or does not exist)
+            // @todo Handle all null return values.
         }
+
         return c;
     }
 
     private void releaseCamera() {
         if (mCamera != null) {
-            mCamera.release();        // release the camera for other applications
+            mCamera.release();
             mCamera = null;
             mPreview = null;
         }
@@ -314,4 +329,21 @@ public class CaptureActivity extends Activity {
         Log.d(Constants.LOG_TAG, "onResume");
         startCamera();
     }
+
+    public void switchCamera(View view) {
+        releaseCamera();
+
+        SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
+        int cameraId = settings.getInt("cameraId", 0);
+        cameraId++;
+
+        cameraId %= Camera.getNumberOfCameras();
+
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("cameraId", cameraId);
+        editor.commit();
+
+        startCamera();
+    }
+
 }
