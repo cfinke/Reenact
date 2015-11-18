@@ -216,7 +216,6 @@ public class ConfirmActivity extends Activity {
         try {
             FileOutputStream fos = new FileOutputStream(pictureFile);
             combinedImage.compress(Bitmap.CompressFormat.JPEG, 90, fos);
-            fos.write(newPhotoBytes);
             fos.close();
             fos = null;
         } catch (FileNotFoundException e) {
