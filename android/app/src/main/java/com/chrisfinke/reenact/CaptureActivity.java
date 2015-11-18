@@ -23,7 +23,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -270,10 +272,34 @@ public class CaptureActivity extends Activity {
                 mat = null;
             }
 
+            File tempOutputDir = getCacheDir();
+            File newPhotoTempFile;
+
+            try {
+                newPhotoTempFile = File.createTempFile("reenact", "jpg", tempOutputDir);
+            } catch (IOException e){
+                Log.d(Constants.LOG_TAG, "Couldn't create temp file to save new photo.");
+                return;
+            }
+
+            try {
+                FileOutputStream fos = new FileOutputStream(newPhotoTempFile);
+                fos.write(data);
+                fos.close();
+            } catch (FileNotFoundException e) {
+                Log.d(Constants.LOG_TAG, "File not found: " + e.getMessage());
+                return;
+            } catch (IOException e) {
+                Log.d(Constants.LOG_TAG, "Error accessing file: " + e.getMessage());
+                return;
+            } finally {
+                Log.d(Constants.LOG_TAG, "Finished writing file.");
+            }
+
             // Start the confirmation activity.
             Intent intent = new Intent(CaptureActivity.this, ConfirmActivity.class);
             intent.putExtra(Constants.ORIGINAL_PHOTO_PATH, originalPhotoUri);
-            intent.putExtra(Constants.NEW_PHOTO_BYTES, data);
+            intent.putExtra(Constants.NEW_PHOTO_TEMP_PATH, Uri.fromFile(newPhotoTempFile));
             startActivity(intent);
 
             data = null;

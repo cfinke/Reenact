@@ -24,12 +24,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ConfirmActivity extends Activity {
     private Uri originalPhotoUri;
-    private byte[] newPhotoBytes;
+    private Uri newPhotoTempUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,29 +39,44 @@ public class ConfirmActivity extends Activity {
 
         Intent intent = getIntent();
         originalPhotoUri = intent.getParcelableExtra(Constants.ORIGINAL_PHOTO_PATH);
-        newPhotoBytes = intent.getByteArrayExtra(Constants.NEW_PHOTO_BYTES);
+        newPhotoTempUri = intent.getParcelableExtra(Constants.NEW_PHOTO_TEMP_PATH);
+
         ImageView imageViewThen = (ImageView) findViewById(R.id.image_then);
         ImageView imageViewNow = (ImageView) findViewById(R.id.image_now);
 
-        InputStream imageStream = null;
+        InputStream thenImageStream = null;
 
         try {
-            imageStream = getContentResolver().openInputStream(originalPhotoUri);
-            imageViewThen.setImageBitmap(BitmapFactory.decodeStream(imageStream));
+            thenImageStream = getContentResolver().openInputStream(originalPhotoUri);
+            imageViewThen.setImageBitmap(BitmapFactory.decodeStream(thenImageStream));
         } catch (FileNotFoundException e) {
             // @todo Deal with this.
         } finally {
-            if (imageStream != null) {
+            if (thenImageStream != null) {
                 try {
-                    imageStream.close();
+                    thenImageStream.close();
                 } catch (IOException e) {
                     // Ignorable?
                 }
             }
         }
 
-        Bitmap bMap = BitmapFactory.decodeByteArray(newPhotoBytes, 0, newPhotoBytes.length);
-        imageViewNow.setImageBitmap(bMap);
+        InputStream nowImageStream = null;
+
+        try {
+            nowImageStream = getContentResolver().openInputStream(newPhotoTempUri);
+            imageViewNow.setImageBitmap(BitmapFactory.decodeStream(nowImageStream));
+        } catch (FileNotFoundException e) {
+            // @todo Deal with this.
+        } finally {
+            if (nowImageStream != null) {
+                try {
+                    nowImageStream.close();
+                } catch (IOException e) {
+                    // Ignorable?
+                }
+            }
+        }
 
         // Adjust the sizes of the thumbnails so that portrait images are the same height
         // as each other and landscape are the same width.
@@ -185,24 +201,13 @@ public class ConfirmActivity extends Activity {
 
         Log.d(Constants.LOG_TAG, "Single image: " + pictureFile.toString());
 
-        if (pictureFile == null) {
-            Log.d(Constants.LOG_TAG, "Error creating media file, check storage permissions: ");
-            return;
-        }
-
         try {
-            FileOutputStream fos = new FileOutputStream(pictureFile);
-            fos.write(newPhotoBytes);
-            fos.close();
-        } catch (FileNotFoundException e) {
-            Log.d(Constants.LOG_TAG, "File not found: " + e.getMessage());
-        } catch (IOException e) {
-            Log.d(Constants.LOG_TAG, "Error accessing file: " + e.getMessage());
-        } finally {
-            Log.d(Constants.LOG_TAG, "Finished writing file.");
+            copy(new File(newPhotoTempUri.getPath()), pictureFile);
+        } catch (IOException e){
+            Log.d(Constants.LOG_TAG, "Couldn't copy new photo", e);
         }
 
-        Bitmap combinedImage = combineImages(originalPhotoUri, Uri.fromFile(pictureFile));
+        Bitmap combinedImage = combineImages(originalPhotoUri, newPhotoTempUri);
 
         pictureFile = getOutputMediaFile(Constants.MEDIA_TYPE_IMAGE, "Reenacted_IMG_");
 
@@ -391,5 +396,19 @@ public class ConfirmActivity extends Activity {
         }
 
         return dimensions;
+    }
+
+    public void copy(File src, File dst) throws IOException {
+        InputStream in = new FileInputStream(src);
+        OutputStream out = new FileOutputStream(dst);
+
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
     }
 }
