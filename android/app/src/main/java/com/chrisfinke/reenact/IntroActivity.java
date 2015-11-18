@@ -49,4 +49,8 @@ public class IntroActivity extends Activity {
             // @todo
         }
     }
+
+    public void showHelp(View view) {
+        startActivity(new Intent(this, HelpActivity.class));
+    }
 }
