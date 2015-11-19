@@ -195,6 +195,7 @@ public class CaptureActivity extends Activity {
         }
         catch (Exception e){
             // Camera is not available (in use or does not exist)
+            // This case is handled in startCamera()
         }
 
         return c;
@@ -282,7 +283,6 @@ public class CaptureActivity extends Activity {
                 Bitmap storedBitmap = BitmapFactory.decodeByteArray(data, 0, data.length, null);
                 Matrix mat = new Matrix();
 
-                // @todo Use this in combination with getRotation() for tablets?
                 switch (deviceOrientation) {
                     case Configuration.ORIENTATION_PORTRAIT:
                         Log.d(Util.LOG_TAG, "Rotating 90.");
@@ -306,6 +306,11 @@ public class CaptureActivity extends Activity {
                 newPhotoTempFile = File.createTempFile("reenact", "jpg", tempOutputDir);
             } catch (IOException e){
                 Log.d(Util.LOG_TAG, "Couldn't create temp file to save new photo.");
+
+                AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+                alertDialog.setMessage(getResources().getText(R.string.error_couldnt_save_single_file));
+                alertDialog.show();
+
                 return;
             }
 
@@ -315,9 +320,19 @@ public class CaptureActivity extends Activity {
                 fos.close();
             } catch (FileNotFoundException e) {
                 Log.d(Util.LOG_TAG, "File not found: " + e.getMessage());
+
+                AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+                alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_single_file));
+                alertDialog.show();
+
                 return;
             } catch (IOException e) {
                 Log.d(Util.LOG_TAG, "Error accessing file: " + e.getMessage());
+
+                AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+                alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_single_file));
+                alertDialog.show();
+
                 return;
             } finally {
                 Log.d(Util.LOG_TAG, "Finished writing file.");

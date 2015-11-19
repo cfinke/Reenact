@@ -22,6 +22,8 @@
     <string name="error_couldnt_copy_single_file">Reenact couldn\'t save your photo to your photo gallery.</string>
     <string name="error_couldnt_save_merged_file">Reenact couldn\'t save your comparison photo.</string>
     <string name="error_couldnt_copy_merged_file">Reenact couldn\'t save your comparison photo to your photo gallery.</string>
+    <string name="error_couldnt_read_original_photo">Reenact couldn\'t read the photo you selected.</string>
+    <string name="error_couldnt_read_new_photo">Reenact couldn\'t read the photo you just took.</string>
 
 </resources>
 

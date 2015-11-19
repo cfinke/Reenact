@@ -49,7 +49,10 @@ public class ConfirmActivity extends Activity {
             thenImageStream = getContentResolver().openInputStream(originalPhotoUri);
             imageViewThen.setImageBitmap(BitmapFactory.decodeStream(thenImageStream));
         } catch (FileNotFoundException e) {
-            // @todo Deal with this.
+            AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
+            alertDialog.show();
+            return;
         } finally {
             if (thenImageStream != null) {
                 try {
@@ -221,6 +224,11 @@ public class ConfirmActivity extends Activity {
 
         Bitmap combinedImage = combineImages(originalPhotoUri, newPhotoTempUri);
 
+        if (combinedImage == null){
+            // The work of exiting out of the activity has already been done inside of combineImages()
+            return;
+        }
+
         pictureFile = getOutputMediaFile(Util.MEDIA_TYPE_IMAGE, "Reenacted_IMG_");
 
         Log.d(Util.LOG_TAG, "Merged image: " + pictureFile.toString());
@@ -270,12 +278,29 @@ public class ConfirmActivity extends Activity {
 
     public Bitmap combineImages(Uri thenImage, Uri nowImage) {
         int[] thenImageDimensions = getImageDimensions(thenImage);
-        int[] nowImageDimensions = getImageDimensions(nowImage);
 
         int cWidth = thenImageDimensions[0];
         int cHeight = thenImageDimensions[1];
+
+        if (cWidth == 0 || cHeight == 0) {
+            AlertDialog alertDialog = Util.buildAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_read_original_photo));
+            alertDialog.show();
+            return null;
+        }
+
+        int[] nowImageDimensions = getImageDimensions(nowImage);
+
         int sWidth = nowImageDimensions[0];
         int sHeight = nowImageDimensions[1];
+
+        if (sWidth == 0 || sHeight == 0) {
+            AlertDialog alertDialog = Util.buildAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_read_new_photo));
+            alertDialog.show();
+            return null;
+        }
+
 
         int totalHeight;
         int totalWidth;
@@ -348,6 +373,11 @@ public class ConfirmActivity extends Activity {
             oldFileDescriptor = getContentResolver().openAssetFileDescriptor(thenImage, "r");
         } catch (FileNotFoundException e) {
             Log.d(Util.LOG_TAG, "File not found", e);
+
+            AlertDialog alertDialog = Util.buildAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
+            alertDialog.show();
+
             return null;
         }
 
@@ -370,6 +400,11 @@ public class ConfirmActivity extends Activity {
             newFileDescriptor = getContentResolver().openAssetFileDescriptor(nowImage, "r");
         } catch (FileNotFoundException e) {
             Log.d(Util.LOG_TAG, "File not found", e);
+
+            AlertDialog alertDialog = Util.buildAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_new_photo_missing));
+            alertDialog.show();
+
             return null;
         }
 
