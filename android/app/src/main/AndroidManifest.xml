@@ -43,7 +43,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.chrisfinke.reenact.IntroActivity" />
         </activity>
-        <activity android:name="com.chrisfinke.reenact.HelpActivity"/>
     </application>
 
 </manifest>

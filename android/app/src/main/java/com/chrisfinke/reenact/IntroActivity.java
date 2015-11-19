@@ -50,6 +50,12 @@ public class IntroActivity extends Activity {
     }
 
     public void showHelp(View view) {
-        startActivity(new Intent(this, HelpActivity.class));
+        View helpView = findViewById(R.id.help);
+        helpView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideHelp(View view) {
+        View helpView = findViewById(R.id.help);
+        helpView.setVisibility(View.INVISIBLE);
     }
 }
