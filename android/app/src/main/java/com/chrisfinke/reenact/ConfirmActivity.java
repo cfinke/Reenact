@@ -38,8 +38,8 @@ public class ConfirmActivity extends Activity {
         setContentView(R.layout.activity_confirm);
 
         Intent intent = getIntent();
-        originalPhotoUri = intent.getParcelableExtra(Constants.ORIGINAL_PHOTO_PATH);
-        newPhotoTempUri = intent.getParcelableExtra(Constants.NEW_PHOTO_TEMP_PATH);
+        originalPhotoUri = intent.getParcelableExtra(Util.ORIGINAL_PHOTO_PATH);
+        newPhotoTempUri = intent.getParcelableExtra(Util.NEW_PHOTO_TEMP_PATH);
 
         ImageView imageViewThen = (ImageView) findViewById(R.id.image_then);
         ImageView imageViewNow = (ImageView) findViewById(R.id.image_now);
@@ -86,8 +86,8 @@ public class ConfirmActivity extends Activity {
         int oldImageWidth = imageViewThen.getDrawable().getIntrinsicWidth();
         int newImageWidth = imageViewNow.getDrawable().getIntrinsicWidth();
 
-        Log.d(Constants.LOG_TAG, "oldImageHeight: " + oldImageHeight);
-        Log.d(Constants.LOG_TAG, "newImageHeight: " + newImageHeight);
+        Log.d(Util.LOG_TAG, "oldImageHeight: " + oldImageHeight);
+        Log.d(Util.LOG_TAG, "newImageHeight: " + newImageHeight);
 
         LinearLayout previewContainer = (LinearLayout) findViewById(R.id.preview_container);
 
@@ -104,11 +104,11 @@ public class ConfirmActivity extends Activity {
             float oldImageWeight = ( (float) sameHeightOldImageWidth ) / ( sameHeightOldImageWidth + sameHeightNewImageWidth );
             float newImageWeight = ( (float) sameHeightNewImageWidth ) / ( sameHeightOldImageWidth + sameHeightNewImageWidth );
 
-            Log.d(Constants.LOG_TAG, "sameHeightOldImageWidth: " + sameHeightOldImageWidth);
-            Log.d(Constants.LOG_TAG, "sameHeightNewImageWidth: " + sameHeightNewImageWidth);
+            Log.d(Util.LOG_TAG, "sameHeightOldImageWidth: " + sameHeightOldImageWidth);
+            Log.d(Util.LOG_TAG, "sameHeightNewImageWidth: " + sameHeightNewImageWidth);
 
-            Log.d(Constants.LOG_TAG, "oldImageWeight: " + oldImageWeight);
-            Log.d(Constants.LOG_TAG, "newImageWeight: " + newImageWeight);
+            Log.d(Util.LOG_TAG, "oldImageWeight: " + oldImageWeight);
+            Log.d(Util.LOG_TAG, "newImageWeight: " + newImageWeight);
 
             LinearLayout.LayoutParams oldParams = (LinearLayout.LayoutParams) imageViewThen.getLayoutParams();
             oldParams.weight = oldImageWeight;
@@ -163,18 +163,17 @@ public class ConfirmActivity extends Activity {
 
         try {
             if ( ! Environment.getExternalStorageState(mediaStorageDir).equals(Environment.MEDIA_MOUNTED)) {
-                Log.d(Constants.LOG_TAG, "External media storage is not mounted.");
-                // @todo Handle all null returns.
+                Log.d(Util.LOG_TAG, "External media storage is not mounted.");
                 return null;
             }
         } catch (java.lang.NoSuchMethodError e) {
-            Log.d(Constants.LOG_TAG, "Running in a pre-getExternalStorageState context.", e);
+            Log.d(Util.LOG_TAG, "Running in a pre-getExternalStorageState context.", e);
         }
 
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
-                Log.d(Constants.LOG_TAG, "failed to create directory");
+                Log.d(Util.LOG_TAG, "failed to create directory");
                 return null;
             }
         }
@@ -184,7 +183,7 @@ public class ConfirmActivity extends Activity {
 
         File mediaFile;
 
-        if (type == Constants.MEDIA_TYPE_IMAGE){
+        if (type == Util.MEDIA_TYPE_IMAGE){
             mediaFile = new File(mediaStorageDir.getPath() + File.separator + prefix + timeStamp + ".jpg");
         }
         else {
@@ -197,24 +196,24 @@ public class ConfirmActivity extends Activity {
     public void confirm(View view) {
         // Save the new image by itself.
 
-        File pictureFile = getOutputMediaFile(Constants.MEDIA_TYPE_IMAGE, "IMG_");
+        File pictureFile = getOutputMediaFile(Util.MEDIA_TYPE_IMAGE, "IMG_");
 
-        Log.d(Constants.LOG_TAG, "Single image: " + pictureFile.toString());
+        Log.d(Util.LOG_TAG, "Single image: " + pictureFile.toString());
 
         try {
             copy(new File(newPhotoTempUri.getPath()), pictureFile);
         } catch (IOException e){
-            Log.d(Constants.LOG_TAG, "Couldn't copy new photo", e);
+            Log.d(Util.LOG_TAG, "Couldn't copy new photo", e);
         }
 
         Bitmap combinedImage = combineImages(originalPhotoUri, newPhotoTempUri);
 
-        pictureFile = getOutputMediaFile(Constants.MEDIA_TYPE_IMAGE, "Reenacted_IMG_");
+        pictureFile = getOutputMediaFile(Util.MEDIA_TYPE_IMAGE, "Reenacted_IMG_");
 
-        Log.d(Constants.LOG_TAG, "Merged image: " + pictureFile.toString());
+        Log.d(Util.LOG_TAG, "Merged image: " + pictureFile.toString());
 
         if (pictureFile == null) {
-            Log.d(Constants.LOG_TAG, "Error creating media file, check storage permissions: ");
+            Log.d(Util.LOG_TAG, "Error creating media file, check storage permissions: ");
             return;
         }
 
@@ -224,16 +223,16 @@ public class ConfirmActivity extends Activity {
             fos.close();
             fos = null;
         } catch (FileNotFoundException e) {
-            Log.d(Constants.LOG_TAG, "File not found: " + e.getMessage());
+            Log.d(Util.LOG_TAG, "File not found: " + e.getMessage());
         } catch (IOException e) {
-            Log.d(Constants.LOG_TAG, "Error accessing file: " + e.getMessage());
+            Log.d(Util.LOG_TAG, "Error accessing file: " + e.getMessage());
         } finally {
-            Log.d(Constants.LOG_TAG, "Finished writing file.");
+            Log.d(Util.LOG_TAG, "Finished writing file.");
         }
 
         Uri mergedPhotoUri = Uri.fromFile(pictureFile);
         Intent intent = new Intent(this, ShareActivity.class);
-        intent.putExtra(Constants.MERGED_PHOTO_PATH, mergedPhotoUri);
+        intent.putExtra(Util.MERGED_PHOTO_PATH, mergedPhotoUri);
         startActivity(intent);
 
         pictureFile = null;
@@ -263,7 +262,7 @@ public class ConfirmActivity extends Activity {
         Rect newImageDest;
 
         if (cWidth < cHeight) {
-            Log.d(Constants.LOG_TAG, "Saving combination image in side-by-side format.");
+            Log.d(Util.LOG_TAG, "Saving combination image in side-by-side format.");
 
             int smallestHeight = Math.min(1024, Math.min(cHeight, sHeight));
             totalHeight = smallestHeight;
@@ -283,7 +282,7 @@ public class ConfirmActivity extends Activity {
             newImageDest = new Rect(newOldWidth, 0, newOldWidth + newNewWidth, newNewHeight);
         }
         else {
-            Log.d(Constants.LOG_TAG, "Saving combination image in top-to-bottom format.");
+            Log.d(Util.LOG_TAG, "Saving combination image in top-to-bottom format.");
 
             int smallestWidth = Math.min(1024, Math.min(cWidth, sWidth));
             totalWidth = smallestWidth;
@@ -310,11 +309,11 @@ public class ConfirmActivity extends Activity {
         int oldSampleSize = (int) Math.max(1, Math.floor((float) 1 / oldRatio));
         int newSampleSize = (int) Math.max(1, Math.floor((float) 1 / newRatio));
 
-        Log.d(Constants.LOG_TAG, "oldRatio:" + oldRatio);
-        Log.d(Constants.LOG_TAG, "newRatio:" + newRatio);
+        Log.d(Util.LOG_TAG, "oldRatio:" + oldRatio);
+        Log.d(Util.LOG_TAG, "newRatio:" + newRatio);
 
-        Log.d(Constants.LOG_TAG, "oldSampleSize:" + oldSampleSize);
-        Log.d(Constants.LOG_TAG, "newSampleSize:" + newSampleSize);
+        Log.d(Util.LOG_TAG, "oldSampleSize:" + oldSampleSize);
+        Log.d(Util.LOG_TAG, "newSampleSize:" + newSampleSize);
 
         BitmapFactory.Options oldOptions = new BitmapFactory.Options();
         oldOptions.inSampleSize = oldSampleSize;
@@ -324,7 +323,7 @@ public class ConfirmActivity extends Activity {
         try {
             oldFileDescriptor = getContentResolver().openAssetFileDescriptor(thenImage, "r");
         } catch (FileNotFoundException e) {
-            Log.d(Constants.LOG_TAG, "File not found", e);
+            Log.d(Util.LOG_TAG, "File not found", e);
             return null;
         }
 
@@ -346,7 +345,7 @@ public class ConfirmActivity extends Activity {
         try {
             newFileDescriptor = getContentResolver().openAssetFileDescriptor(nowImage, "r");
         } catch (FileNotFoundException e) {
-            Log.d(Constants.LOG_TAG, "File not found", e);
+            Log.d(Util.LOG_TAG, "File not found", e);
             return null;
         }
 
@@ -373,19 +372,19 @@ public class ConfirmActivity extends Activity {
         try {
             imageStream = getContentResolver().openInputStream(imageUri);
         } catch (FileNotFoundException e ){
-            Log.d(Constants.LOG_TAG, "FileNotFound", e);
+            Log.d(Util.LOG_TAG, "FileNotFound", e);
             return dimensions;
         }
 
         try {
             BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imageStream, false);
 
-            Log.d(Constants.LOG_TAG, "Image dimensions: " + decoder.getWidth() + "x" + decoder.getHeight());
+            Log.d(Util.LOG_TAG, "Image dimensions: " + decoder.getWidth() + "x" + decoder.getHeight());
 
             dimensions[0] = decoder.getWidth();
             dimensions[1] = decoder.getHeight();
         } catch (IOException e){
-            Log.d(Constants.LOG_TAG, "IOException", e);
+            Log.d(Util.LOG_TAG, "IOException", e);
             return dimensions;
         } finally {
             try {

@@ -24,7 +24,7 @@ public class ShareActivity extends Activity {
         Toast.makeText(getApplicationContext(), getResources().getText(R.string.photo_saved_alert), Toast.LENGTH_SHORT).show();
 
         Intent intent = getIntent();
-        mergedPhotoUri = intent.getParcelableExtra(Constants.MERGED_PHOTO_PATH);
+        mergedPhotoUri = intent.getParcelableExtra(Util.MERGED_PHOTO_PATH);
 
         ImageView imageViewMerged = (ImageView) findViewById(R.id.image_merged);
 

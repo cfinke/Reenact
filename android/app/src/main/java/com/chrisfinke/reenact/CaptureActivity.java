@@ -45,9 +45,9 @@ public class CaptureActivity extends Activity {
         setContentView(R.layout.activity_capture);
 
         Intent intent = getIntent();
-        originalPhotoUri = intent.getParcelableExtra(Constants.ORIGINAL_PHOTO_PATH);
+        originalPhotoUri = intent.getParcelableExtra(Util.ORIGINAL_PHOTO_PATH);
 
-        Log.d(Constants.LOG_TAG, "Received original photo URI: " + originalPhotoUri.toString());
+        Log.d(Util.LOG_TAG, "Received original photo URI: " + originalPhotoUri.toString());
 
         ImageView imageView = (ImageView) findViewById(R.id.original_image);
         fadeOriginalImageInAndOut(imageView);
@@ -86,7 +86,7 @@ public class CaptureActivity extends Activity {
         ImageView switchButton = (ImageView) findViewById(R.id.switch_camera);
 
         if (Camera.getNumberOfCameras() == 1) {
-            Log.d(Constants.LOG_TAG, "Only one camera. Hiding switch button.");
+            Log.d(Util.LOG_TAG, "Only one camera. Hiding switch button.");
             switchButton.setVisibility(View.INVISIBLE);
         }
 
@@ -108,7 +108,7 @@ public class CaptureActivity extends Activity {
     public void goBack(View view) {
         super.onBackPressed();
 
-        Log.d(Constants.LOG_TAG, "Going back.");
+        Log.d(Util.LOG_TAG, "Going back.");
 
         finish();
     }
@@ -117,7 +117,7 @@ public class CaptureActivity extends Activity {
     protected void onPause() {
         super.onPause();
 
-        Log.d(Constants.LOG_TAG, "onPause");
+        Log.d(Util.LOG_TAG, "onPause");
 
         releaseCamera();
     }
@@ -166,10 +166,10 @@ public class CaptureActivity extends Activity {
     }
 
     public Camera getCameraInstance(){
-        SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(Util.PREFS_NAME, 0);
         int cameraId = settings.getInt("cameraId", 0);
 
-        Log.d(Constants.LOG_TAG, "Getting camera #" + cameraId);
+        Log.d(Util.LOG_TAG, "Getting camera #" + cameraId);
 
         Camera c = null;
 
@@ -203,32 +203,32 @@ public class CaptureActivity extends Activity {
         List<Camera.Size> supportedSizes = parameters.getSupportedPreviewSizes();
 
         for (Camera.Size size : supportedSizes) {
-            Log.d(Constants.LOG_TAG, "Supported Size: " + size.width + "x" + size.height);
+            Log.d(Util.LOG_TAG, "Supported Size: " + size.width + "x" + size.height);
         }
 
         Camera.Size bestPreviewSize = getBestPreviewSize(supportedSizes, width, height);
 
         if(display.getRotation() == Surface.ROTATION_0)
         {
-            Log.d(Constants.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
+            Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
             parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
         }
 
         if(display.getRotation() == Surface.ROTATION_90)
         {
-            Log.d(Constants.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+            Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
             parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
         }
 
         if(display.getRotation() == Surface.ROTATION_180)
         {
-            Log.d(Constants.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
+            Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
             parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
         }
 
         if(display.getRotation() == Surface.ROTATION_270)
         {
-            Log.d(Constants.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+            Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
             parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
         }
 
@@ -260,7 +260,7 @@ public class CaptureActivity extends Activity {
             // Rotate it to the orientation that we expect.
             int deviceOrientation = getResources().getConfiguration().orientation;
 
-            Log.d(Constants.LOG_TAG, "Orientation: " + deviceOrientation);
+            Log.d(Util.LOG_TAG, "Orientation: " + deviceOrientation);
 
             if ( deviceOrientation != android.content.res.Configuration.ORIENTATION_LANDSCAPE ) {
                 Bitmap storedBitmap = BitmapFactory.decodeByteArray(data, 0, data.length, null);
@@ -268,8 +268,8 @@ public class CaptureActivity extends Activity {
 
                 // @todo Use this in combinationg with getRotation() for tablets
                 switch (deviceOrientation) {
-                    case android.content.res.Configuration.ORIENTATION_PORTRAIT:
-                        Log.d(Constants.LOG_TAG, "Rotating 90.");
+                    case Configuration.ORIENTATION_PORTRAIT:
+                        Log.d(Util.LOG_TAG, "Rotating 90.");
                         mat.postRotate(90);
                         break;
                 }
@@ -289,7 +289,7 @@ public class CaptureActivity extends Activity {
             try {
                 newPhotoTempFile = File.createTempFile("reenact", "jpg", tempOutputDir);
             } catch (IOException e){
-                Log.d(Constants.LOG_TAG, "Couldn't create temp file to save new photo.");
+                Log.d(Util.LOG_TAG, "Couldn't create temp file to save new photo.");
                 return;
             }
 
@@ -298,19 +298,19 @@ public class CaptureActivity extends Activity {
                 fos.write(data);
                 fos.close();
             } catch (FileNotFoundException e) {
-                Log.d(Constants.LOG_TAG, "File not found: " + e.getMessage());
+                Log.d(Util.LOG_TAG, "File not found: " + e.getMessage());
                 return;
             } catch (IOException e) {
-                Log.d(Constants.LOG_TAG, "Error accessing file: " + e.getMessage());
+                Log.d(Util.LOG_TAG, "Error accessing file: " + e.getMessage());
                 return;
             } finally {
-                Log.d(Constants.LOG_TAG, "Finished writing file.");
+                Log.d(Util.LOG_TAG, "Finished writing file.");
             }
 
             // Start the confirmation activity.
             Intent intent = new Intent(CaptureActivity.this, ConfirmActivity.class);
-            intent.putExtra(Constants.ORIGINAL_PHOTO_PATH, originalPhotoUri);
-            intent.putExtra(Constants.NEW_PHOTO_TEMP_PATH, Uri.fromFile(newPhotoTempFile));
+            intent.putExtra(Util.ORIGINAL_PHOTO_PATH, originalPhotoUri);
+            intent.putExtra(Util.NEW_PHOTO_TEMP_PATH, Uri.fromFile(newPhotoTempFile));
             startActivity(intent);
 
             data = null;
@@ -361,21 +361,21 @@ public class CaptureActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(Constants.LOG_TAG, "onStop");
+        Log.d(Util.LOG_TAG, "onStop");
         releaseCamera();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(Constants.LOG_TAG, "onResume");
+        Log.d(Util.LOG_TAG, "onResume");
         startCamera();
     }
 
     public void switchCamera(View view) {
         releaseCamera();
 
-        SharedPreferences settings = getSharedPreferences(Constants.PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(Util.PREFS_NAME, 0);
         int cameraId = settings.getInt("cameraId", 0);
         cameraId++;
 

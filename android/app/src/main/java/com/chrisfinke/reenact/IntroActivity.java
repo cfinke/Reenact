@@ -20,33 +20,32 @@ public class IntroActivity extends Activity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(
                 Intent.createChooser(intent, getResources().getText(R.string.choose_photo_label)),
-                Constants.PICK_IMAGE_TO_REENACT
+                Util.PICK_IMAGE_TO_REENACT
         );
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data){
-        Log.d(Constants.LOG_TAG, "Activity ended.");
+        Log.d(Util.LOG_TAG, "Activity ended.");
 
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK){
-            Log.d(Constants.LOG_TAG, "Result code ok.");
+            Log.d(Util.LOG_TAG, "Result code ok.");
 
-            if (requestCode == Constants.PICK_IMAGE_TO_REENACT){
-                Log.d(Constants.LOG_TAG, "Requestcode ok.");
+            if (requestCode == Util.PICK_IMAGE_TO_REENACT){
+                Log.d(Util.LOG_TAG, "Requestcode ok.");
 
                 Uri selectedImageUri = data.getData();
 
-                Log.d(Constants.LOG_TAG, selectedImageUri.toString());
+                Log.d(Util.LOG_TAG, selectedImageUri.toString());
 
                 Intent intent = new Intent(this, CaptureActivity.class);
-                intent.putExtra(Constants.ORIGINAL_PHOTO_PATH, selectedImageUri);
+                intent.putExtra(Util.ORIGINAL_PHOTO_PATH, selectedImageUri);
                 startActivity(intent);
             }
         }
         else {
-            Log.d(Constants.LOG_TAG, "activityResult was not OK.");
-            // @todo
+            Log.d(Util.LOG_TAG, "activityResult was not OK.");
         }
     }
 
