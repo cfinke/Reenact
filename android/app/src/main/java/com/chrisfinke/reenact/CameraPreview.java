@@ -1,6 +1,5 @@
 package com.chrisfinke.reenact;
 
-import android.app.AlertDialog;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;

@@ -1,18 +1,9 @@
 package com.chrisfinke.reenact;
 
 import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.graphics.BitmapRegionDecoder;
-import android.net.Uri;
-import android.util.Log;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by cfinke on 11/13/15.
@@ -20,7 +11,6 @@ import java.io.InputStream;
 public class Util {
     public final static Integer PICK_IMAGE_TO_REENACT = 1;
 
-    public final static String NEW_PHOTO_BYTES = "com.chrisfinke.reenact.NEW_PHOTO_BYTES";
     public final static String ORIGINAL_PHOTO_PATH = "com.chrisfinke.reenact.ORIGINAL_PHOTO_PATH";
     public final static String NEW_PHOTO_TEMP_PATH = "com.chrisfinke.reenact.NEW_PHOTO_TEMP_PATH";
     public final static String MERGED_PHOTO_PATH = "com.chrisfinke.reenact.MERGED_PHOTO_PATH";
