@@ -43,53 +43,16 @@ public class ConfirmActivity extends Activity {
         ImageView imageViewThen = (ImageView) findViewById(R.id.image_then);
         ImageView imageViewNow = (ImageView) findViewById(R.id.image_now);
 
-        InputStream thenImageStream = null;
-
-        try {
-            thenImageStream = getContentResolver().openInputStream(originalPhotoUri);
-            imageViewThen.setImageBitmap(BitmapFactory.decodeStream(thenImageStream));
-        } catch (FileNotFoundException e) {
-            AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
-            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
-            alertDialog.show();
-            return;
-        } finally {
-            if (thenImageStream != null) {
-                try {
-                    thenImageStream.close();
-                } catch (IOException e) {
-                    // Ignorable?
-                }
-            }
-        }
-
-        InputStream nowImageStream = null;
-
-        try {
-            nowImageStream = getContentResolver().openInputStream(newPhotoTempUri);
-            imageViewNow.setImageBitmap(BitmapFactory.decodeStream(nowImageStream));
-        } catch (FileNotFoundException e) {
-            AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
-            alertDialog.setMessage(getResources().getText(R.string.error_new_photo_missing));
-            alertDialog.show();
-            return;
-        } finally {
-            if (nowImageStream != null) {
-                try {
-                    nowImageStream.close();
-                } catch (IOException e) {
-                    // Ignorable?
-                }
-            }
-        }
+        int[] oldImageDimensions = getImageDimensions(originalPhotoUri);
+        int[] newImageDimensions = getImageDimensions(newPhotoTempUri);
 
         // Adjust the sizes of the thumbnails so that portrait images are the same height
         // as each other and landscape are the same width.
-        int oldImageHeight = imageViewThen.getDrawable().getIntrinsicHeight();
-        int newImageHeight = imageViewNow.getDrawable().getIntrinsicHeight();
+        int oldImageWidth = oldImageDimensions[0];
+        int oldImageHeight = oldImageDimensions[1];
 
-        int oldImageWidth = imageViewThen.getDrawable().getIntrinsicWidth();
-        int newImageWidth = imageViewNow.getDrawable().getIntrinsicWidth();
+        int newImageWidth = newImageDimensions[0];
+        int newImageHeight = newImageDimensions[1];
 
         Log.d(Util.LOG_TAG, "oldImageHeight: " + oldImageHeight);
         Log.d(Util.LOG_TAG, "newImageHeight: " + newImageHeight);
@@ -420,6 +383,92 @@ public class ConfirmActivity extends Activity {
         return cs;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initializeOriginalPhoto();
+        initializeNewPhoto();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        clearOriginalPhoto();
+        clearNewPhoto();
+    }
+
+    private void initializeOriginalPhoto(){
+        ImageView imageViewThen = (ImageView) findViewById(R.id.image_then);
+
+        InputStream thenImageStream = null;
+
+        try {
+            thenImageStream = getContentResolver().openInputStream(originalPhotoUri);
+            imageViewThen.setImageBitmap(BitmapFactory.decodeStream(thenImageStream));
+        } catch (FileNotFoundException e) {
+            AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
+            alertDialog.show();
+            return;
+        } finally {
+            if (thenImageStream != null) {
+                try {
+                    thenImageStream.close();
+                } catch (IOException e) {
+                    // Ignorable?
+                }
+            }
+        }
+    }
+
+    private void initializeNewPhoto(){
+        ImageView imageViewNow = (ImageView) findViewById(R.id.image_now);
+
+        InputStream nowImageStream = null;
+
+        try {
+            nowImageStream = getContentResolver().openInputStream(newPhotoTempUri);
+            imageViewNow.setImageBitmap(BitmapFactory.decodeStream(nowImageStream));
+        } catch (FileNotFoundException e) {
+            AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_new_photo_missing));
+            alertDialog.show();
+            return;
+        } finally {
+            if (nowImageStream != null) {
+                try {
+                    nowImageStream.close();
+                } catch (IOException e) {
+                    // Ignorable?
+                }
+            }
+        }
+    }
+
+    private void clearOriginalPhoto(){
+        ImageView imageView = (ImageView) findViewById(R.id.image_then);
+        imageView.setImageBitmap(null);
+    }
+
+    private void clearNewPhoto(){
+        ImageView imageView = (ImageView) findViewById(R.id.image_now);
+        imageView.setImageBitmap(null);
+    }
+
+    public void copy(final File src, final File dst) throws IOException {
+        InputStream in = new FileInputStream(src);
+        OutputStream out = new FileOutputStream(dst);
+
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
+
     private int[] getImageDimensions(final Uri imageUri) {
         InputStream imageStream;
 
@@ -453,19 +502,5 @@ public class ConfirmActivity extends Activity {
         }
 
         return dimensions;
-    }
-
-    public void copy(final File src, final File dst) throws IOException {
-        InputStream in = new FileInputStream(src);
-        OutputStream out = new FileOutputStream(dst);
-
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
     }
 }

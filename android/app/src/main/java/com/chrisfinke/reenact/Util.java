@@ -1,10 +1,18 @@
 package com.chrisfinke.reenact;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.BitmapRegionDecoder;
+import android.net.Uri;
+import android.util.Log;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by cfinke on 11/13/15.

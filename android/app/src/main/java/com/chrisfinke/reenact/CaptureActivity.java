@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.net.Uri;
@@ -50,32 +51,12 @@ public class CaptureActivity extends Activity {
 
         Log.d(Util.LOG_TAG, "Received original photo URI: " + originalPhotoUri.toString());
 
-        ImageView imageView = (ImageView) findViewById(R.id.original_image);
-        fadeOriginalImageInAndOut(imageView);
+        int[] originalImageDimensions = getImageDimensions(originalPhotoUri);
 
-        InputStream imageStream = null;
+        int imageHeight = originalImageDimensions[1];
+        int imageWidth = originalImageDimensions[0];
 
-        try {
-            imageStream = getContentResolver().openInputStream(originalPhotoUri);
-            imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream));
-        } catch (FileNotFoundException e) {
-            AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
-            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
-            alertDialog.show();
-
-            return;
-        } finally {
-            if (imageStream != null) {
-                try {
-                    imageStream.close();
-                } catch (IOException e) {
-                    // Ignorable?
-                }
-            }
-        }
-
-        int imageHeight = imageView.getDrawable().getIntrinsicHeight();
-        int imageWidth = imageView.getDrawable().getIntrinsicWidth();
+        Log.d(Util.LOG_TAG, "Original image dimensions: " + imageWidth + "x" + imageHeight);
 
         if ( imageWidth > imageHeight ) {
             orientation = "landscape";
@@ -88,15 +69,15 @@ public class CaptureActivity extends Activity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
+        if (!startCamera()) {
+            return;
+        }
+
         ImageView switchButton = (ImageView) findViewById(R.id.switch_camera);
 
         if (Camera.getNumberOfCameras() == 1) {
             Log.d(Util.LOG_TAG, "Only one camera. Hiding switch button.");
             switchButton.setVisibility(View.INVISIBLE);
-        }
-
-        if (!startCamera()) {
-            return;
         }
 
         // Add a listener to the Capture button
@@ -127,6 +108,38 @@ public class CaptureActivity extends Activity {
         Log.d(Util.LOG_TAG, "onPause");
 
         releaseCamera();
+        clearOriginalPhoto();
+    }
+
+    private void initializeOriginalPhoto(){
+        ImageView imageView = (ImageView) findViewById(R.id.original_image);
+        fadeOriginalImageInAndOut(imageView);
+
+        InputStream imageStream = null;
+
+        try {
+            imageStream = getContentResolver().openInputStream(originalPhotoUri);
+            imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream));
+        } catch (FileNotFoundException e) {
+            AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
+            alertDialog.show();
+
+            return;
+        } finally {
+            if (imageStream != null) {
+                try {
+                    imageStream.close();
+                } catch (IOException e) {
+                    // Ignorable?
+                }
+            }
+        }
+    }
+
+    private void clearOriginalPhoto(){
+        ImageView imageView = (ImageView) findViewById(R.id.original_image);
+        imageView.setImageBitmap(null);
     }
 
     public void onAttachedToWindow() {
@@ -400,6 +413,7 @@ public class CaptureActivity extends Activity {
     protected void onResume() {
         super.onResume();
         Log.d(Util.LOG_TAG, "onResume");
+        initializeOriginalPhoto();
         startCamera();
     }
 
@@ -423,5 +437,40 @@ public class CaptureActivity extends Activity {
         AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
         alertDialog.setMessage(getResources().getText(R.string.error_no_camera_preview));
         alertDialog.show();
+    }
+
+    private int[] getImageDimensions(final Uri imageUri) {
+        InputStream imageStream;
+
+        int[] dimensions = new int[2];
+        dimensions[0] = 0;
+        dimensions[1] = 0;
+
+        try {
+            imageStream = getContentResolver().openInputStream(imageUri);
+        } catch (FileNotFoundException e ){
+            Log.d(Util.LOG_TAG, "FileNotFound", e);
+            return dimensions;
+        }
+
+        try {
+            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imageStream, false);
+
+            Log.d(Util.LOG_TAG, "Image dimensions: " + decoder.getWidth() + "x" + decoder.getHeight());
+
+            dimensions[0] = decoder.getWidth();
+            dimensions[1] = decoder.getHeight();
+        } catch (IOException e){
+            Log.d(Util.LOG_TAG, "IOException", e);
+            return dimensions;
+        } finally {
+            try {
+                imageStream.close();
+            } catch (IOException e) {
+                //
+            }
+        }
+
+        return dimensions;
     }
 }
