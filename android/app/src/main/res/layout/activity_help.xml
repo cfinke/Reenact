@@ -13,7 +13,7 @@
             android:layout_width="150dip"
             android:layout_height="0dip"
             android:layout_marginTop="50dip"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/logo"
             android:layout_weight="1" />
         <LinearLayout
             android:orientation="vertical"
