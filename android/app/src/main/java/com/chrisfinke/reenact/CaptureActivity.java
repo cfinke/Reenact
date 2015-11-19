@@ -1,6 +1,7 @@
 package com.chrisfinke.reenact;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -58,7 +59,11 @@ public class CaptureActivity extends Activity {
             imageStream = getContentResolver().openInputStream(originalPhotoUri);
             imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream));
         } catch (FileNotFoundException e) {
-            // @todo Deal with this.
+            AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
+            alertDialog.show();
+
+            return;
         } finally {
             if (imageStream != null) {
                 try {
@@ -90,7 +95,9 @@ public class CaptureActivity extends Activity {
             switchButton.setVisibility(View.INVISIBLE);
         }
 
-        startCamera();
+        if (!startCamera()) {
+            return;
+        }
 
         // Add a listener to the Capture button
         ImageButton captureButton = (ImageButton) findViewById(R.id.capture_button);
@@ -127,14 +134,22 @@ public class CaptureActivity extends Activity {
         startCamera();
     }
 
-    protected void startCamera() {
+    protected boolean startCamera() {
         // Create an instance of Camera
 
         if (mCamera != null){
-            return;
+            return true;
         }
 
         mCamera = getCameraInstance();
+
+        if (mCamera == null){
+            AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_no_camera));
+            alertDialog.show();
+
+            return false;
+        }
 
         Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         Camera.Parameters parameters = mCamera.getParameters();
@@ -163,6 +178,8 @@ public class CaptureActivity extends Activity {
         mPreview = new CameraPreview(this, mCamera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
+
+        return true;
     }
 
     public Camera getCameraInstance(){
@@ -178,7 +195,6 @@ public class CaptureActivity extends Activity {
         }
         catch (Exception e){
             // Camera is not available (in use or does not exist)
-            // @todo Handle all null return values.
         }
 
         return c;
@@ -386,6 +402,12 @@ public class CaptureActivity extends Activity {
         editor.commit();
 
         startCamera();
+    }
+
+    public void startPreviewFailed(){
+        AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+        alertDialog.setMessage(getResources().getText(R.string.error_no_camera_preview));
+        alertDialog.show();
     }
 
 }

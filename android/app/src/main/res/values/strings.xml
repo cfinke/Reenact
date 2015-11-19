@@ -6,5 +6,22 @@
     <string name="help_instructions">For help, email help@reenact.me</string>
     <string name="twitter_handle">\@ReenactApp on Twitter</string>
     <string name="photo_saved_alert">Photo saved</string>
+
+    <string name="fatal_error_alert_title">Bad News</string>
+    <string name="fatal_error_alert_button_label">That\'s too bad.</string>
+
+    <string name="error_alert_title">Uh-oh</string>
+    <string name="error_alert_button_label">I understand.</string>
+
+    <string name="error_no_camera">The camera wouldn\'t start.</string>
+    <string name="error_no_camera_preview">Reenact couldn\'t load the camera preview.</string>
+    <string name="error_original_photo_missing">Reenact couldn\'t load the photo you selected.</string>
+    <string name="error_new_photo_missing">Reenact couldn\'t load the photo you just took.</string>
+    <string name="error_merged_photo_missing">Reenact couldn\'t load the comparison photo.</string>
+    <string name="error_couldnt_save_single_file">Reenact couldn\'t save your photo.</string>
+    <string name="error_couldnt_copy_single_file">Reenact couldn\'t save your photo to your photo gallery.</string>
+    <string name="error_couldnt_save_merged_file">Reenact couldn\'t save your comparison photo.</string>
+    <string name="error_couldnt_copy_merged_file">Reenact couldn\'t save your comparison photo to your photo gallery.</string>
+
 </resources>
 

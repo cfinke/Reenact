@@ -1,6 +1,7 @@
 package com.chrisfinke.reenact;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -34,7 +35,10 @@ public class ShareActivity extends Activity {
             imageStream = getContentResolver().openInputStream(mergedPhotoUri);
             imageViewMerged.setImageBitmap(BitmapFactory.decodeStream(imageStream));
         } catch (FileNotFoundException e) {
-            // @todo Deal with this.
+            AlertDialog alertDialog = Util.buildFatalAlert(ShareActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_merged_photo_missing));
+            alertDialog.show();
+            return;
         } finally {
             if (imageStream != null) {
                 try {

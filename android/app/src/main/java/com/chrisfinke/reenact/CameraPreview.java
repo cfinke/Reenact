@@ -1,5 +1,6 @@
 package com.chrisfinke.reenact;
 
+import android.app.AlertDialog;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -61,7 +62,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             mCamera.startPreview();
         } catch (Exception e) {
-            Log.d(LOG_TAG, "Error starting camera preview: " + e.getMessage());
+            activityContext.startPreviewFailed();
+            return;
         }
     }
 }

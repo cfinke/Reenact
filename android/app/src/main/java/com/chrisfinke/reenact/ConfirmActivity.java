@@ -1,8 +1,8 @@
 package com.chrisfinke.reenact;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -67,7 +66,10 @@ public class ConfirmActivity extends Activity {
             nowImageStream = getContentResolver().openInputStream(newPhotoTempUri);
             imageViewNow.setImageBitmap(BitmapFactory.decodeStream(nowImageStream));
         } catch (FileNotFoundException e) {
-            // @todo Deal with this.
+            AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_new_photo_missing));
+            alertDialog.show();
+            return;
         } finally {
             if (nowImageStream != null) {
                 try {
@@ -198,12 +200,23 @@ public class ConfirmActivity extends Activity {
 
         File pictureFile = getOutputMediaFile(Util.MEDIA_TYPE_IMAGE, "IMG_");
 
+        if (pictureFile == null) {
+            AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_save_single_file));
+            alertDialog.show();
+            return;
+        }
+
         Log.d(Util.LOG_TAG, "Single image: " + pictureFile.toString());
 
         try {
             copy(new File(newPhotoTempUri.getPath()), pictureFile);
         } catch (IOException e){
             Log.d(Util.LOG_TAG, "Couldn't copy new photo", e);
+            AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_single_file));
+            alertDialog.show();
+            return;
         }
 
         Bitmap combinedImage = combineImages(originalPhotoUri, newPhotoTempUri);
@@ -214,6 +227,9 @@ public class ConfirmActivity extends Activity {
 
         if (pictureFile == null) {
             Log.d(Util.LOG_TAG, "Error creating media file, check storage permissions: ");
+            AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_save_merged_file));
+            alertDialog.show();
             return;
         }
 
@@ -224,8 +240,16 @@ public class ConfirmActivity extends Activity {
             fos = null;
         } catch (FileNotFoundException e) {
             Log.d(Util.LOG_TAG, "File not found: " + e.getMessage());
+            AlertDialog alertDialog = Util.buildAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_merged_file));
+            alertDialog.show();
+            return;
         } catch (IOException e) {
             Log.d(Util.LOG_TAG, "Error accessing file: " + e.getMessage());
+            AlertDialog alertDialog = Util.buildAlert(ConfirmActivity.this);
+            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_merged_file));
+            alertDialog.show();
+            return;
         } finally {
             Log.d(Util.LOG_TAG, "Finished writing file.");
         }
