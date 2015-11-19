@@ -14,7 +14,7 @@ public class IntroActivity extends Activity {
         setContentView(R.layout.activity_intro);
     }
 
-    public void choosePhoto(View view) {
+    public void choosePhoto(final View view) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -24,7 +24,7 @@ public class IntroActivity extends Activity {
         );
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data){
         Log.d(Util.LOG_TAG, "Activity ended.");
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -49,12 +49,12 @@ public class IntroActivity extends Activity {
         }
     }
 
-    public void showHelp(View view) {
+    public void showHelp(final View view) {
         View helpView = findViewById(R.id.help);
         helpView.setVisibility(View.VISIBLE);
     }
 
-    public void hideHelp(View view) {
+    public void hideHelp(final View view) {
         View helpView = findViewById(R.id.help);
         helpView.setVisibility(View.INVISIBLE);
     }

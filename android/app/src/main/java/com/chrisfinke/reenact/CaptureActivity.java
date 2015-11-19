@@ -41,7 +41,7 @@ public class CaptureActivity extends Activity {
     private CameraPreview mPreview;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture);
 
@@ -112,7 +112,7 @@ public class CaptureActivity extends Activity {
         );
     }
 
-    public void goBack(View view) {
+    public void goBack(final View view) {
         super.onBackPressed();
 
         Log.d(Util.LOG_TAG, "Going back.");
@@ -210,7 +210,7 @@ public class CaptureActivity extends Activity {
         }
     }
 
-    public void updatePreviewSize( int width, int height ) {
+    public void updatePreviewSize(final int width, final int height) {
         if (null == mCamera) {
             return;
         }
@@ -252,7 +252,7 @@ public class CaptureActivity extends Activity {
         mCamera.setParameters(parameters);
     }
 
-    private Camera.Size getBestPreviewSize(List<Camera.Size> sizes, int w, int h) {
+    private Camera.Size getBestPreviewSize(final List<Camera.Size> sizes, final int w, final int h) {
         Camera.Size bestSize = sizes.get(0);
         double bestRatio = 0;
         double ratioToMatch = (double) w / h;
@@ -272,7 +272,7 @@ public class CaptureActivity extends Activity {
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
         @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
+        public void onPictureTaken(byte[] data, final Camera camera) {
             // The taken photo will be rotated based on the rotation of the device.
             // Rotate it to the orientation that we expect.
             int deviceOrientation = getResources().getConfiguration().orientation;
@@ -358,14 +358,14 @@ public class CaptureActivity extends Activity {
         fadeOut.setDuration(2500);
 
         fadeOut.setAnimationListener(new Animation.AnimationListener() {
-            public void onAnimationEnd(Animation animation) {
+            public void onAnimationEnd(final Animation animation) {
                 fadeInImage(img);
             }
 
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationRepeat(final Animation animation) {
             }
 
-            public void onAnimationStart(Animation animation) {
+            public void onAnimationStart(final Animation animation) {
             }
         });
 
@@ -403,7 +403,7 @@ public class CaptureActivity extends Activity {
         startCamera();
     }
 
-    public void switchCamera(View view) {
+    public void switchCamera(final View view) {
         releaseCamera();
 
         SharedPreferences settings = getSharedPreferences(Util.PREFS_NAME, 0);
@@ -424,5 +424,4 @@ public class CaptureActivity extends Activity {
         alertDialog.setMessage(getResources().getText(R.string.error_no_camera_preview));
         alertDialog.show();
     }
-
 }

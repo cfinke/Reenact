@@ -18,7 +18,7 @@ public class ShareActivity extends Activity {
     Uri mergedPhotoUri;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share);
 
@@ -50,7 +50,7 @@ public class ShareActivity extends Activity {
         }
     }
 
-    public void share(View view) {
+    public void share(final View view) {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("image/jpg");
         shareIntent.putExtra(Intent.EXTRA_STREAM, mergedPhotoUri);
@@ -63,7 +63,7 @@ public class ShareActivity extends Activity {
         finish();
     }
 
-    public void startOver(View view) {
+    public void startOver(final View view) {
         onBackPressed();
     }
 }

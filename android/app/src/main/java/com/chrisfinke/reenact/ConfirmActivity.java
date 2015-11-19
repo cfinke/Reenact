@@ -32,7 +32,7 @@ public class ConfirmActivity extends Activity {
     private Uri newPhotoTempUri;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm);
 
@@ -153,12 +153,12 @@ public class ConfirmActivity extends Activity {
         }
     }
 
-    public void goBack(View view) {
+    public void goBack(final View view) {
         super.onBackPressed();
         finish();
     }
 
-    private static File getOutputMediaFile(int type, String prefix){
+    private static File getOutputMediaFile(final int type, final String prefix){
         File mediaStorageDir = new File(
                 Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_PICTURES
@@ -198,7 +198,7 @@ public class ConfirmActivity extends Activity {
         return mediaFile;
     }
 
-    public void confirm(View view) {
+    public void confirm(final View view) {
         // Save the new image by itself.
 
         File pictureFile = getOutputMediaFile(Util.MEDIA_TYPE_IMAGE, "IMG_");
@@ -276,7 +276,7 @@ public class ConfirmActivity extends Activity {
      * images, put them top and bottom; if they're portrait, side-by-side.
      */
 
-    public Bitmap combineImages(Uri thenImage, Uri nowImage) {
+    public Bitmap combineImages(final Uri thenImage, final Uri nowImage) {
         int[] thenImageDimensions = getImageDimensions(thenImage);
 
         int cWidth = thenImageDimensions[0];
@@ -300,7 +300,6 @@ public class ConfirmActivity extends Activity {
             alertDialog.show();
             return null;
         }
-
 
         int totalHeight;
         int totalWidth;
@@ -421,7 +420,7 @@ public class ConfirmActivity extends Activity {
         return cs;
     }
 
-    private int[] getImageDimensions(Uri imageUri) {
+    private int[] getImageDimensions(final Uri imageUri) {
         InputStream imageStream;
 
         int[] dimensions = new int[2];
@@ -456,7 +455,7 @@ public class ConfirmActivity extends Activity {
         return dimensions;
     }
 
-    public void copy(File src, File dst) throws IOException {
+    public void copy(final File src, final File dst) throws IOException {
         InputStream in = new FileInputStream(src);
         OutputStream out = new FileOutputStream(dst);
 
