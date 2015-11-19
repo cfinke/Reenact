@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -138,13 +139,22 @@ public class CaptureActivity extends Activity {
         Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         Camera.Parameters parameters = mCamera.getParameters();
 
-        if(display.getRotation() == Surface.ROTATION_0)
-        {
-            mCamera.setDisplayOrientation(90);
+        int deviceOrientation = getResources().getConfiguration().orientation;
+
+        if (display.getRotation() == Surface.ROTATION_0) {
+            // Tablets can be rotated 0 degrees but be in landscape mode. Their cameras are
+            // usually already aligned in the way we expect.
+            if (deviceOrientation != Configuration.ORIENTATION_LANDSCAPE) {
+                mCamera.setDisplayOrientation(90);
+            }
         }
-        if(display.getRotation() == Surface.ROTATION_270)
-        {
-            mCamera.setDisplayOrientation(180);
+        else if(display.getRotation() == Surface.ROTATION_270) {
+            if (deviceOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                mCamera.setDisplayOrientation(90);
+            }
+            else {
+                mCamera.setDisplayOrientation(180);
+            }
         }
 
         mCamera.setParameters(parameters);

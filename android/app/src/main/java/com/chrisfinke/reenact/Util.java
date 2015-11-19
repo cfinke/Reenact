@@ -3,7 +3,7 @@ package com.chrisfinke.reenact;
 /**
  * Created by cfinke on 11/13/15.
  */
-public class Constants {
+public class Util {
     public final static Integer PICK_IMAGE_TO_REENACT = 1;
 
     public final static String NEW_PHOTO_BYTES = "com.chrisfinke.reenact.NEW_PHOTO_BYTES";
