@@ -59,8 +59,7 @@ public class ShareActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, IntroActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, IntroActivity.class));
         finish();
     }
 

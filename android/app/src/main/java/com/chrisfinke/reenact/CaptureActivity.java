@@ -278,11 +278,11 @@ public class CaptureActivity extends Activity {
 
             Log.d(Util.LOG_TAG, "Orientation: " + deviceOrientation);
 
-            if ( deviceOrientation != android.content.res.Configuration.ORIENTATION_LANDSCAPE ) {
+            if ( deviceOrientation != Configuration.ORIENTATION_LANDSCAPE ) {
                 Bitmap storedBitmap = BitmapFactory.decodeByteArray(data, 0, data.length, null);
                 Matrix mat = new Matrix();
 
-                // @todo Use this in combinationg with getRotation() for tablets
+                // @todo Use this in combination with getRotation() for tablets?
                 switch (deviceOrientation) {
                     case Configuration.ORIENTATION_PORTRAIT:
                         Log.d(Util.LOG_TAG, "Rotating 90.");
