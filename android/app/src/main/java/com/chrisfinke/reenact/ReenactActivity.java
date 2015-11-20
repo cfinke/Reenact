@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -120,4 +123,22 @@ public class ReenactActivity extends Activity {
         return alertDialog;
     }
 
+    protected final void fitImageInImageView(Uri imageUri, ImageView imageView) throws FileNotFoundException {
+        InputStream imageStream = null;
+
+        Point windowSize = new Point();
+        getWindowManager().getDefaultDisplay().getSize(windowSize);
+
+        Log.d(LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
+
+        int sampleSize = getOptimalSampleSize(imageUri, windowSize.x, windowSize.y);
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = sampleSize;
+
+        Log.d(LOG_TAG, "Using sampleSize " + sampleSize);
+
+        imageStream = getContentResolver().openInputStream(imageUri);
+        imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));
+    }
 }

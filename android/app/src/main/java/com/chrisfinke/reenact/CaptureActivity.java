@@ -116,38 +116,12 @@ public class CaptureActivity extends ReenactActivity {
         ImageView imageView = (ImageView) findViewById(R.id.original_image);
         fadeOriginalImageInAndOut(imageView);
 
-        InputStream imageStream = null;
-
-        Point windowSize = new Point();
-        getWindowManager().getDefaultDisplay().getSize(windowSize);
-
-        Log.d(LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
-
-        // This image doesn't need to be very high quality, since it's fading in and out.
-        int sampleSize = Math.max(2, getOptimalSampleSize(originalPhotoUri, windowSize.x, windowSize.y) );
-
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = sampleSize;
-
-        Log.d(LOG_TAG, "Using sampleSize " + sampleSize);
-
         try {
-            imageStream = getContentResolver().openInputStream(originalPhotoUri);
-            imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));
+            fitImageInImageView(originalPhotoUri, imageView);
         } catch (FileNotFoundException e) {
             AlertDialog alertDialog = buildFatalAlert();
             alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
             alertDialog.show();
-
-            return;
-        } finally {
-            if (imageStream != null) {
-                try {
-                    imageStream.close();
-                } catch (IOException e) {
-                    // Ignorable?
-                }
-            }
         }
     }
 
@@ -447,12 +421,14 @@ public class CaptureActivity extends ReenactActivity {
         fadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
         fadeIn.setDuration(2500);
 
-        fadeIn.setAnimationListener(new Animation.AnimationListener()
-        {
+        fadeIn.setAnimationListener(new Animation.AnimationListener() {
             public void onAnimationEnd(Animation animation) {
                 fadeOutImage(img);
             }
-            public void onAnimationRepeat(Animation animation) {}
+
+            public void onAnimationRepeat(Animation animation) {
+            }
+
             public void onAnimationStart(Animation animation) {}
         });
 

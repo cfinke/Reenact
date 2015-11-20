@@ -413,76 +413,24 @@ public class ConfirmActivity extends ReenactActivity {
     private void initializeOriginalPhoto(){
         ImageView imageViewThen = (ImageView) findViewById(R.id.image_then);
 
-        InputStream thenImageStream = null;
-
-        Point windowSize = new Point();
-        getWindowManager().getDefaultDisplay().getSize(windowSize);
-
-        Log.d(LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
-
-        int sampleSize = getOptimalSampleSize(originalPhotoUri, windowSize.x, windowSize.y);
-
-        // These images are side-by-side, so they take up at most a quarter of the size they would if they were full screen.
-        sampleSize *= 2;
-
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = sampleSize;
-
-        Log.d(LOG_TAG, "Using sampleSize " + sampleSize);
-
         try {
-            thenImageStream = getContentResolver().openInputStream(originalPhotoUri);
-            imageViewThen.setImageBitmap(BitmapFactory.decodeStream(thenImageStream, null, bitmapOptions));
+            fitImageInImageView(originalPhotoUri, imageViewThen);
         } catch (FileNotFoundException e) {
             AlertDialog alertDialog = buildFatalAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
+            alertDialog.setMessage(getResources().getText(R.string.error_new_photo_missing));
             alertDialog.show();
-            return;
-        } finally {
-            if (thenImageStream != null) {
-                try {
-                    thenImageStream.close();
-                } catch (IOException e) {
-                    // Ignorable?
-                }
-            }
         }
     }
 
     private void initializeNewPhoto(){
         ImageView imageViewNow = (ImageView) findViewById(R.id.image_now);
 
-        InputStream nowImageStream = null;
-
-        Point windowSize = new Point();
-        getWindowManager().getDefaultDisplay().getSize(windowSize);
-
-        Log.d(LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
-
-        int sampleSize = getOptimalSampleSize(newPhotoTempUri, windowSize.x, windowSize.y);
-
-        // These images are side-by-side, so they take up at most a quarter of the size they would if they were full screen.
-        sampleSize *= 2;
-
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = sampleSize;
-
         try {
-            nowImageStream = getContentResolver().openInputStream(newPhotoTempUri);
-            imageViewNow.setImageBitmap(BitmapFactory.decodeStream(nowImageStream, null, bitmapOptions));
+            fitImageInImageView(newPhotoTempUri, imageViewNow);
         } catch (FileNotFoundException e) {
             AlertDialog alertDialog = buildFatalAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_new_photo_missing));
+            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
             alertDialog.show();
-            return;
-        } finally {
-            if (nowImageStream != null) {
-                try {
-                    nowImageStream.close();
-                } catch (IOException e) {
-                    // Ignorable?
-                }
-            }
         }
     }
 

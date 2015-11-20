@@ -26,43 +26,16 @@ public class ShareActivity extends ReenactActivity {
 
         Toast.makeText(getApplicationContext(), getResources().getText(R.string.photo_saved_alert), Toast.LENGTH_SHORT).show();
 
-        Intent intent = getIntent();
-        mergedPhotoUri = intent.getParcelableExtra(MERGED_PHOTO_PATH);
+        mergedPhotoUri = getIntent().getParcelableExtra(MERGED_PHOTO_PATH);
 
         ImageView imageViewMerged = (ImageView) findViewById(R.id.image_merged);
 
-        InputStream imageStream = null;
-
-        Point windowSize = new Point();
-        getWindowManager().getDefaultDisplay().getSize(windowSize);
-
-        Log.d(LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
-
-        // This final image is close to square, so it won't be wider than the smallest window dimension.
-        int sampleSize = getOptimalSampleSize(mergedPhotoUri, Math.min(windowSize.x, windowSize.y), Math.min(windowSize.x, windowSize.y));
-
-        // These images are side-by-side, so they take up at most a quarter of the size they would if they were full screen.
-        sampleSize *= 2;
-
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inSampleSize = sampleSize;
-
         try {
-            imageStream = getContentResolver().openInputStream(mergedPhotoUri);
-            imageViewMerged.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));
+            fitImageInImageView(mergedPhotoUri, imageViewMerged);
         } catch (FileNotFoundException e) {
             AlertDialog alertDialog = buildFatalAlert();
             alertDialog.setMessage(getResources().getText(R.string.error_merged_photo_missing));
             alertDialog.show();
-            return;
-        } finally {
-            if (imageStream != null) {
-                try {
-                    imageStream.close();
-                } catch (IOException e) {
-                    // Ignorable?
-                }
-            }
         }
     }
 
