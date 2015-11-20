@@ -18,12 +18,16 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -238,28 +242,71 @@ public class CaptureActivity extends Activity {
 
         Camera.Size bestPreviewSize = getBestPreviewSize(supportedSizes, width, height);
 
+        Log.d(Util.LOG_TAG, "Setting preview size to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+
+        RelativeLayout cameraPreviewContainer = (RelativeLayout) findViewById(R.id.camera_preview_container);
+        int maxPreviewWidth = cameraPreviewContainer.getWidth();
+        int maxPreviewHeight = cameraPreviewContainer.getHeight();
+
+        if ( display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180) {
+            maxPreviewWidth = cameraPreviewContainer.getHeight();
+            maxPreviewHeight = cameraPreviewContainer.getWidth();
+        }
+
+        int[] imageDimensions = getImageDimensions(originalPhotoUri);
+        double imageRatio = (double) ((float) imageDimensions[0] / imageDimensions[1]);
+        double previewRatio = (double) ((float) maxPreviewWidth / maxPreviewHeight);
+
+        int bestPreviewContainerWidth;
+        int bestPreviewContainerHeight;
+
+        FrameLayout previewContainer = (FrameLayout) findViewById(R.id.camera_preview);
+
+        if (imageRatio > previewRatio){
+            // Height is limiter.
+            bestPreviewContainerHeight = maxPreviewHeight;
+            bestPreviewContainerWidth = Math.round(((float) maxPreviewHeight / bestPreviewSize.height) * bestPreviewSize.width);
+        }
+        else {
+            // Width is limiter.
+            bestPreviewContainerHeight = Math.round(((float) maxPreviewWidth / bestPreviewSize.width) * bestPreviewSize.height);
+            bestPreviewContainerWidth = maxPreviewWidth;
+        }
+
         if(display.getRotation() == Surface.ROTATION_0)
         {
             Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
             parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
+
+            Log.d(Util.LOG_TAG, "Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
+            previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerHeight, bestPreviewContainerWidth));
         }
 
         if(display.getRotation() == Surface.ROTATION_90)
         {
             Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
             parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
+
+            Log.d(Util.LOG_TAG, "Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
+            previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight));
         }
 
         if(display.getRotation() == Surface.ROTATION_180)
         {
             Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
             parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
+
+            Log.d(Util.LOG_TAG, "Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
+            previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerHeight, bestPreviewContainerWidth));
         }
 
         if(display.getRotation() == Surface.ROTATION_270)
         {
             Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
             parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
+
+            Log.d(Util.LOG_TAG, "Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
+            previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight));
         }
 
         mCamera.setParameters(parameters);
