@@ -21,8 +21,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/original_image"
-            android:alpha="0.5"/>
+            android:id="@+id/original_image"/>
     </RelativeLayout>
     <LinearLayout
         android:layout_width="120dp"

@@ -366,8 +366,8 @@ public class CaptureActivity extends Activity {
     }
 
     private void fadeOutImage(final ImageView img) {
-        Animation fadeOut = new AlphaAnimation(.75f, 0);
-        fadeOut.setInterpolator(new LinearInterpolator());
+        Animation fadeOut = new AlphaAnimation(0.85f, 0);
+        fadeOut.setInterpolator(new AccelerateDecelerateInterpolator());
         fadeOut.setDuration(2500);
 
         fadeOut.setAnimationListener(new Animation.AnimationListener() {
@@ -386,8 +386,8 @@ public class CaptureActivity extends Activity {
     }
 
     private void fadeInImage(final ImageView img){
-        final Animation fadeIn = new AlphaAnimation(0, .75f);
-        fadeIn.setInterpolator(new LinearInterpolator());
+        final Animation fadeIn = new AlphaAnimation(0, 0.85f);
+        fadeIn.setInterpolator(new AccelerateDecelerateInterpolator());
         fadeIn.setDuration(2500);
 
         fadeIn.setAnimationListener(new Animation.AnimationListener()
