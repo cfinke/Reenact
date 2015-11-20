@@ -112,6 +112,8 @@ public class ConfirmActivity extends ReenactActivity {
             newParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
             imageViewNow.setLayoutParams(newParams);
         }
+
+        flipViewForRTL(R.id.back_button);
     }
 
     public void goBack(final View view) {

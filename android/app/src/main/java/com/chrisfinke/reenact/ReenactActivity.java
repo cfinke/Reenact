@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import java.io.FileNotFoundException;
@@ -141,5 +142,17 @@ public class ReenactActivity extends Activity {
 
         imageStream = getContentResolver().openInputStream(imageUri);
         imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));
+    }
+
+    public void flipViewForRTL(final int viewId) {
+        try {
+            int layoutDirection = getResources().getConfiguration().getLayoutDirection();
+            if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+                findViewById(viewId).setScaleX(-1);
+            }
+        }
+        catch (NoSuchMethodError e) {
+            // getLayoutDirection doesn't exist until API 17
+        }
     }
 }

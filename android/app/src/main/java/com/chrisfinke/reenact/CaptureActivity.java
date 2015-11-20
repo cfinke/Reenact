@@ -88,6 +88,8 @@ public class CaptureActivity extends ReenactActivity {
                     }
                 }
         );
+
+        flipViewForRTL(R.id.back_button);
     }
 
     public void goBack(final View view) {

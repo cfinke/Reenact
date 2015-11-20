@@ -1,6 +1,7 @@
 package com.chrisfinke.reenact;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -28,6 +29,9 @@ public class ShareActivity extends ReenactActivity {
         } catch (FileNotFoundException e) {
             fatalAlert(R.string.error_merged_photo_missing).show();
         }
+
+        // Flip the start-over button in RTL layouts.
+        flipViewForRTL(R.id.button_start_over);
     }
 
     public void share(final View view) {
