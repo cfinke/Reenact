@@ -30,6 +30,8 @@ public class ReenactActivity extends Activity {
 
     public static final String PREFS_NAME = "ReenactPrefs";
 
+    static final boolean LOG = BuildConfig.DEBUG;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,19 +73,19 @@ public class ReenactActivity extends Activity {
         try {
             imageStream = getContentResolver().openInputStream(imageUri);
         } catch (FileNotFoundException e ){
-            Log.d(LOG_TAG, "FileNotFound", e);
+            if (LOG) Log.d(LOG_TAG, "FileNotFound", e);
             return dimensions;
         }
 
         try {
             BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imageStream, false);
 
-            Log.d(LOG_TAG, "Image dimensions: " + decoder.getWidth() + "x" + decoder.getHeight());
+            if (LOG) Log.d(LOG_TAG, "Image dimensions: " + decoder.getWidth() + "x" + decoder.getHeight());
 
             dimensions[0] = decoder.getWidth();
             dimensions[1] = decoder.getHeight();
         } catch (IOException e){
-            Log.d(LOG_TAG, "IOException", e);
+            if (LOG) Log.d(LOG_TAG, "IOException", e);
             return dimensions;
         } finally {
             try {
@@ -131,14 +133,14 @@ public class ReenactActivity extends Activity {
         Point windowSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(windowSize);
 
-        Log.d(LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
+        if (LOG) Log.d(LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
 
         int sampleSize = getOptimalSampleSize(imageUri, windowSize.x, windowSize.y);
 
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = sampleSize;
 
-        Log.d(LOG_TAG, "Using sampleSize " + sampleSize);
+        if (LOG) Log.d(LOG_TAG, "Using sampleSize " + sampleSize);
 
         imageStream = getContentResolver().openInputStream(imageUri);
         imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));

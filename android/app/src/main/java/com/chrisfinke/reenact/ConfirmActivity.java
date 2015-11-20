@@ -52,8 +52,8 @@ public class ConfirmActivity extends ReenactActivity {
         int newImageWidth = newImageDimensions[0];
         int newImageHeight = newImageDimensions[1];
 
-        Log.d(LOG_TAG, "oldImageHeight: " + oldImageHeight);
-        Log.d(LOG_TAG, "newImageHeight: " + newImageHeight);
+        if (LOG) Log.d(LOG_TAG, "oldImageHeight: " + oldImageHeight);
+        if (LOG) Log.d(LOG_TAG, "newImageHeight: " + newImageHeight);
 
         LinearLayout previewContainer = (LinearLayout) findViewById(R.id.preview_container);
 
@@ -70,11 +70,11 @@ public class ConfirmActivity extends ReenactActivity {
             float oldImageWeight = ( (float) sameHeightOldImageWidth ) / ( sameHeightOldImageWidth + sameHeightNewImageWidth );
             float newImageWeight = ( (float) sameHeightNewImageWidth ) / ( sameHeightOldImageWidth + sameHeightNewImageWidth );
 
-            Log.d(LOG_TAG, "sameHeightOldImageWidth: " + sameHeightOldImageWidth);
-            Log.d(LOG_TAG, "sameHeightNewImageWidth: " + sameHeightNewImageWidth);
+            if (LOG) Log.d(LOG_TAG, "sameHeightOldImageWidth: " + sameHeightOldImageWidth);
+            if (LOG) Log.d(LOG_TAG, "sameHeightNewImageWidth: " + sameHeightNewImageWidth);
 
-            Log.d(LOG_TAG, "oldImageWeight: " + oldImageWeight);
-            Log.d(LOG_TAG, "newImageWeight: " + newImageWeight);
+            if (LOG) Log.d(LOG_TAG, "oldImageWeight: " + oldImageWeight);
+            if (LOG) Log.d(LOG_TAG, "newImageWeight: " + newImageWeight);
 
             LinearLayout.LayoutParams oldParams = (LinearLayout.LayoutParams) imageViewThen.getLayoutParams();
             oldParams.weight = oldImageWeight;
@@ -131,17 +131,17 @@ public class ConfirmActivity extends ReenactActivity {
 
         try {
             if ( ! Environment.getExternalStorageState(mediaStorageDir).equals(Environment.MEDIA_MOUNTED)) {
-                Log.d(LOG_TAG, "External media storage is not mounted.");
+                if (LOG) Log.d(LOG_TAG, "External media storage is not mounted.");
                 return null;
             }
         } catch (java.lang.NoSuchMethodError e) {
-            Log.d(LOG_TAG, "Running in a pre-getExternalStorageState context.", e);
+            if (LOG) Log.d(LOG_TAG, "Running in a pre-getExternalStorageState context.", e);
         }
 
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
-                Log.d(LOG_TAG, "failed to create directory");
+                if (LOG) Log.d(LOG_TAG, "failed to create directory");
                 return null;
             }
         }
@@ -171,12 +171,12 @@ public class ConfirmActivity extends ReenactActivity {
             return;
         }
 
-        Log.d(LOG_TAG, "Single image: " + pictureFile.toString());
+        if (LOG) Log.d(LOG_TAG, "Single image: " + pictureFile.toString());
 
         try {
             copy(new File(newPhotoTempUri.getPath()), pictureFile);
         } catch (IOException e){
-            Log.d(LOG_TAG, "Couldn't copy new photo", e);
+            if (LOG) Log.d(LOG_TAG, "Couldn't copy new photo", e);
             fatalAlert(R.string.error_couldnt_copy_single_file).show();
             return;
         }
@@ -190,10 +190,10 @@ public class ConfirmActivity extends ReenactActivity {
 
         pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE, "Reenacted_IMG_");
 
-        Log.d(LOG_TAG, "Merged image: " + pictureFile.toString());
+        if (LOG) Log.d(LOG_TAG, "Merged image: " + pictureFile.toString());
 
         if (pictureFile == null) {
-            Log.d(LOG_TAG, "Error creating media file, check storage permissions: ");
+            if (LOG) Log.d(LOG_TAG, "Error creating media file, check storage permissions: ");
             fatalAlert(R.string.error_couldnt_save_merged_file).show();
             return;
         }
@@ -204,15 +204,15 @@ public class ConfirmActivity extends ReenactActivity {
             fos.close();
             fos = null;
         } catch (FileNotFoundException e) {
-            Log.d(LOG_TAG, "File not found: " + e.getMessage());
+            if (LOG) Log.d(LOG_TAG, "File not found: " + e.getMessage());
             alert(R.string.error_couldnt_copy_merged_file).show();
             return;
         } catch (IOException e) {
-            Log.d(LOG_TAG, "Error accessing file: " + e.getMessage());
+            if (LOG) Log.d(LOG_TAG, "Error accessing file: " + e.getMessage());
             alert(R.string.error_couldnt_copy_merged_file).show();
             return;
         } finally {
-            Log.d(LOG_TAG, "Finished writing file.");
+            if (LOG) Log.d(LOG_TAG, "Finished writing file.");
         }
 
         Uri mergedPhotoUri = Uri.fromFile(pictureFile);
@@ -259,7 +259,7 @@ public class ConfirmActivity extends ReenactActivity {
         Rect newImageDest;
 
         if (cWidth < cHeight) {
-            Log.d(LOG_TAG, "Saving combination image in side-by-side format.");
+            if (LOG) Log.d(LOG_TAG, "Saving combination image in side-by-side format.");
 
             int smallestHeight = Math.min(1024, Math.min(cHeight, sHeight));
             totalHeight = smallestHeight;
@@ -279,7 +279,7 @@ public class ConfirmActivity extends ReenactActivity {
             newImageDest = new Rect(newOldWidth, 0, newOldWidth + newNewWidth, newNewHeight);
         }
         else {
-            Log.d(LOG_TAG, "Saving combination image in top-to-bottom format.");
+            if (LOG) Log.d(LOG_TAG, "Saving combination image in top-to-bottom format.");
 
             int smallestWidth = Math.min(1024, Math.min(cWidth, sWidth));
             totalWidth = smallestWidth;
@@ -306,11 +306,11 @@ public class ConfirmActivity extends ReenactActivity {
         int oldSampleSize = (int) Math.max(1, Math.floor((float) 1 / oldRatio));
         int newSampleSize = (int) Math.max(1, Math.floor((float) 1 / newRatio));
 
-        Log.d(LOG_TAG, "oldRatio:" + oldRatio);
-        Log.d(LOG_TAG, "newRatio:" + newRatio);
+        if (LOG) Log.d(LOG_TAG, "oldRatio:" + oldRatio);
+        if (LOG) Log.d(LOG_TAG, "newRatio:" + newRatio);
 
-        Log.d(LOG_TAG, "oldSampleSize:" + oldSampleSize);
-        Log.d(LOG_TAG, "newSampleSize:" + newSampleSize);
+        if (LOG) Log.d(LOG_TAG, "oldSampleSize:" + oldSampleSize);
+        if (LOG) Log.d(LOG_TAG, "newSampleSize:" + newSampleSize);
 
         BitmapFactory.Options oldOptions = new BitmapFactory.Options();
         oldOptions.inSampleSize = oldSampleSize;
@@ -320,7 +320,7 @@ public class ConfirmActivity extends ReenactActivity {
         try {
             oldFileDescriptor = getContentResolver().openAssetFileDescriptor(thenImage, "r");
         } catch (FileNotFoundException e) {
-            Log.d(LOG_TAG, "File not found", e);
+            if (LOG) Log.d(LOG_TAG, "File not found", e);
 
             alert(R.string.error_original_photo_missing).show();
             return null;
@@ -344,7 +344,7 @@ public class ConfirmActivity extends ReenactActivity {
         try {
             newFileDescriptor = getContentResolver().openAssetFileDescriptor(nowImage, "r");
         } catch (FileNotFoundException e) {
-            Log.d(LOG_TAG, "File not found", e);
+            if (LOG) Log.d(LOG_TAG, "File not found", e);
 
             alert(R.string.error_new_photo_missing).show();
 
