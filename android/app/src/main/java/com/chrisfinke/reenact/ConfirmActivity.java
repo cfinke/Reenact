@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
@@ -379,6 +380,18 @@ public class ConfirmActivity extends Activity {
         newImage = null;
         newOptions = null;
         newFileDescriptor = null;
+
+        // Add the Reenact logo to the lower right corner.
+        Resources resources = getResources();
+        Bitmap logoBitmap = BitmapFactory.decodeResource(resources, R.drawable.logo);
+
+        int logoWidth = (int) Math.round(totalWidth * 0.04);
+        int logoOffset = (int) Math.round(totalWidth * 0.01);
+
+        Rect logoSrc = new Rect(0, 0, logoBitmap.getWidth(), logoBitmap.getHeight());
+        Rect logoDest = new Rect(cs.getWidth() - logoWidth - logoOffset, cs.getHeight() - logoWidth - logoOffset, cs.getWidth() - logoOffset, cs.getHeight() - logoOffset);
+
+        comboImage.drawBitmap(logoBitmap, logoSrc, logoDest, null);
 
         return cs;
     }
