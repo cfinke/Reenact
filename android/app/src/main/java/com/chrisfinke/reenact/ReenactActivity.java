@@ -95,10 +95,10 @@ public class ReenactActivity extends Activity {
         return dimensions;
     }
 
-    protected final AlertDialog buildFatalAlert(){
+    protected final AlertDialog fatalAlert(final int messageId){
         final Activity self = this;
 
-        AlertDialog alertDialog = buildAlert();
+        AlertDialog alertDialog = alert(messageId);
         alertDialog.setTitle(getResources().getText(R.string.fatal_error_alert_title));
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getResources().getText(R.string.fatal_error_alert_button_label),
                 new DialogInterface.OnClickListener() {
@@ -111,9 +111,10 @@ public class ReenactActivity extends Activity {
         return alertDialog;
     }
 
-    protected final AlertDialog buildAlert(){
+    protected final AlertDialog alert(final int messageId){
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(getResources().getText(R.string.error_alert_title));
+        alertDialog.setMessage(getResources().getText(messageId));
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getResources().getText(R.string.error_alert_button_label),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {

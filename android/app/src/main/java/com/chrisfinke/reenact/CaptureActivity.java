@@ -1,15 +1,12 @@
 package com.chrisfinke.reenact;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,7 +28,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public class CaptureActivity extends ReenactActivity {
@@ -119,9 +115,7 @@ public class CaptureActivity extends ReenactActivity {
         try {
             fitImageInImageView(originalPhotoUri, imageView);
         } catch (FileNotFoundException e) {
-            AlertDialog alertDialog = buildFatalAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
-            alertDialog.show();
+            fatalAlert(R.string.error_original_photo_missing).show();
         }
     }
 
@@ -145,9 +139,7 @@ public class CaptureActivity extends ReenactActivity {
         mCamera = getCameraInstance();
 
         if (mCamera == null){
-            AlertDialog alertDialog = buildFatalAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_no_camera));
-            alertDialog.show();
+            fatalAlert(R.string.error_no_camera).show();
 
             return false;
         }
@@ -351,9 +343,7 @@ public class CaptureActivity extends ReenactActivity {
             } catch (IOException e){
                 Log.d(LOG_TAG, "Couldn't create temp file to save new photo.");
 
-                AlertDialog alertDialog = buildFatalAlert();
-                alertDialog.setMessage(getResources().getText(R.string.error_couldnt_save_single_file));
-                alertDialog.show();
+                fatalAlert(R.string.error_couldnt_save_single_file).show();
 
                 return;
             }
@@ -365,17 +355,13 @@ public class CaptureActivity extends ReenactActivity {
             } catch (FileNotFoundException e) {
                 Log.d(LOG_TAG, "File not found: " + e.getMessage());
 
-                AlertDialog alertDialog = buildFatalAlert();
-                alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_single_file));
-                alertDialog.show();
+                fatalAlert(R.string.error_couldnt_copy_single_file).show();
 
                 return;
             } catch (IOException e) {
                 Log.d(LOG_TAG, "Error accessing file: " + e.getMessage());
 
-                AlertDialog alertDialog = buildFatalAlert();
-                alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_single_file));
-                alertDialog.show();
+                fatalAlert(R.string.error_couldnt_copy_single_file).show();
 
                 return;
             } finally {
@@ -467,8 +453,6 @@ public class CaptureActivity extends ReenactActivity {
     }
 
     public void startPreviewFailed(){
-        AlertDialog alertDialog = buildFatalAlert();
-        alertDialog.setMessage(getResources().getText(R.string.error_no_camera_preview));
-        alertDialog.show();
+        fatalAlert(R.string.error_no_camera_preview).show();
     }
 }

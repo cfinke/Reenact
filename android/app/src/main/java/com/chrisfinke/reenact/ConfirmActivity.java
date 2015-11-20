@@ -1,14 +1,11 @@
 package com.chrisfinke.reenact;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -168,9 +165,7 @@ public class ConfirmActivity extends ReenactActivity {
         File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE, "IMG_");
 
         if (pictureFile == null) {
-            AlertDialog alertDialog = buildFatalAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_save_single_file));
-            alertDialog.show();
+            fatalAlert(R.string.error_couldnt_save_single_file).show();
             return;
         }
 
@@ -180,9 +175,7 @@ public class ConfirmActivity extends ReenactActivity {
             copy(new File(newPhotoTempUri.getPath()), pictureFile);
         } catch (IOException e){
             Log.d(LOG_TAG, "Couldn't copy new photo", e);
-            AlertDialog alertDialog = buildFatalAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_single_file));
-            alertDialog.show();
+            fatalAlert(R.string.error_couldnt_copy_single_file).show();
             return;
         }
 
@@ -199,9 +192,7 @@ public class ConfirmActivity extends ReenactActivity {
 
         if (pictureFile == null) {
             Log.d(LOG_TAG, "Error creating media file, check storage permissions: ");
-            AlertDialog alertDialog = buildFatalAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_save_merged_file));
-            alertDialog.show();
+            fatalAlert(R.string.error_couldnt_save_merged_file).show();
             return;
         }
 
@@ -212,15 +203,11 @@ public class ConfirmActivity extends ReenactActivity {
             fos = null;
         } catch (FileNotFoundException e) {
             Log.d(LOG_TAG, "File not found: " + e.getMessage());
-            AlertDialog alertDialog = buildAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_merged_file));
-            alertDialog.show();
+            alert(R.string.error_couldnt_copy_merged_file).show();
             return;
         } catch (IOException e) {
             Log.d(LOG_TAG, "Error accessing file: " + e.getMessage());
-            AlertDialog alertDialog = buildAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_merged_file));
-            alertDialog.show();
+            alert(R.string.error_couldnt_copy_merged_file).show();
             return;
         } finally {
             Log.d(LOG_TAG, "Finished writing file.");
@@ -247,9 +234,7 @@ public class ConfirmActivity extends ReenactActivity {
         int cHeight = thenImageDimensions[1];
 
         if (cWidth == 0 || cHeight == 0) {
-            AlertDialog alertDialog = buildAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_read_original_photo));
-            alertDialog.show();
+            alert(R.string.error_couldnt_read_original_photo).show();
             return null;
         }
 
@@ -259,9 +244,7 @@ public class ConfirmActivity extends ReenactActivity {
         int sHeight = nowImageDimensions[1];
 
         if (sWidth == 0 || sHeight == 0) {
-            AlertDialog alertDialog = buildAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_couldnt_read_new_photo));
-            alertDialog.show();
+            alert(R.string.error_couldnt_read_new_photo).show();
             return null;
         }
 
@@ -337,10 +320,7 @@ public class ConfirmActivity extends ReenactActivity {
         } catch (FileNotFoundException e) {
             Log.d(LOG_TAG, "File not found", e);
 
-            AlertDialog alertDialog = buildAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
-            alertDialog.show();
-
+            alert(R.string.error_original_photo_missing).show();
             return null;
         }
 
@@ -364,9 +344,7 @@ public class ConfirmActivity extends ReenactActivity {
         } catch (FileNotFoundException e) {
             Log.d(LOG_TAG, "File not found", e);
 
-            AlertDialog alertDialog = buildAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_new_photo_missing));
-            alertDialog.show();
+            alert(R.string.error_new_photo_missing).show();
 
             return null;
         }
@@ -416,9 +394,7 @@ public class ConfirmActivity extends ReenactActivity {
         try {
             fitImageInImageView(originalPhotoUri, imageViewThen);
         } catch (FileNotFoundException e) {
-            AlertDialog alertDialog = buildFatalAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_new_photo_missing));
-            alertDialog.show();
+            fatalAlert(R.string.error_new_photo_missing).show();
         }
     }
 
@@ -428,9 +404,7 @@ public class ConfirmActivity extends ReenactActivity {
         try {
             fitImageInImageView(newPhotoTempUri, imageViewNow);
         } catch (FileNotFoundException e) {
-            AlertDialog alertDialog = buildFatalAlert();
-            alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
-            alertDialog.show();
+            fatalAlert(R.string.error_original_photo_missing).show();
         }
     }
 
