@@ -1,6 +1,5 @@
 package com.chrisfinke.reenact;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,10 +21,7 @@ import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -38,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-public class CaptureActivity extends Activity {
+public class CaptureActivity extends ReenactActivity {
     private Uri originalPhotoUri;
 
     public String orientation = "portrait";
@@ -52,16 +48,16 @@ public class CaptureActivity extends Activity {
         setContentView(R.layout.activity_capture);
 
         Intent intent = getIntent();
-        originalPhotoUri = intent.getParcelableExtra(Util.ORIGINAL_PHOTO_PATH);
+        originalPhotoUri = intent.getParcelableExtra(ORIGINAL_PHOTO_PATH);
 
-        Log.d(Util.LOG_TAG, "Received original photo URI: " + originalPhotoUri.toString());
+        Log.d(LOG_TAG, "Received original photo URI: " + originalPhotoUri.toString());
 
         int[] originalImageDimensions = getImageDimensions(originalPhotoUri);
 
         int imageHeight = originalImageDimensions[1];
         int imageWidth = originalImageDimensions[0];
 
-        Log.d(Util.LOG_TAG, "Original image dimensions: " + imageWidth + "x" + imageHeight);
+        Log.d(LOG_TAG, "Original image dimensions: " + imageWidth + "x" + imageHeight);
 
         if ( imageWidth > imageHeight ) {
             orientation = "landscape";
@@ -81,7 +77,7 @@ public class CaptureActivity extends Activity {
         ImageView switchButton = (ImageView) findViewById(R.id.switch_camera);
 
         if (Camera.getNumberOfCameras() == 1) {
-            Log.d(Util.LOG_TAG, "Only one camera. Hiding switch button.");
+            Log.d(LOG_TAG, "Only one camera. Hiding switch button.");
             switchButton.setVisibility(View.INVISIBLE);
         }
 
@@ -101,7 +97,7 @@ public class CaptureActivity extends Activity {
     public void goBack(final View view) {
         super.onBackPressed();
 
-        Log.d(Util.LOG_TAG, "Going back.");
+        Log.d(LOG_TAG, "Going back.");
 
         finish();
     }
@@ -110,7 +106,7 @@ public class CaptureActivity extends Activity {
     protected void onPause() {
         super.onPause();
 
-        Log.d(Util.LOG_TAG, "onPause");
+        Log.d(LOG_TAG, "onPause");
 
         releaseCamera();
         clearOriginalPhoto();
@@ -125,7 +121,7 @@ public class CaptureActivity extends Activity {
         Point windowSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(windowSize);
 
-        Log.d(Util.LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
+        Log.d(LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
 
         // This image doesn't need to be very high quality, since it's fading in and out.
         int sampleSize = Math.max(2, getOptimalSampleSize(originalPhotoUri, windowSize.x, windowSize.y) );
@@ -133,13 +129,13 @@ public class CaptureActivity extends Activity {
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = sampleSize;
 
-        Log.d(Util.LOG_TAG, "Using sampleSize " + sampleSize);
+        Log.d(LOG_TAG, "Using sampleSize " + sampleSize);
 
         try {
             imageStream = getContentResolver().openInputStream(originalPhotoUri);
             imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));
         } catch (FileNotFoundException e) {
-            AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+            AlertDialog alertDialog = buildFatalAlert();
             alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
             alertDialog.show();
 
@@ -175,7 +171,7 @@ public class CaptureActivity extends Activity {
         mCamera = getCameraInstance();
 
         if (mCamera == null){
-            AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+            AlertDialog alertDialog = buildFatalAlert();
             alertDialog.setMessage(getResources().getText(R.string.error_no_camera));
             alertDialog.show();
 
@@ -214,10 +210,10 @@ public class CaptureActivity extends Activity {
     }
 
     public Camera getCameraInstance(){
-        SharedPreferences settings = getSharedPreferences(Util.PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         int cameraId = settings.getInt("cameraId", 0);
 
-        Log.d(Util.LOG_TAG, "Getting camera #" + cameraId);
+        Log.d(LOG_TAG, "Getting camera #" + cameraId);
 
         Camera c = null;
 
@@ -251,12 +247,12 @@ public class CaptureActivity extends Activity {
         List<Camera.Size> supportedSizes = parameters.getSupportedPreviewSizes();
 
         for (Camera.Size size : supportedSizes) {
-            Log.d(Util.LOG_TAG, "Supported Size: " + size.width + "x" + size.height);
+            Log.d(LOG_TAG, "Supported Size: " + size.width + "x" + size.height);
         }
 
         Camera.Size bestPreviewSize = getBestPreviewSize(supportedSizes, width, height);
 
-        Log.d(Util.LOG_TAG, "Setting preview size to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+        Log.d(LOG_TAG, "Setting preview size to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
 
         RelativeLayout cameraPreviewContainer = (RelativeLayout) findViewById(R.id.camera_preview_container);
         int maxPreviewWidth = cameraPreviewContainer.getWidth();
@@ -289,37 +285,37 @@ public class CaptureActivity extends Activity {
 
         if(display.getRotation() == Surface.ROTATION_0)
         {
-            Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
+            Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
             parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
 
-            Log.d(Util.LOG_TAG, "Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
+            Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
             previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerHeight, bestPreviewContainerWidth));
         }
 
         if(display.getRotation() == Surface.ROTATION_90)
         {
-            Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+            Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
             parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
 
-            Log.d(Util.LOG_TAG, "Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
+            Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
             previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight));
         }
 
         if(display.getRotation() == Surface.ROTATION_180)
         {
-            Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
+            Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
             parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
 
-            Log.d(Util.LOG_TAG, "Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
+            Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
             previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerHeight, bestPreviewContainerWidth));
         }
 
         if(display.getRotation() == Surface.ROTATION_270)
         {
-            Log.d(Util.LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+            Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
             parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
 
-            Log.d(Util.LOG_TAG, "Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
+            Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
             previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight));
         }
 
@@ -351,7 +347,7 @@ public class CaptureActivity extends Activity {
             // Rotate it to the orientation that we expect.
             int deviceOrientation = getResources().getConfiguration().orientation;
 
-            Log.d(Util.LOG_TAG, "Orientation: " + deviceOrientation);
+            Log.d(LOG_TAG, "Orientation: " + deviceOrientation);
 
             if ( deviceOrientation != Configuration.ORIENTATION_LANDSCAPE ) {
                 Bitmap storedBitmap = BitmapFactory.decodeByteArray(data, 0, data.length, null);
@@ -359,7 +355,7 @@ public class CaptureActivity extends Activity {
 
                 switch (deviceOrientation) {
                     case Configuration.ORIENTATION_PORTRAIT:
-                        Log.d(Util.LOG_TAG, "Rotating 90.");
+                        Log.d(LOG_TAG, "Rotating 90.");
                         mat.postRotate(90);
                         break;
                 }
@@ -379,9 +375,9 @@ public class CaptureActivity extends Activity {
             try {
                 newPhotoTempFile = File.createTempFile("reenact", "jpg", tempOutputDir);
             } catch (IOException e){
-                Log.d(Util.LOG_TAG, "Couldn't create temp file to save new photo.");
+                Log.d(LOG_TAG, "Couldn't create temp file to save new photo.");
 
-                AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+                AlertDialog alertDialog = buildFatalAlert();
                 alertDialog.setMessage(getResources().getText(R.string.error_couldnt_save_single_file));
                 alertDialog.show();
 
@@ -393,29 +389,29 @@ public class CaptureActivity extends Activity {
                 fos.write(data);
                 fos.close();
             } catch (FileNotFoundException e) {
-                Log.d(Util.LOG_TAG, "File not found: " + e.getMessage());
+                Log.d(LOG_TAG, "File not found: " + e.getMessage());
 
-                AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+                AlertDialog alertDialog = buildFatalAlert();
                 alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_single_file));
                 alertDialog.show();
 
                 return;
             } catch (IOException e) {
-                Log.d(Util.LOG_TAG, "Error accessing file: " + e.getMessage());
+                Log.d(LOG_TAG, "Error accessing file: " + e.getMessage());
 
-                AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+                AlertDialog alertDialog = buildFatalAlert();
                 alertDialog.setMessage(getResources().getText(R.string.error_couldnt_copy_single_file));
                 alertDialog.show();
 
                 return;
             } finally {
-                Log.d(Util.LOG_TAG, "Finished writing file.");
+                Log.d(LOG_TAG, "Finished writing file.");
             }
 
             // Start the confirmation activity.
             Intent intent = new Intent(CaptureActivity.this, ConfirmActivity.class);
-            intent.putExtra(Util.ORIGINAL_PHOTO_PATH, originalPhotoUri);
-            intent.putExtra(Util.NEW_PHOTO_TEMP_PATH, Uri.fromFile(newPhotoTempFile));
+            intent.putExtra(ORIGINAL_PHOTO_PATH, originalPhotoUri);
+            intent.putExtra(NEW_PHOTO_TEMP_PATH, Uri.fromFile(newPhotoTempFile));
             startActivity(intent);
 
             data = null;
@@ -466,14 +462,14 @@ public class CaptureActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(Util.LOG_TAG, "onStop");
+        Log.d(LOG_TAG, "onStop");
         releaseCamera();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(Util.LOG_TAG, "onResume");
+        Log.d(LOG_TAG, "onResume");
         initializeOriginalPhoto();
         startCamera();
     }
@@ -481,7 +477,7 @@ public class CaptureActivity extends Activity {
     public void switchCamera(final View view) {
         releaseCamera();
 
-        SharedPreferences settings = getSharedPreferences(Util.PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         int cameraId = settings.getInt("cameraId", 0);
         cameraId++;
 
@@ -495,69 +491,8 @@ public class CaptureActivity extends Activity {
     }
 
     public void startPreviewFailed(){
-        AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
+        AlertDialog alertDialog = buildFatalAlert();
         alertDialog.setMessage(getResources().getText(R.string.error_no_camera_preview));
         alertDialog.show();
-    }
-
-    private int[] getImageDimensions(final Uri imageUri) {
-        InputStream imageStream;
-
-        int[] dimensions = new int[2];
-        dimensions[0] = 0;
-        dimensions[1] = 0;
-
-        try {
-            imageStream = getContentResolver().openInputStream(imageUri);
-        } catch (FileNotFoundException e ){
-            Log.d(Util.LOG_TAG, "FileNotFound", e);
-            return dimensions;
-        }
-
-        try {
-            BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imageStream, false);
-
-            Log.d(Util.LOG_TAG, "Image dimensions: " + decoder.getWidth() + "x" + decoder.getHeight());
-
-            dimensions[0] = decoder.getWidth();
-            dimensions[1] = decoder.getHeight();
-        } catch (IOException e){
-            Log.d(Util.LOG_TAG, "IOException", e);
-            return dimensions;
-        } finally {
-            try {
-                imageStream.close();
-            } catch (IOException e) {
-                //
-            }
-        }
-
-        return dimensions;
-    }
-
-    private int getOptimalSampleSize(final Uri imageUri, final int maxWidth, final int maxHeight) {
-        int[] thenImageDimensions = getImageDimensions(imageUri);
-
-        int cWidth = thenImageDimensions[0];
-        int cHeight = thenImageDimensions[1];
-
-        if (cWidth == 0 || cHeight == 0) {
-            return 1;
-        }
-
-        float oldRatio;
-
-        if (cWidth < cHeight) {
-            int smallestHeight = Math.min(cHeight, maxHeight);
-            oldRatio = (float) smallestHeight / cHeight;
-        }
-        else {
-            int smallestWidth = Math.min(cWidth, maxWidth);
-            oldRatio = (float) smallestWidth / cWidth;
-        }
-
-        int sampleSize = (int) Math.max(1, Math.floor((float) 1 / oldRatio));
-
-        return sampleSize;
     }
 }

@@ -1,13 +1,12 @@
 package com.chrisfinke.reenact;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-public class IntroActivity extends Activity {
+public class IntroActivity extends ReenactActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,32 +19,32 @@ public class IntroActivity extends Activity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(
                 Intent.createChooser(intent, getResources().getText(R.string.choose_photo_label)),
-                Util.PICK_IMAGE_TO_REENACT
+                PICK_IMAGE_TO_REENACT
         );
     }
 
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data){
-        Log.d(Util.LOG_TAG, "Activity ended.");
+        Log.d(LOG_TAG, "Activity ended.");
 
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK){
-            Log.d(Util.LOG_TAG, "Result code ok.");
+            Log.d(LOG_TAG, "Result code ok.");
 
-            if (requestCode == Util.PICK_IMAGE_TO_REENACT){
-                Log.d(Util.LOG_TAG, "Requestcode ok.");
+            if (requestCode == PICK_IMAGE_TO_REENACT){
+                Log.d(LOG_TAG, "Requestcode ok.");
 
                 Uri selectedImageUri = data.getData();
 
-                Log.d(Util.LOG_TAG, selectedImageUri.toString());
+                Log.d(LOG_TAG, selectedImageUri.toString());
 
                 Intent intent = new Intent(this, CaptureActivity.class);
-                intent.putExtra(Util.ORIGINAL_PHOTO_PATH, selectedImageUri);
+                intent.putExtra(ORIGINAL_PHOTO_PATH, selectedImageUri);
                 startActivity(intent);
             }
         }
         else {
-            Log.d(Util.LOG_TAG, "activityResult was not OK.");
+            Log.d(LOG_TAG, "activityResult was not OK.");
         }
     }
 
