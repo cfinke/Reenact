@@ -58,4 +58,20 @@ public class IntroActivity extends Activity {
         View helpView = findViewById(R.id.help);
         helpView.setVisibility(View.INVISIBLE);
     }
+
+    public void openTwitter(View view){
+        Intent intent = null;
+
+        try {
+            // get the Twitter app if possible
+            getPackageManager().getPackageInfo("com.twitter.android", 0);
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=ReenactApp"));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        } catch (Exception e) {
+            // no Twitter app, revert to browser
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/ReenactApp"));
+        }
+
+        startActivity(intent);
+    }
 }
