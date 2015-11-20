@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -121,9 +122,22 @@ public class CaptureActivity extends Activity {
 
         InputStream imageStream = null;
 
+        Point windowSize = new Point();
+        getWindowManager().getDefaultDisplay().getSize(windowSize);
+
+        Log.d(Util.LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
+
+        // This image doesn't need to be very high quality, since it's fading in and out.
+        int sampleSize = Math.max(2, getOptimalSampleSize(originalPhotoUri, windowSize.x, windowSize.y) );
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = sampleSize;
+
+        Log.d(Util.LOG_TAG, "Using sampleSize " + sampleSize);
+
         try {
             imageStream = getContentResolver().openInputStream(originalPhotoUri);
-            imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream));
+            imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));
         } catch (FileNotFoundException e) {
             AlertDialog alertDialog = Util.buildFatalAlert(CaptureActivity.this);
             alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
@@ -519,5 +533,31 @@ public class CaptureActivity extends Activity {
         }
 
         return dimensions;
+    }
+
+    private int getOptimalSampleSize(final Uri imageUri, final int maxWidth, final int maxHeight) {
+        int[] thenImageDimensions = getImageDimensions(imageUri);
+
+        int cWidth = thenImageDimensions[0];
+        int cHeight = thenImageDimensions[1];
+
+        if (cWidth == 0 || cHeight == 0) {
+            return 1;
+        }
+
+        float oldRatio;
+
+        if (cWidth < cHeight) {
+            int smallestHeight = Math.min(cHeight, maxHeight);
+            oldRatio = (float) smallestHeight / cHeight;
+        }
+        else {
+            int smallestWidth = Math.min(cWidth, maxWidth);
+            oldRatio = (float) smallestWidth / cWidth;
+        }
+
+        int sampleSize = (int) Math.max(1, Math.floor((float) 1 / oldRatio));
+
+        return sampleSize;
     }
 }

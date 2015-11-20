@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -415,9 +416,24 @@ public class ConfirmActivity extends Activity {
 
         InputStream thenImageStream = null;
 
+        Point windowSize = new Point();
+        getWindowManager().getDefaultDisplay().getSize(windowSize);
+
+        Log.d(Util.LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
+
+        int sampleSize = getOptimalSampleSize(originalPhotoUri, windowSize.x, windowSize.y);
+
+        // These images are side-by-side, so they take up at most a quarter of the size they would if they were full screen.
+        sampleSize *= 2;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = sampleSize;
+
+        Log.d(Util.LOG_TAG, "Using sampleSize " + sampleSize);
+
         try {
             thenImageStream = getContentResolver().openInputStream(originalPhotoUri);
-            imageViewThen.setImageBitmap(BitmapFactory.decodeStream(thenImageStream));
+            imageViewThen.setImageBitmap(BitmapFactory.decodeStream(thenImageStream, null, bitmapOptions));
         } catch (FileNotFoundException e) {
             AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
             alertDialog.setMessage(getResources().getText(R.string.error_original_photo_missing));
@@ -439,9 +455,22 @@ public class ConfirmActivity extends Activity {
 
         InputStream nowImageStream = null;
 
+        Point windowSize = new Point();
+        getWindowManager().getDefaultDisplay().getSize(windowSize);
+
+        Log.d(Util.LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
+
+        int sampleSize = getOptimalSampleSize(newPhotoTempUri, windowSize.x, windowSize.y);
+
+        // These images are side-by-side, so they take up at most a quarter of the size they would if they were full screen.
+        sampleSize *= 2;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = sampleSize;
+
         try {
             nowImageStream = getContentResolver().openInputStream(newPhotoTempUri);
-            imageViewNow.setImageBitmap(BitmapFactory.decodeStream(nowImageStream));
+            imageViewNow.setImageBitmap(BitmapFactory.decodeStream(nowImageStream, null, bitmapOptions));
         } catch (FileNotFoundException e) {
             AlertDialog alertDialog = Util.buildFatalAlert(ConfirmActivity.this);
             alertDialog.setMessage(getResources().getText(R.string.error_new_photo_missing));
@@ -515,5 +544,31 @@ public class ConfirmActivity extends Activity {
         }
 
         return dimensions;
+    }
+
+    private int getOptimalSampleSize(final Uri imageUri, final int maxWidth, final int maxHeight) {
+        int[] thenImageDimensions = getImageDimensions(imageUri);
+
+        int cWidth = thenImageDimensions[0];
+        int cHeight = thenImageDimensions[1];
+
+        if (cWidth == 0 || cHeight == 0) {
+            return 1;
+        }
+
+        float oldRatio;
+
+        if (cWidth < cHeight) {
+            int smallestHeight = Math.min(cHeight, maxHeight);
+            oldRatio = (float) smallestHeight / cHeight;
+        }
+        else {
+            int smallestWidth = Math.min(cWidth, maxWidth);
+            oldRatio = (float) smallestWidth / cWidth;
+        }
+
+        int sampleSize = (int) Math.max(1, Math.floor((float) 1 / oldRatio));
+
+        return sampleSize;
     }
 }
