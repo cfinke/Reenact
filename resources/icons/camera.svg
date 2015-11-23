@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
-	<g fill-rule="evenodd">
-		<path id="svg_2" d="m53,20.62207l17.390594,-20.62207l57.968811,0l17.390656,20.62207l-92.750061,0z" stroke-width="0" fill="#ffffff"/>
-		<rect fill="#ffffff" stroke-width="0" x="0" y="20" width="200" height="160" id="svg_1" rx="20" ry="20" mask="url(#lens)" />
-		<circle cx="100" cy="100" r="50" />
-		<circle fill="#ffffff" stroke-width="0" cx="100" cy="100" r="32" id="svg_9"/>
-	</g>
-</svg>
