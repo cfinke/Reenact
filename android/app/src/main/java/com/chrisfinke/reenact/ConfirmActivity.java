@@ -275,8 +275,15 @@ public class ConfirmActivity extends ReenactActivity {
             oldRatio = (float) smallestHeight / cHeight;
             newRatio = (float) smallestHeight / sHeight;
 
-            oldImageDest = new Rect(0, 0, newOldWidth, newOldHeight);
-            newImageDest = new Rect(newOldWidth, 0, newOldWidth + newNewWidth, newNewHeight);
+            if (isRTL()) {
+                // RTL languages would expect the "before" shot on the right.
+                oldImageDest = new Rect(newNewWidth, 0, newOldWidth + newNewWidth, newOldHeight);
+                newImageDest = new Rect(0, 0, newNewWidth, newNewHeight);
+            }
+            else {
+                oldImageDest = new Rect(0, 0, newOldWidth, newOldHeight);
+                newImageDest = new Rect(newOldWidth, 0, newOldWidth + newNewWidth, newNewHeight);
+            }
         }
         else {
             if (LOG) Log.d(LOG_TAG, "Saving combination image in top-to-bottom format.");
@@ -369,7 +376,14 @@ public class ConfirmActivity extends ReenactActivity {
         int logoOffset = (int) Math.round(totalWidth * 0.01);
 
         Rect logoSrc = new Rect(0, 0, logoBitmap.getWidth(), logoBitmap.getHeight());
-        Rect logoDest = new Rect(cs.getWidth() - logoWidth - logoOffset, cs.getHeight() - logoWidth - logoOffset, cs.getWidth() - logoOffset, cs.getHeight() - logoOffset);
+        Rect logoDest;
+
+        if (isRTL()) {
+            logoDest = new Rect(logoOffset, cs.getHeight() - logoWidth - logoOffset, logoOffset + logoWidth, cs.getHeight() - logoOffset);
+        }
+        else {
+            logoDest = new Rect(cs.getWidth() - logoWidth - logoOffset, cs.getHeight() - logoWidth - logoOffset, cs.getWidth() - logoOffset, cs.getHeight() - logoOffset);
+        }
 
         comboImage.drawBitmap(logoBitmap, logoSrc, logoDest, null);
 

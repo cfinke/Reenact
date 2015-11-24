@@ -157,4 +157,18 @@ public class ReenactActivity extends Activity {
             // getLayoutDirection doesn't exist until API 17
         }
     }
+
+    public boolean isRTL(){
+        try {
+            int layoutDirection = getResources().getConfiguration().getLayoutDirection();
+            if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+                return true;
+            }
+        }
+        catch (NoSuchMethodError e) {
+            // getLayoutDirection doesn't exist until API 17
+        }
+
+        return false;
+    }
 }
