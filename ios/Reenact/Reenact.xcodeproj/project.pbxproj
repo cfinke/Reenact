@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		AC6C4A071C07CCC10092A285 /* CaptureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6C4A061C07CCC10092A285 /* CaptureController.swift */; };
+		AC6C4A0A1C0801C90092A285 /* camera-switch.png in Resources */ = {isa = PBXBuildFile; fileRef = AC6C4A081C0801C90092A285 /* camera-switch.png */; };
+		AC6C4A0B1C0801C90092A285 /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = AC6C4A091C0801C90092A285 /* camera.png */; };
 		ACEC31661C06765C00EFA165 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACEC31651C06765C00EFA165 /* AppDelegate.swift */; };
 		ACEC31681C06765C00EFA165 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACEC31671C06765C00EFA165 /* ViewController.swift */; };
 		ACEC316B1C06765C00EFA165 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACEC31691C06765C00EFA165 /* Main.storyboard */; };
@@ -18,6 +20,8 @@
 
 /* Begin PBXFileReference section */
 		AC6C4A061C07CCC10092A285 /* CaptureController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureController.swift; path = ../CaptureController.swift; sourceTree = "<group>"; };
+		AC6C4A081C0801C90092A285 /* camera-switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "camera-switch.png"; path = "../../../firefox-os/img/icons/camera-switch.png"; sourceTree = "<group>"; };
+		AC6C4A091C0801C90092A285 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = camera.png; path = "../../../firefox-os/img/icons/camera.png"; sourceTree = "<group>"; };
 		ACEC31621C06765C00EFA165 /* Reenact.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reenact.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACEC31651C06765C00EFA165 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ACEC31671C06765C00EFA165 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +66,8 @@
 				ACEC31651C06765C00EFA165 /* AppDelegate.swift */,
 				ACEC31671C06765C00EFA165 /* ViewController.swift */,
 				ACEC31691C06765C00EFA165 /* Main.storyboard */,
+				AC6C4A081C0801C90092A285 /* camera-switch.png */,
+				AC6C4A091C0801C90092A285 /* camera.png */,
 				ACEC316C1C06765C00EFA165 /* Assets.xcassets */,
 				ACEC316E1C06765C00EFA165 /* LaunchScreen.storyboard */,
 				ACEC31771C06767300EFA165 /* logo.png */,
@@ -133,6 +139,8 @@
 				ACEC31701C06765C00EFA165 /* LaunchScreen.storyboard in Resources */,
 				ACEC316D1C06765C00EFA165 /* Assets.xcassets in Resources */,
 				ACEC316B1C06765C00EFA165 /* Main.storyboard in Resources */,
+				AC6C4A0B1C0801C90092A285 /* camera.png in Resources */,
+				AC6C4A0A1C0801C90092A285 /* camera-switch.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

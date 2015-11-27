@@ -11,6 +11,8 @@ import UIKit
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: Properties
     
+    @IBOutlet weak var choosePhotoButton: UIButton!
+    
     let picker = UIImagePickerController()
     
     var originalPhoto:UIImage?
@@ -19,6 +21,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         picker.delegate = self
+        
+        // Set up the aspects of the picker button that couldn't
+        // be done via the storyboard.
+        choosePhotoButton.backgroundColor = UIColor.blackColor()
+        choosePhotoButton.contentEdgeInsets = UIEdgeInsetsMake(7.0, 7.0, 7.0, 7.0)
     }
 
     override func didReceiveMemoryWarning() {
@@ -40,7 +47,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBAction func chooseOriginalPhoto(button: UIButton) {
         print("hi")
         
-        picker.allowsEditing = true
+        picker.allowsEditing = false
         picker.sourceType = .PhotoLibrary
         presentViewController(picker, animated: true, completion: nil)
         
@@ -60,8 +67,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         self.originalPhoto = chosenImage
         self.performSegueWithIdentifier("introToCapture", sender: self)
         
-        
     }
+    
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
       
