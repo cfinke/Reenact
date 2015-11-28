@@ -21,7 +21,7 @@
 
 /* Begin PBXFileReference section */
 		AC2B59001C0977F000C0DC8E /* ConfirmController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmController.swift; sourceTree = "<group>"; };
-		AC6C4A061C07CCC10092A285 /* CaptureController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureController.swift; path = ../CaptureController.swift; sourceTree = "<group>"; };
+		AC6C4A061C07CCC10092A285 /* CaptureController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureController.swift; sourceTree = "<group>"; };
 		AC6C4A081C0801C90092A285 /* camera-switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "camera-switch.png"; path = "../../../firefox-os/img/icons/camera-switch.png"; sourceTree = "<group>"; };
 		AC6C4A091C0801C90092A285 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = camera.png; path = "../../../firefox-os/img/icons/camera.png"; sourceTree = "<group>"; };
 		ACEC31621C06765C00EFA165 /* Reenact.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reenact.app; sourceTree = BUILT_PRODUCTS_DIR; };
