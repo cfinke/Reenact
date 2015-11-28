@@ -106,11 +106,42 @@
                     </view>
                     <connections>
                         <outlet property="originalPhotoOverlay" destination="1R3-ao-8fh" id="8ST-P4-JS6"/>
+                        <segue destination="dgq-ao-qfB" kind="show" identifier="captureToConfirm" id="Fe1-EF-8E7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qt5-cy-kNX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-999" y="-1974"/>
+            <point key="canvasLocation" x="-969" y="-1974"/>
+        </scene>
+        <!--Confirm Controller-->
+        <scene sceneID="sQw-No-NlV">
+            <objects>
+                <viewController id="dgq-ao-qfB" customClass="ConfirmController" customModule="Reenact" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="2AT-lf-kCl"/>
+                        <viewControllerLayoutGuide type="bottom" id="wdQ-ye-lAF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="lfC-My-HlF">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pCP-ys-3Y6">
+                                <rect key="frame" x="31" y="236" width="240" height="128"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BOK-jn-YvL">
+                                <rect key="frame" x="321" y="236" width="240" height="128"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="compareNew" destination="BOK-jn-YvL" id="4s3-Bn-cGD"/>
+                        <outlet property="compareOriginal" destination="pCP-ys-3Y6" id="YlI-ZX-atX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2LR-91-cO2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-262" y="-1974"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="XGK-Pf-V7n">

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AC2B59011C0977F000C0DC8E /* ConfirmController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2B59001C0977F000C0DC8E /* ConfirmController.swift */; };
 		AC6C4A071C07CCC10092A285 /* CaptureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6C4A061C07CCC10092A285 /* CaptureController.swift */; };
 		AC6C4A0A1C0801C90092A285 /* camera-switch.png in Resources */ = {isa = PBXBuildFile; fileRef = AC6C4A081C0801C90092A285 /* camera-switch.png */; };
 		AC6C4A0B1C0801C90092A285 /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = AC6C4A091C0801C90092A285 /* camera.png */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AC2B59001C0977F000C0DC8E /* ConfirmController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmController.swift; sourceTree = "<group>"; };
 		AC6C4A061C07CCC10092A285 /* CaptureController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CaptureController.swift; path = ../CaptureController.swift; sourceTree = "<group>"; };
 		AC6C4A081C0801C90092A285 /* camera-switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "camera-switch.png"; path = "../../../firefox-os/img/icons/camera-switch.png"; sourceTree = "<group>"; };
 		AC6C4A091C0801C90092A285 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = camera.png; path = "../../../firefox-os/img/icons/camera.png"; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 			children = (
 				AC6C4A061C07CCC10092A285 /* CaptureController.swift */,
 				ACEC31651C06765C00EFA165 /* AppDelegate.swift */,
+				AC2B59001C0977F000C0DC8E /* ConfirmController.swift */,
 				ACEC31671C06765C00EFA165 /* IntroController.swift */,
 				ACEC31691C06765C00EFA165 /* Main.storyboard */,
 				AC6C4A081C0801C90092A285 /* camera-switch.png */,
@@ -151,6 +154,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC2B59011C0977F000C0DC8E /* ConfirmController.swift in Sources */,
 				AC6C4A071C07CCC10092A285 /* CaptureController.swift in Sources */,
 				ACEC31681C06765C00EFA165 /* IntroController.swift in Sources */,
 				ACEC31661C06765C00EFA165 /* AppDelegate.swift in Sources */,

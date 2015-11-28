@@ -15,6 +15,8 @@ class CaptureController: UIViewController {
     @IBOutlet weak var originalPhotoOverlay: UIImageView!
 
     var originalPhoto: UIImage?
+    var newPhoto: UIImage?
+    
     let captureSession = AVCaptureSession()
     
     var captureDevice: AVCaptureDevice?
@@ -58,6 +60,17 @@ class CaptureController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (segue.identifier == "captureToConfirm") {
+            print("In prepareForSegue")
+            
+            let svc = segue.destinationViewController as! ConfirmController;
+            
+            svc.originalPhoto = self.originalPhoto
+            svc.newPhoto = self.newPhoto
+        }
     }
     
     func startImageFade() {
@@ -138,7 +151,18 @@ class CaptureController: UIViewController {
     // MARK: Actions
     
     @IBAction func takePicture(sender: UIButton) {
-        
+        if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
+            stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
+                (imageDataSampleBuffer, error) -> Void in
+                let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
+                self.newPhoto = UIImage(data: imageData)
+                
+                
+                print(self.newPhoto)
+                
+                self.performSegueWithIdentifier("captureToConfirm", sender: self)
+            }
+        }
     }
     
     @IBAction func switchCamera(sender: UIButton) {
