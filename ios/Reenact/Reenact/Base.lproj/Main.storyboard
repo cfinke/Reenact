@@ -17,42 +17,10 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="xxR-ml-fNn">
-                                <rect key="frame" x="180" y="78" width="240" height="176"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="150" id="7w0-Ni-TkP"/>
-                                    <constraint firstAttribute="width" constant="150" id="x7i-Es-EJP"/>
-                                </constraints>
-                            </imageView>
-                            <button contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mhE-JS-lH9">
-                                <rect key="frame" x="188" y="424" width="226" height="30"/>
-                                <state key="normal" title="CHOOSE A PHOTO TO REENACT">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="chooseOriginalPhoto:" destination="BYZ-38-t0r" eventType="touchUpInside" id="vnY-xX-9gH"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <color key="backgroundColor" red="0.1019607843" green="0.74509803919999995" blue="0.26274509800000001" alpha="1" colorSpace="calibratedRGB"/>
-                        <constraints>
-                            <constraint firstItem="xxR-ml-fNn" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="50" id="QcJ-eC-LKd"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="mhE-JS-lH9" secondAttribute="bottom" constant="100" id="Vxa-lS-8tX"/>
-                            <constraint firstItem="xxR-ml-fNn" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Whm-fG-CpH"/>
-                            <constraint firstItem="xxR-ml-fNn" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="eB9-cf-Fs6"/>
-                            <constraint firstItem="mhE-JS-lH9" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="kti-8F-F0e"/>
-                        </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="eB9-cf-Fs6"/>
-                            </mask>
-                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="8YE-qm-gkc"/>
                     <connections>
-                        <outlet property="choosePhotoButton" destination="mhE-JS-lH9" id="fPf-pW-QSZ"/>
                         <segue destination="R4P-zn-6yP" kind="show" identifier="introToCapture" id="CTn-3g-Uc2"/>
                     </connections>
                 </viewController>
@@ -182,6 +150,5 @@
     <resources>
         <image name="camera-switch.png" width="128" height="128"/>
         <image name="camera.png" width="128" height="128"/>
-        <image name="logo.png" width="512" height="512"/>
     </resources>
 </document>
