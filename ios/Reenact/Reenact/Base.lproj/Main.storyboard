@@ -42,6 +42,7 @@
                     </view>
                     <connections>
                         <segue destination="dgq-ao-qfB" kind="show" identifier="captureToConfirm" id="Fe1-EF-8E7"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="captureToIntro" id="bSb-WR-xId"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qt5-cy-kNX" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -59,19 +60,10 @@
                     <view key="view" contentMode="scaleToFill" id="lfC-My-HlF">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pCP-ys-3Y6">
-                                <rect key="frame" x="31" y="236" width="240" height="128"/>
-                            </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BOK-jn-YvL">
-                                <rect key="frame" x="321" y="236" width="240" height="128"/>
-                            </imageView>
-                        </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="compareNew" destination="BOK-jn-YvL" id="4s3-Bn-cGD"/>
-                        <outlet property="compareOriginal" destination="pCP-ys-3Y6" id="YlI-ZX-atX"/>
+                        <segue destination="R4P-zn-6yP" kind="show" identifier="confirmToCapture" id="ch7-Jy-4Jm"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2LR-91-cO2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -114,4 +106,8 @@
             </objects>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="ch7-Jy-4Jm"/>
+        <segue reference="bSb-WR-xId"/>
+    </inferredMetricsTieBreakers>
 </document>

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class IntroController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: Properties
     
     let picker = UIImagePickerController()

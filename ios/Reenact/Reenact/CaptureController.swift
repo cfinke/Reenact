@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class CaptureController: UIViewController {
+class CaptureController: ReenactControllerBase {
     // MARK: Properties
     
     var originalPhoto: UIImage?
@@ -27,6 +27,7 @@ class CaptureController: UIViewController {
     let originalPhotoOverlay: UIImageView = UIImageView()
     let captureButton: UIButton = UIButton()
     let switchCameraButton: UIButton = UIButton()
+    let cancelButton: UIButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,11 +68,8 @@ class CaptureController: UIViewController {
         
         view.addSubview(originalPhotoOverlay)
         
-        let buttonContainerSize = 100
-        
         // Add capture button.
         let captureButtonImage = UIImage(named: "camera.png")
-        let captureButtonSize = buttonContainerSize
         captureButton.setImage(captureButtonImage, forState: .Normal)
         captureButton.contentMode = .ScaleAspectFit
         
@@ -79,19 +77,19 @@ class CaptureController: UIViewController {
             // Portrait orientation.
 
             captureButton.frame = CGRect(
-                x: Int(round(view.bounds.width / 2) - round(CGFloat(captureButtonSize) / 2)),
+                x: Int(round(view.bounds.width / 2) - round(CGFloat(buttonContainerSize) / 2)),
                 y: Int(view.bounds.height - CGFloat(buttonContainerSize)),
-                width: captureButtonSize,
-                height: captureButtonSize
+                width: buttonContainerSize,
+                height: buttonContainerSize
             )
         }
         else {
             // Landscape
             captureButton.frame = CGRect(
                 x: Int(view.bounds.width - CGFloat(buttonContainerSize)),
-                y: Int(round(view.bounds.height / 2) - round(CGFloat(captureButtonSize) / 2)),
-                width: captureButtonSize,
-                height: captureButtonSize
+                y: Int(round(view.bounds.height / 2) - round(CGFloat(buttonContainerSize) / 2)),
+                width: buttonContainerSize,
+                height: buttonContainerSize
             )
         }
         
@@ -101,21 +99,20 @@ class CaptureController: UIViewController {
         if captureDevices.count > 1 {
             // Add switch button.
             let switchCameraButtonImage = UIImage(named: "camera-switch.png")
-            let switchCameraButtonSize = 80
             switchCameraButton.setImage(switchCameraButtonImage, forState: .Normal)
             switchCameraButton.contentMode = .ScaleAspectFit
             
             if (view.bounds.size.width < view.bounds.size.height) {
                 // Portrait orientation.
                 switchCameraButton.frame = CGRect(
-                    x: Int(round(view.bounds.width / 6 * 5) - round(CGFloat(switchCameraButtonSize) / 2)),
+                    x: Int(round(view.bounds.width / 6 * 5) - round(CGFloat(smallButtonSize) / 2)),
                     y: Int(
                         view.bounds.height -
                             CGFloat(buttonContainerSize) +
-                            round(CGFloat(buttonContainerSize - switchCameraButtonSize) / 2)
+                            round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
                     ),
-                    width: switchCameraButtonSize,
-                    height: switchCameraButtonSize
+                    width: smallButtonSize,
+                    height: smallButtonSize
                 )
             }
             else {
@@ -124,17 +121,52 @@ class CaptureController: UIViewController {
                     x: Int(
                         view.bounds.width -
                         CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - switchCameraButtonSize) / 2)
+                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
                     ),
-                    y: Int(round(view.bounds.height / 6 * 5) - round(CGFloat(switchCameraButtonSize) / 2)),
-                    width: switchCameraButtonSize,
-                    height: switchCameraButtonSize
+                    y: Int(round(view.bounds.height / 6 * 5) - round(CGFloat(smallButtonSize) / 2)),
+                    width: smallButtonSize,
+                    height: smallButtonSize
                 )
             }
             
             switchCameraButton.addTarget(self, action:"switchCamera:", forControlEvents: .TouchUpInside)
             view.addSubview(switchCameraButton)
         }
+        
+        let cancelButtonImage = UIImage(named: "back.png")
+        cancelButton.setImage(cancelButtonImage, forState: .Normal)
+        cancelButton.contentMode = .ScaleAspectFit
+        
+        if (view.bounds.size.width < view.bounds.size.height) {
+            // Portrait orientation.
+            cancelButton.frame = CGRect(
+                x: Int(round(view.bounds.width / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
+                y: Int(
+                    view.bounds.height -
+                        CGFloat(buttonContainerSize) +
+                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                ),
+                width: smallButtonSize,
+                height: smallButtonSize
+            )
+        }
+        else {
+            // Landscape
+            cancelButton.frame = CGRect(
+                x: Int(
+                    view.bounds.width -
+                        CGFloat(buttonContainerSize) +
+                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                ),
+                y: Int(round(view.bounds.height / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
+                width: smallButtonSize,
+                height: smallButtonSize
+            )
+        }
+        
+        cancelButton.addTarget(self, action:"cancelCapture:", forControlEvents: .TouchUpInside)
+        view.addSubview(cancelButton)
+
         
         // Start fading the overlay image.
         startImageFade()
@@ -153,9 +185,9 @@ class CaptureController: UIViewController {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        print("In prepareForSegue")
+        
         if (segue.identifier == "captureToConfirm") {
-            print("In prepareForSegue")
-            
             let svc = segue.destinationViewController as! ConfirmController;
             
             svc.originalPhoto = self.originalPhoto
@@ -225,12 +257,6 @@ class CaptureController: UIViewController {
             view.addSubview(cameraPreview)
             view.sendSubviewToBack(cameraPreview)
         }
-        
-        
-        
-        
-        
-        
     }
     
     func endSession() {
@@ -267,6 +293,10 @@ class CaptureController: UIViewController {
         print(cameraIndex)
         beginSession()
         
+    }
+    
+    func cancelCapture(sender: UIButton!) {
+        self.performSegueWithIdentifier("captureToIntro", sender: self)
     }
     
     // MARK: Delegates
