@@ -86,7 +86,7 @@
                                     <action selector="switchCamera:" destination="R4P-zn-6yP" eventType="touchUpInside" id="Daq-1L-Ob9"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1R3-ao-8fh">
+                            <imageView userInteractionEnabled="NO" alpha="0.75" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1R3-ao-8fh">
                                 <rect key="frame" x="0.0" y="64" width="600" height="436"/>
                             </imageView>
                         </subviews>

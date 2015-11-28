@@ -30,6 +30,7 @@ class CaptureController: UIViewController {
         print("Capture Controller did load")
         // Set originalPhotoOverlay to contain the chosen image.
         originalPhotoOverlay.image = self.originalPhoto
+        startImageFade()
         print("Set image")
         print(self.originalPhoto)
         
@@ -57,6 +58,31 @@ class CaptureController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func startImageFade() {
+        fadeOut()
+    }
+    
+    func fadeOut() {
+        UIView.animateWithDuration( 5.0, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations : {
+            self.originalPhotoOverlay.alpha = 0;
+            }, completion : {
+                (finished: Bool) -> Void in
+                self.fadeIn()
+            }
+        )
+    }
+    
+    func fadeIn() {
+        UIView.animateWithDuration( 5.0, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations : {
+            self.originalPhotoOverlay.alpha = 0.75
+            }, completion : {
+                (finished: Bool) -> Void in
+                self.fadeOut()
+            }
+        )
+        
     }
     
     func getSelectedCamera() -> AVCaptureDevice {
