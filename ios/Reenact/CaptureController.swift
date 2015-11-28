@@ -12,8 +12,6 @@ import AVFoundation
 class CaptureController: UIViewController {
     // MARK: Properties
     
-    @IBOutlet weak var originalPhotoOverlay: UIImageView!
-
     var originalPhoto: UIImage?
     var newPhoto: UIImage?
     
@@ -25,21 +23,15 @@ class CaptureController: UIViewController {
     var deviceInput: AVCaptureDeviceInput?
     let stillImageOutput = AVCaptureStillImageOutput()
     
+    // UI Elements
+    let originalPhotoOverlay: UIImageView = UIImageView()
+    let captureButton: UIButton = UIButton()
+    let switchCameraButton: UIButton = UIButton()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
-        print("Capture Controller did load")
-        // Set originalPhotoOverlay to contain the chosen image.
-        originalPhotoOverlay.image = self.originalPhoto
-        startImageFade()
-        print("Set image")
-        print(self.originalPhoto)
-        
-        captureSession.sessionPreset = AVCaptureSessionPresetLow
         let devices = AVCaptureDevice.devices()
-
-        print(devices)
         
         for device in devices {
             // Make sure this particular device supports video (which apparently implies support for photos)
@@ -48,6 +40,104 @@ class CaptureController: UIViewController {
                 captureDevices.append(device as! AVCaptureDevice)
             }
         }
+
+        // Add the original image overlay
+        originalPhotoOverlay.image = originalPhoto
+        originalPhotoOverlay.contentMode = .ScaleAspectFit
+        originalPhotoOverlay.alpha = 0.75
+        
+        if (view.bounds.size.width < view.bounds.size.height) {
+            // Portrait orientation.
+            originalPhotoOverlay.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: view.bounds.width,
+                height: view.bounds.height - 100
+            )
+        }
+        else {
+            // Landscape orientation.
+            originalPhotoOverlay.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: view.bounds.width - 100,
+                height: view.bounds.height
+            )
+        }
+        
+        view.addSubview(originalPhotoOverlay)
+        
+        let buttonContainerSize = 100
+        
+        // Add capture button.
+        let captureButtonImage = UIImage(named: "camera.png")
+        let captureButtonSize = buttonContainerSize
+        captureButton.setImage(captureButtonImage, forState: .Normal)
+        captureButton.contentMode = .ScaleAspectFit
+        
+        if (view.bounds.size.width < view.bounds.size.height) {
+            // Portrait orientation.
+
+            captureButton.frame = CGRect(
+                x: Int(round(view.bounds.width / 2) - round(CGFloat(captureButtonSize) / 2)),
+                y: Int(view.bounds.height - CGFloat(buttonContainerSize)),
+                width: captureButtonSize,
+                height: captureButtonSize
+            )
+        }
+        else {
+            // Landscape
+            captureButton.frame = CGRect(
+                x: Int(view.bounds.width - CGFloat(buttonContainerSize)),
+                y: Int(round(view.bounds.height / 2) - round(CGFloat(captureButtonSize) / 2)),
+                width: captureButtonSize,
+                height: captureButtonSize
+            )
+        }
+        
+        captureButton.addTarget(self, action:"takePicture:", forControlEvents: .TouchUpInside)
+        view.addSubview(captureButton)
+        
+        if captureDevices.count > 1 {
+            // Add switch button.
+            let switchCameraButtonImage = UIImage(named: "camera-switch.png")
+            let switchCameraButtonSize = 80
+            switchCameraButton.setImage(switchCameraButtonImage, forState: .Normal)
+            switchCameraButton.contentMode = .ScaleAspectFit
+            
+            if (view.bounds.size.width < view.bounds.size.height) {
+                // Portrait orientation.
+                switchCameraButton.frame = CGRect(
+                    x: Int(round(view.bounds.width / 6 * 5) - round(CGFloat(switchCameraButtonSize) / 2)),
+                    y: Int(
+                        view.bounds.height -
+                            CGFloat(buttonContainerSize) +
+                            round(CGFloat(buttonContainerSize - switchCameraButtonSize) / 2)
+                    ),
+                    width: switchCameraButtonSize,
+                    height: switchCameraButtonSize
+                )
+            }
+            else {
+                // Landscape
+                switchCameraButton.frame = CGRect(
+                    x: Int(
+                        view.bounds.width -
+                        CGFloat(buttonContainerSize) +
+                        round(CGFloat(buttonContainerSize - switchCameraButtonSize) / 2)
+                    ),
+                    y: Int(round(view.bounds.height / 6 * 5) - round(CGFloat(switchCameraButtonSize) / 2)),
+                    width: switchCameraButtonSize,
+                    height: switchCameraButtonSize
+                )
+            }
+            
+            switchCameraButton.addTarget(self, action:"switchCamera:", forControlEvents: .TouchUpInside)
+            view.addSubview(switchCameraButton)
+        }
+        
+        // Start fading the overlay image.
+        startImageFade()
         
         if captureDevices.count != 0 {
             beginSession()
@@ -103,6 +193,7 @@ class CaptureController: UIViewController {
     }
     
     func beginSession() {
+        captureSession.sessionPreset = AVCaptureSessionPresetLow
 
         captureDevice = getSelectedCamera()
         
@@ -150,7 +241,8 @@ class CaptureController: UIViewController {
     
     // MARK: Actions
     
-    @IBAction func takePicture(sender: UIButton) {
+    func takePicture(sender: UIButton!) {
+        print("Taking a picture.")
         if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
                 (imageDataSampleBuffer, error) -> Void in
@@ -165,7 +257,7 @@ class CaptureController: UIViewController {
         }
     }
     
-    @IBAction func switchCamera(sender: UIButton) {
+    func switchCamera(sender: UIButton!) {
         print("Switching camera")
         endSession()
         print("Ended session")

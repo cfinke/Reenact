@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Intro Controller-->
@@ -39,41 +38,9 @@
                     <view key="view" contentMode="scaleToFill" id="gxa-xm-vwW">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jMg-dT-seU">
-                                <rect key="frame" x="236" y="507" width="128" height="106"/>
-                                <state key="normal" image="camera.png"/>
-                                <connections>
-                                    <action selector="takePicture:" destination="R4P-zn-6yP" eventType="touchUpInside" id="Ha8-Ww-CWX"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V7M-fn-Uct">
-                                <rect key="frame" x="448" y="525" width="69" height="69"/>
-                                <state key="normal" image="camera-switch.png"/>
-                                <connections>
-                                    <action selector="switchCamera:" destination="R4P-zn-6yP" eventType="touchUpInside" id="Daq-1L-Ob9"/>
-                                </connections>
-                            </button>
-                            <imageView userInteractionEnabled="NO" alpha="0.75" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1R3-ao-8fh">
-                                <rect key="frame" x="0.0" y="64" width="600" height="436"/>
-                            </imageView>
-                        </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="jMg-dT-seU" firstAttribute="centerX" secondItem="gxa-xm-vwW" secondAttribute="centerX" id="1vF-hj-j6M"/>
-                            <constraint firstItem="TTW-kU-crG" firstAttribute="top" secondItem="1R3-ao-8fh" secondAttribute="bottom" constant="100" id="AYS-TI-auQ"/>
-                            <constraint firstItem="1R3-ao-8fh" firstAttribute="width" secondItem="gxa-xm-vwW" secondAttribute="width" id="Cvk-ML-E4c"/>
-                            <constraint firstItem="jMg-dT-seU" firstAttribute="top" secondItem="1R3-ao-8fh" secondAttribute="bottom" constant="10" id="IhC-jh-C4o"/>
-                            <constraint firstItem="V7M-fn-Uct" firstAttribute="top" secondItem="1R3-ao-8fh" secondAttribute="bottom" constant="20" id="IoF-1h-t37"/>
-                            <constraint firstItem="TTW-kU-crG" firstAttribute="top" secondItem="V7M-fn-Uct" secondAttribute="bottom" constant="20" id="NQu-io-sZs"/>
-                            <constraint firstItem="1R3-ao-8fh" firstAttribute="centerX" secondItem="gxa-xm-vwW" secondAttribute="centerX" id="OxL-0U-sfi"/>
-                            <constraint firstItem="TTW-kU-crG" firstAttribute="top" secondItem="jMg-dT-seU" secondAttribute="bottom" constant="10" id="VRx-JL-aTN"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="V7M-fn-Uct" secondAttribute="trailing" constant="10" id="cTW-1Q-08h"/>
-                            <constraint firstItem="1R3-ao-8fh" firstAttribute="top" secondItem="wm6-jY-wGJ" secondAttribute="bottom" id="dbM-Gl-fHz"/>
-                        </constraints>
                     </view>
                     <connections>
-                        <outlet property="originalPhotoOverlay" destination="1R3-ao-8fh" id="8ST-P4-JS6"/>
                         <segue destination="dgq-ao-qfB" kind="show" identifier="captureToConfirm" id="Fe1-EF-8E7"/>
                     </connections>
                 </viewController>
@@ -147,8 +114,4 @@
             </objects>
         </scene>
     </scenes>
-    <resources>
-        <image name="camera-switch.png" width="128" height="128"/>
-        <image name="camera.png" width="128" height="128"/>
-    </resources>
 </document>
