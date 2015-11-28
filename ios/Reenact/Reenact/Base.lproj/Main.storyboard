@@ -6,10 +6,10 @@
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Intro Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Reenact" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="IntroController" customModule="Reenact" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -72,9 +72,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleAspectFit" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="r1E-N0-d61">
-                                <rect key="frame" x="0.0" y="64" width="600" height="436"/>
-                            </containerView>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jMg-dT-seU">
                                 <rect key="frame" x="236" y="507" width="128" height="106"/>
                                 <state key="normal" image="camera.png"/>
@@ -89,45 +86,25 @@
                                     <action selector="switchCamera:" destination="R4P-zn-6yP" eventType="touchUpInside" id="Daq-1L-Ob9"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1R3-ao-8fh">
-                                <rect key="frame" x="0.0" y="63" width="600" height="436"/>
+                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1R3-ao-8fh">
+                                <rect key="frame" x="0.0" y="64" width="600" height="436"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="r1E-N0-d61" secondAttribute="trailing" id="0lA-98-whT"/>
                             <constraint firstItem="jMg-dT-seU" firstAttribute="centerX" secondItem="gxa-xm-vwW" secondAttribute="centerX" id="1vF-hj-j6M"/>
-                            <constraint firstItem="r1E-N0-d61" firstAttribute="top" secondItem="wm6-jY-wGJ" secondAttribute="bottom" id="5kv-9s-N6h"/>
-                            <constraint firstItem="r1E-N0-d61" firstAttribute="centerX" secondItem="gxa-xm-vwW" secondAttribute="centerX" id="7U6-0P-nq1"/>
                             <constraint firstItem="TTW-kU-crG" firstAttribute="top" secondItem="1R3-ao-8fh" secondAttribute="bottom" constant="100" id="AYS-TI-auQ"/>
                             <constraint firstItem="1R3-ao-8fh" firstAttribute="width" secondItem="gxa-xm-vwW" secondAttribute="width" id="Cvk-ML-E4c"/>
                             <constraint firstItem="jMg-dT-seU" firstAttribute="top" secondItem="1R3-ao-8fh" secondAttribute="bottom" constant="10" id="IhC-jh-C4o"/>
                             <constraint firstItem="V7M-fn-Uct" firstAttribute="top" secondItem="1R3-ao-8fh" secondAttribute="bottom" constant="20" id="IoF-1h-t37"/>
                             <constraint firstItem="TTW-kU-crG" firstAttribute="top" secondItem="V7M-fn-Uct" secondAttribute="bottom" constant="20" id="NQu-io-sZs"/>
                             <constraint firstItem="1R3-ao-8fh" firstAttribute="centerX" secondItem="gxa-xm-vwW" secondAttribute="centerX" id="OxL-0U-sfi"/>
-                            <constraint firstItem="TTW-kU-crG" firstAttribute="top" secondItem="r1E-N0-d61" secondAttribute="bottom" constant="100" id="UK7-EE-ZjB"/>
                             <constraint firstItem="TTW-kU-crG" firstAttribute="top" secondItem="jMg-dT-seU" secondAttribute="bottom" constant="10" id="VRx-JL-aTN"/>
-                            <constraint firstItem="TTW-kU-crG" firstAttribute="top" secondItem="r1E-N0-d61" secondAttribute="bottom" constant="100" id="aNa-My-Wpf"/>
                             <constraint firstAttribute="trailingMargin" secondItem="V7M-fn-Uct" secondAttribute="trailing" constant="10" id="cTW-1Q-08h"/>
                             <constraint firstItem="1R3-ao-8fh" firstAttribute="top" secondItem="wm6-jY-wGJ" secondAttribute="bottom" id="dbM-Gl-fHz"/>
-                            <constraint firstItem="r1E-N0-d61" firstAttribute="width" secondItem="gxa-xm-vwW" secondAttribute="width" id="euV-0y-lB8"/>
-                            <constraint firstItem="r1E-N0-d61" firstAttribute="width" secondItem="gxa-xm-vwW" secondAttribute="width" id="k1D-2q-4WU"/>
-                            <constraint firstItem="r1E-N0-d61" firstAttribute="top" secondItem="wm6-jY-wGJ" secondAttribute="bottom" id="mGN-HZ-yg7"/>
-                            <constraint firstItem="r1E-N0-d61" firstAttribute="leading" secondItem="gxa-xm-vwW" secondAttribute="leadingMargin" id="p4F-A7-V4C"/>
-                            <constraint firstItem="r1E-N0-d61" firstAttribute="top" secondItem="wm6-jY-wGJ" secondAttribute="bottom" id="rNH-Hc-A5K"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="euV-0y-lB8"/>
-                                <exclude reference="mGN-HZ-yg7"/>
-                                <exclude reference="rNH-Hc-A5K"/>
-                                <exclude reference="UK7-EE-ZjB"/>
-                                <exclude reference="aNa-My-Wpf"/>
-                            </mask>
-                        </variation>
                     </view>
                     <connections>
-                        <outlet property="cameraPreviewContainer" destination="r1E-N0-d61" id="cNv-r7-fd8"/>
                         <outlet property="originalPhotoOverlay" destination="1R3-ao-8fh" id="8ST-P4-JS6"/>
                     </connections>
                 </viewController>
@@ -157,6 +134,10 @@
         <scene sceneID="E57-tg-RBi">
             <objects>
                 <viewController id="nvH-tc-34n" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="L5h-Yu-owy"/>
+                        <viewControllerLayoutGuide type="bottom" id="a8C-Lq-diq"/>
+                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="tzu-MP-MpR">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

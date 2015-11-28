@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  IntroController.swift
 //  Reenact
 //
 //  Created by Christopher Finke on 11/25/15.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class IntroController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: Properties
     
     @IBOutlet weak var choosePhotoButton: UIButton!

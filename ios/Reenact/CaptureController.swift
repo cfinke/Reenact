@@ -13,7 +13,6 @@ class CaptureController: UIViewController {
     // MARK: Properties
     
     @IBOutlet weak var originalPhotoOverlay: UIImageView!
-    @IBOutlet weak var cameraPreviewContainer: UIView!
 
     var originalPhoto: UIImage?
     let captureSession = AVCaptureSession()
@@ -22,6 +21,7 @@ class CaptureController: UIViewController {
     var captureDevices: [AVCaptureDevice] = []
     var cameraIndex: Int = 0
     var deviceInput: AVCaptureDeviceInput?
+    let stillImageOutput = AVCaptureStillImageOutput()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,6 +64,7 @@ class CaptureController: UIViewController {
     }
     
     func beginSession() {
+
         captureDevice = getSelectedCamera()
         
         do {
@@ -72,13 +73,34 @@ class CaptureController: UIViewController {
             print( "That didn't work. :(");
             return
         }
-
+        
         captureSession.addInput(deviceInput)
 
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        self.cameraPreviewContainer.layer.addSublayer(previewLayer)
-        previewLayer.frame = self.cameraPreviewContainer.layer.frame
+        
+        let bounds = self.originalPhotoOverlay.layer.bounds;
+        
+        captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         captureSession.startRunning()
+        stillImageOutput.outputSettings = [AVVideoCodecKey:AVVideoCodecJPEG]
+        if captureSession.canAddOutput(stillImageOutput) {
+            captureSession.addOutput(stillImageOutput)
+        }
+        if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
+            previewLayer.bounds = CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height)
+            previewLayer.position = CGPointMake(bounds.midX, bounds.midY)
+            previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+            let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height))
+            cameraPreview.layer.addSublayer(previewLayer)
+//            cameraPreview.addGestureRecognizer(UITapGestureRecognizer(target: self, action:"saveToCamera:"))
+            view.addSubview(cameraPreview)
+            view.sendSubviewToBack(cameraPreview)
+        }
+        
+        
+        
+        
+        
+        
     }
     
     func endSession() {
@@ -90,6 +112,7 @@ class CaptureController: UIViewController {
     // MARK: Actions
     
     @IBAction func takePicture(sender: UIButton) {
+        
     }
     
     @IBAction func switchCamera(sender: UIButton) {
