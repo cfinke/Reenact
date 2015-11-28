@@ -17,6 +17,6 @@ class ReenactControllerBase: UIViewController {
         super.viewDidLoad();
         
         // Hide the navigation bar. We'll take care of navigation elements ourself.
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
 }
