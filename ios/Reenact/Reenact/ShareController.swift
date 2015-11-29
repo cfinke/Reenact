@@ -72,7 +72,22 @@ class ShareController: ReenactControllerBase {
         shareButton.addTarget(self, action:"share:", forControlEvents: .TouchUpInside)
         view.addSubview(shareButton)
         
-        print(combinedPhoto)
+        // Add restart button.
+        let restartButtonImage = UIImage(named: "replay.png")
+        restartButton.setImage(restartButtonImage, forState: .Normal)
+        restartButton.contentMode = .ScaleAspectFit
+        restartButton.alpha = 0.75;
+        restartButton.backgroundColor = UIColor.blackColor()
+        
+        restartButton.frame = CGRect(
+            x: 30,
+            y: 30,
+            width: smallButtonSize,
+            height: smallButtonSize
+        )
+        
+        restartButton.addTarget(self, action:"startOver:", forControlEvents: .TouchUpInside)
+        view.addSubview(restartButton)
     }
     
     override func didReceiveMemoryWarning() {
