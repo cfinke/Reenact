@@ -20,6 +20,20 @@ class ReenactControllerBase: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
+    override func shouldAutorotate() -> Bool {
+        return true
+    }
+    
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        return [
+            UIInterfaceOrientationMask.Portrait,
+            UIInterfaceOrientationMask.PortraitUpsideDown,
+            UIInterfaceOrientationMask.LandscapeRight,
+            UIInterfaceOrientationMask.LandscapeLeft,
+            UIInterfaceOrientationMask.Landscape
+        ]
+    }
+    
     override func viewWillTransitionToSize(size: CGSize,
         withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator);
@@ -36,11 +50,5 @@ class ReenactControllerBase: UIViewController {
     
     func buildLayout(size: CGSize){
         view.subviews.forEach({ $0.removeFromSuperview() })
-    }
-    
-    func alert(message: String) {
-        let alert = UIAlertController(title: "Uh-oh", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "I understand", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
     }
 }

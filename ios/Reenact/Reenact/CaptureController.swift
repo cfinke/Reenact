@@ -114,7 +114,7 @@ class CaptureController: ReenactControllerBase {
     }
     
     func getSelectedCamera() -> AVCaptureDevice? {
-        if captureDevices.count > cameraIndex + 1 {
+        if cameraIndex < captureDevices.count {
             return captureDevices[cameraIndex]
         }
         
@@ -125,7 +125,7 @@ class CaptureController: ReenactControllerBase {
         captureDevice = getSelectedCamera()
         
         if (nil == captureDevice) {
-            alert("The camera wouldn't start.")
+            print("The camera wouldn't start.")
             return
         }
         
@@ -134,7 +134,7 @@ class CaptureController: ReenactControllerBase {
         do {
             try deviceInput = AVCaptureDeviceInput(device: captureDevice)
         } catch _ {
-            alert("Reenact couldn't load the camera preview.")
+            print("Reenact couldn't load the camera preview.")
             return
         }
         

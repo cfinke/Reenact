@@ -17,6 +17,7 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
     
     let choosePhotoButton: UIButton = UIButton()
     let reenactLogoView: UIImageView = UIImageView()
+    let helpButton: UIButton = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,6 +103,21 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         // @todo Use auto-layout to center this button horizontally and size it vertically and horizontally.
         
         view.addSubview(choosePhotoButton)
+        
+        let helpButtonImage = UIImage(named:"help.png")
+        let helpButtonSize = 30
+        let helpButtonOffset = 30
+        helpButton.setImage(helpButtonImage, forState: .Normal)
+        helpButton.frame = CGRect(
+            x: Int(size.width - CGFloat(helpButtonOffset) - CGFloat(helpButtonSize)),
+            y: helpButtonOffset,
+            width: helpButtonSize,
+            height: helpButtonSize
+        )
+        helpButton.contentMode = .ScaleAspectFit
+        helpButton.addTarget(self, action:"showHelp:", forControlEvents: .TouchUpInside)
+        helpButton.alpha = 0.75
+        view.addSubview(helpButton)
     }
 }
 
