@@ -27,6 +27,7 @@ class ConfirmController: ReenactControllerBase {
         compareOriginal.contentMode = .ScaleAspectFit
         
         if (view.bounds.size.width < view.bounds.size.height) {
+            // Portrait orientation.
             let compareOriginalWidth = round( view.bounds.size.width / 2 )
             
             compareOriginal.frame = CGRect(
@@ -36,11 +37,17 @@ class ConfirmController: ReenactControllerBase {
                 height: view.bounds.height - 100
             )
         
-            // Portrait orientation.
         }
         else {
             // Landscape orientation.
+            let compareOriginalWidth = round((view.bounds.size.width - 100) / 2)
             
+            compareOriginal.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: compareOriginalWidth,
+                height: view.bounds.height
+            )
         }
         
         view.addSubview(compareOriginal)
@@ -61,6 +68,14 @@ class ConfirmController: ReenactControllerBase {
         }
         else {
             // Landscape orientation.
+            let compareNewWidth = round((view.bounds.size.width - 100) / 2)
+            
+            compareNew.frame = CGRect(
+                x: round((view.bounds.width - 100) / 2),
+                y: 0,
+                width: compareNewWidth,
+                height: view.bounds.height
+            )
         }
         
         view.addSubview(compareNew)
@@ -93,7 +108,7 @@ class ConfirmController: ReenactControllerBase {
         confirmButton.addTarget(self, action:"confirmShot:", forControlEvents: .TouchUpInside)
         view.addSubview(confirmButton)
         
-        // Add switch button.
+        // Add cancel button.
         let cancelButtonImage = UIImage(named: "back.png")
         cancelButton.setImage(cancelButtonImage, forState: .Normal)
         cancelButton.contentMode = .ScaleAspectFit
@@ -147,9 +162,10 @@ class ConfirmController: ReenactControllerBase {
     // MARK: Actions
     
     func confirmShot(sender: UIButton) {
-        // Merge the two images.
+        // Save the new shot separately.
+        UIImageWriteToSavedPhotosAlbum(newPhoto!, nil, nil, nil)
         
-        // Portrait:
+        // Merge the two images.
         
         let oldImageHeight = originalPhoto!.size.height
         let oldImageWidth = originalPhoto!.size.width
@@ -157,22 +173,49 @@ class ConfirmController: ReenactControllerBase {
         let newImageHeight = newPhoto!.size.height
         let newImageWidth = newPhoto!.size.width
         
-        let smallestHeight = min(originalPhoto!.size.height, newPhoto!.size.height)
-        let totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth )
+        var finalSize: CGSize
+        var originalDest: CGRect
+        var newDest: CGRect
         
-        let finalSize = CGSize(width: totalWidth, height: smallestHeight)
+        if (oldImageWidth <= oldImageHeight) {
+            // Portrait:
+            let smallestHeight = min(originalPhoto!.size.height, newPhoto!.size.height)
+            let totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth )
+            
+            finalSize = CGSize(width: totalWidth, height: smallestHeight)
+
+            originalDest = CGRect(x: 0, y: 0, width:( ( smallestHeight / oldImageHeight ) * oldImageWidth ), height: smallestHeight)
+            newDest = CGRect(x: ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), y: 0, width: ( ( smallestHeight / newImageHeight ) * newImageWidth ), height: smallestHeight)
+        }
+        else {
+            // Landscape
+            let smallestWidth = min(originalPhoto!.size.width, newPhoto!.size.width)
+            let totalHeight = ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) + ( ( smallestWidth / newImageWidth ) * newImageHeight )
+            
+            finalSize = CGSize(width: smallestWidth, height: totalHeight)
+            
+            originalDest = CGRect(x: 0, y: 0, width: smallestWidth, height: ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) )
+            newDest = CGRect(x: 0, y:( ( smallestWidth / oldImageWidth ) * oldImageHeight ), width: smallestWidth, height:( ( smallestWidth / newImageWidth ) * newImageHeight ) )
+        }
         
         UIGraphicsBeginImageContext(finalSize)
         
-        let originalDest = CGRect(x: 0, y: 0, width:( ( smallestHeight / oldImageHeight ) * oldImageWidth ), height: smallestHeight)
         originalPhoto!.drawInRect(originalDest)
-        
-        let newDest = CGRect(x: ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), y: 0, width: ( ( smallestHeight / newImageHeight ) * newImageWidth ), height: smallestHeight)
         newPhoto!.drawInRect(newDest)
+        
+        // Add the Reenact logo
+        let logoWidth = round(finalSize.width * 0.04)
+        let logoOffset = round(finalSize.width * 0.01)
+        let logoDest = CGRect(x: finalSize.width - logoWidth - logoOffset, y: finalSize.height - logoWidth - logoOffset, width: logoWidth, height: logoWidth)
+        let logo = UIImage(named: "logo.png")
+        logo!.drawInRect(logoDest)
         
         combinedPhoto = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
+        // Save the combined image.
+        UIImageWriteToSavedPhotosAlbum(combinedPhoto!, nil, nil, nil)
+        
         // Send the final image off to the share controller.
         self.performSegueWithIdentifier("confirmToShare", sender: self)
     }
