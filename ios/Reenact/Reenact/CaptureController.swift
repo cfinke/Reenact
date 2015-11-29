@@ -181,8 +181,8 @@ class CaptureController: ReenactControllerBase {
     func takePicture(sender: UIButton!) {
         print("Taking a picture.")
         
+        // Make the camera set the orientation of the image when it's taken.
         let videoOrientation = previewLayer.connection.videoOrientation
-        
         stillImageOutput.connectionWithMediaType(AVMediaTypeVideo).videoOrientation = videoOrientation
         
         if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
@@ -227,7 +227,7 @@ class CaptureController: ReenactControllerBase {
                 x: 0,
                 y: 0,
                 width: size.width,
-                height: size.height - 100
+                height: size.height - buttonContainerSize
             )
         }
         else {
@@ -235,7 +235,7 @@ class CaptureController: ReenactControllerBase {
             originalPhotoOverlay.frame = CGRect(
                 x: 0,
                 y: 0,
-                width: size.width - 100,
+                width: size.width - buttonContainerSize,
                 height: size.height
             )
         }

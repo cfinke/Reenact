@@ -19,18 +19,43 @@ class ShareController: ReenactControllerBase {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        buildLayout(view.bounds.size)
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    // MARK: Actions
+    func startOver(sender: UIButton!){
+        self.performSegueWithIdentifier("shareToIntro", sender: self)
+    }
+    
+    func share(sender: UIButton!) {
+        let objectsToShare = [combinedPhoto!]
+        let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+            
+        self.presentViewController(activityVC, animated: true, completion: nil)
+    }
+    
+    // MARK: Delegates
+    
+    override func buildLayout(size: CGSize) {
+        super.buildLayout(size)
         
         // Load the comparison image.
         comparisonImage.image = combinedPhoto
         comparisonImage.contentMode = .ScaleAspectFit
         
-        if (view.bounds.size.width < view.bounds.size.height) {
+        if (size.width < size.height) {
             // Portrait orientation.
             comparisonImage.frame = CGRect(
                 x: 0,
                 y: 0,
-                width: Int(view.bounds.size.width),
-                height: Int(view.bounds.height - CGFloat(buttonContainerSize))
+                width: Int(size.width),
+                height: Int(size.height - CGFloat(buttonContainerSize))
             )
         }
         else {
@@ -38,8 +63,8 @@ class ShareController: ReenactControllerBase {
             comparisonImage.frame = CGRect(
                 x: 0,
                 y: 0,
-                width: Int(view.bounds.width - CGFloat(buttonContainerSize)),
-                height: Int(view.bounds.height)
+                width: Int(size.width - CGFloat(buttonContainerSize)),
+                height: Int(size.height)
             )
         }
         
@@ -50,22 +75,22 @@ class ShareController: ReenactControllerBase {
         shareButton.setImage(shareButtonImage, forState: .Normal)
         shareButton.contentMode = .ScaleAspectFit
         
-        if (view.bounds.size.width < view.bounds.size.height) {
+        if (size.width < size.height) {
             // Portrait orientation.
             shareButton.frame = CGRect(
-                x: Int(round(view.bounds.width / 2) - round(CGFloat(buttonContainerSize) / 2)),
-                y: Int(view.bounds.height - CGFloat(buttonContainerSize)),
-                width: buttonContainerSize,
-                height: buttonContainerSize
+                x: Int(round(size.width / 2) - round(CGFloat(buttonContainerSize) / 2)),
+                y: Int(size.height - CGFloat(buttonContainerSize)),
+                width: smallButtonSize,
+                height: smallButtonSize
             )
         }
         else {
             // Landscape
             shareButton.frame = CGRect(
-                x: Int(view.bounds.width - CGFloat(buttonContainerSize)),
-                y: Int(round(view.bounds.height / 2) - round(CGFloat(buttonContainerSize) / 2)),
-                width: buttonContainerSize,
-                height: buttonContainerSize
+                x: Int(size.width - CGFloat(buttonContainerSize)),
+                y: Int(round(size.height / 2) - round(CGFloat(buttonContainerSize) / 2)),
+                width: smallButtonSize,
+                height: smallButtonSize
             )
         }
         
@@ -88,26 +113,7 @@ class ShareController: ReenactControllerBase {
         
         restartButton.addTarget(self, action:"startOver:", forControlEvents: .TouchUpInside)
         view.addSubview(restartButton)
+        
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    // MARK: Actions
-    func startOver(sender: UIButton!){
-        self.performSegueWithIdentifier("shareToIntro", sender: self)
-    }
-    
-    func share(sender: UIButton!) {
-        let objectsToShare = [combinedPhoto!]
-        let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-            
-        self.presentViewController(activityVC, animated: true, completion: nil)
-    }
-    
-    // MARK: Delegates
-    
 }
 

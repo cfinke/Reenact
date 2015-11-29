@@ -23,125 +23,7 @@ class ConfirmController: ReenactControllerBase {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        compareOriginal.image = originalPhoto
-        compareOriginal.contentMode = .ScaleAspectFit
-        
-        if (view.bounds.size.width < view.bounds.size.height) {
-            // Portrait orientation.
-            let compareOriginalWidth = round( view.bounds.size.width / 2 )
-            
-            compareOriginal.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: compareOriginalWidth,
-                height: view.bounds.height - 100
-            )
-        
-        }
-        else {
-            // Landscape orientation.
-            let compareOriginalWidth = round((view.bounds.size.width - 100) / 2)
-            
-            compareOriginal.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: compareOriginalWidth,
-                height: view.bounds.height
-            )
-        }
-        
-        view.addSubview(compareOriginal)
-        
-        compareNew.image = newPhoto
-        compareNew.contentMode = .ScaleAspectFit
-        
-        if (view.bounds.size.width < view.bounds.size.height) {
-            // Portrait orientation.
-            let compareNewWidth = round( view.bounds.size.width / 2 )
-            
-            compareNew.frame = CGRect(
-                x: round(view.bounds.width / 2),
-                y: 0,
-                width: compareNewWidth,
-                height: view.bounds.height - 100
-            )
-        }
-        else {
-            // Landscape orientation.
-            let compareNewWidth = round((view.bounds.size.width - 100) / 2)
-            
-            compareNew.frame = CGRect(
-                x: round((view.bounds.width - 100) / 2),
-                y: 0,
-                width: compareNewWidth,
-                height: view.bounds.height
-            )
-        }
-        
-        view.addSubview(compareNew)
-        
-        // Add confirm button.
-        let confirmButtonImage = UIImage(named: "checkmark.png")
-        let confirmButtonSize = buttonContainerSize
-        confirmButton.setImage(confirmButtonImage, forState: .Normal)
-        confirmButton.contentMode = .ScaleAspectFit
-        
-        if (view.bounds.size.width < view.bounds.size.height) {
-            // Portrait orientation.
-            confirmButton.frame = CGRect(
-                x: Int(round(view.bounds.width / 2) - round(CGFloat(confirmButtonSize) / 2)),
-                y: Int(view.bounds.height - CGFloat(buttonContainerSize)),
-                width: confirmButtonSize,
-                height: confirmButtonSize
-            )
-        }
-        else {
-            // Landscape
-            confirmButton.frame = CGRect(
-                x: Int(view.bounds.width - CGFloat(buttonContainerSize)),
-                y: Int(round(view.bounds.height / 2) - round(CGFloat(confirmButtonSize) / 2)),
-                width: confirmButtonSize,
-                height: confirmButtonSize
-            )
-        }
-        
-        confirmButton.addTarget(self, action:"confirmShot:", forControlEvents: .TouchUpInside)
-        view.addSubview(confirmButton)
-        
-        // Add cancel button.
-        let cancelButtonImage = UIImage(named: "back.png")
-        cancelButton.setImage(cancelButtonImage, forState: .Normal)
-        cancelButton.contentMode = .ScaleAspectFit
-        
-        if (view.bounds.size.width < view.bounds.size.height) {
-            // Portrait orientation.
-            cancelButton.frame = CGRect(
-                x: Int(round(view.bounds.width / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
-                y: Int(
-                    view.bounds.height -
-                        CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
-                ),
-                width: smallButtonSize,
-                height: smallButtonSize
-            )
-        }
-        else {
-            // Landscape
-            cancelButton.frame = CGRect(
-                x: Int(
-                    view.bounds.width -
-                        CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
-                ),
-                y: Int(round(view.bounds.height / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
-                width: smallButtonSize,
-                height: smallButtonSize
-            )
-        }
-        
-        cancelButton.addTarget(self, action:"cancelConfirmation:", forControlEvents: .TouchUpInside)
-        view.addSubview(cancelButton)
+        buildLayout(view.bounds.size)
     }
     
     override func didReceiveMemoryWarning() {
@@ -225,7 +107,174 @@ class ConfirmController: ReenactControllerBase {
         self.performSegueWithIdentifier("confirmToCapture", sender: self)
     }
     
-    // MARK: Delegates
+    override func buildLayout(size: CGSize) {
+        super.buildLayout(size)
+        
+        compareOriginal.image = originalPhoto
+        compareOriginal.contentMode = .ScaleAspectFit
+        
+        if (size.width < size.height) {
+            // Portrait orientation.
+            
+            if originalPhoto!.size.width <= originalPhoto!.size.height {
+                // Portrait photos
+                let compareOriginalWidth = round( size.width / 2 )
+                
+                compareOriginal.frame = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: compareOriginalWidth,
+                    height: size.height - buttonContainerSize
+                )
+            }
+            else {
+                // Landscape photos
+                let compareOriginalHeight = round((size.height - CGFloat(buttonContainerSize)) / 2)
+                
+                compareOriginal.frame = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: size.width,
+                    height: compareOriginalHeight
+                )
+            }
+        }
+        else {
+            // Landscape orientation.
+            if originalPhoto!.size.width <= originalPhoto!.size.height {
+                // Portrait photos
+                compareOriginal.frame = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: round(CGFloat(size.width - CGFloat(buttonContainerSize)) / 2),
+                    height: size.height
+                )
+            }
+            else {
+                // Landscape photos
+                compareOriginal.frame = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: size.width - CGFloat(buttonContainerSize),
+                    height: round(size.height / 2)
+                )
+            }
+        }
+        
+        view.addSubview(compareOriginal)
+        
+        compareNew.image = newPhoto
+        compareNew.contentMode = .ScaleAspectFit
+        
+        if (size.width <= size.height) {
+            // Portrait orientation.
+            if originalPhoto!.size.width <= originalPhoto!.size.height {
+                // Portrait photos
+                compareNew.frame = CGRect(
+                    x: round(size.width / 2),
+                    y: 0,
+                    width: round( size.width / 2 ),
+                    height: size.height - CGFloat(buttonContainerSize)
+                )
+            }
+            else {
+                // Landscape photos
+                compareNew.frame = CGRect(
+                    x: 0,
+                    y: round((size.height - CGFloat(buttonContainerSize)) / 2),
+                    width: size.width,
+                    height: round((size.height - CGFloat(buttonContainerSize)) / 2)
+                )
+            }
+
+        }
+        else {
+            // Landscape orientation.
+            if originalPhoto!.size.width <= originalPhoto!.size.height {
+                // Portrait photos
+                compareNew.frame = CGRect(
+                    x: round(CGFloat(size.width - CGFloat(buttonContainerSize)) / 2),
+                    y: 0,
+                    width: round(CGFloat(size.width - CGFloat(buttonContainerSize)) / 2),
+                    height: size.height
+                )
+            }
+            else {
+                compareNew.frame = CGRect(
+                    x: 0,
+                    y: round(size.height / 2),
+                    width: size.width - CGFloat(buttonContainerSize),
+                    height: round(size.height / 2)
+                )
+            }
+        }
+        
+        view.addSubview(compareNew)
+        
+        // Add confirm button.
+        let confirmButtonImage = UIImage(named: "checkmark.png")
+        let confirmButtonSize = buttonContainerSize
+        confirmButton.setImage(confirmButtonImage, forState: .Normal)
+        confirmButton.contentMode = .ScaleAspectFit
+        
+        if (size.width < size.height) {
+            // Portrait orientation.
+            confirmButton.frame = CGRect(
+                x: Int(round(size.width / 2) - round(CGFloat(confirmButtonSize) / 2)),
+                y: Int(size.height - CGFloat(buttonContainerSize)),
+                width: confirmButtonSize,
+                height: confirmButtonSize
+            )
+        }
+        else {
+            // Landscape
+            confirmButton.frame = CGRect(
+                x: Int(size.width - CGFloat(buttonContainerSize)),
+                y: Int(round(size.height / 2) - round(CGFloat(confirmButtonSize) / 2)),
+                width: confirmButtonSize,
+                height: confirmButtonSize
+            )
+        }
+        
+        confirmButton.addTarget(self, action:"confirmShot:", forControlEvents: .TouchUpInside)
+        view.addSubview(confirmButton)
+        
+        // Add cancel button.
+        let cancelButtonImage = UIImage(named: "back.png")
+        cancelButton.setImage(cancelButtonImage, forState: .Normal)
+        cancelButton.contentMode = .ScaleAspectFit
+        
+        if (size.width < size.height) {
+            // Portrait orientation.
+            cancelButton.frame = CGRect(
+                x: Int(round(size.width / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
+                y: Int(
+                    size.height -
+                        CGFloat(buttonContainerSize) +
+                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                ),
+                width: smallButtonSize,
+                height: smallButtonSize
+            )
+        }
+        else {
+            // Landscape
+            cancelButton.frame = CGRect(
+                x: Int(
+                    size.width -
+                        CGFloat(buttonContainerSize) +
+                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                ),
+                y: Int(round(size.height / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
+                width: smallButtonSize,
+                height: smallButtonSize
+            )
+        }
+        
+        cancelButton.addTarget(self, action:"cancelConfirmation:", forControlEvents: .TouchUpInside)
+        view.addSubview(cancelButton)
+
+    }
     
 }
 
