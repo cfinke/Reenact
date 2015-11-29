@@ -299,7 +299,7 @@ class CaptureController: ReenactControllerBase {
     }
     
     func cancelCapture(sender: UIButton!) {
-        self.performSegueWithIdentifier("backToIntro", sender: self)
+        self.performSegueWithIdentifier("captureToIntro", sender: self)
     }
     
     // MARK: Delegates

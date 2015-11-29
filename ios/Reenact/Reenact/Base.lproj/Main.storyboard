@@ -21,11 +21,34 @@
                     <navigationItem key="navigationItem" id="8YE-qm-gkc"/>
                     <connections>
                         <segue destination="R4P-zn-6yP" kind="show" identifier="introToCapture" id="CTn-3g-Uc2"/>
+                        <segue destination="8Md-dA-KZX" kind="show" identifier="introToHelp" id="VLx-rg-bEP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1715" y="-1974"/>
+        </scene>
+        <!--Help Controller-->
+        <scene sceneID="mYd-rM-BBH">
+            <objects>
+                <viewController id="8Md-dA-KZX" customClass="HelpController" customModule="Reenact" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6Ww-MQ-D98"/>
+                        <viewControllerLayoutGuide type="bottom" id="0ik-E0-NYa"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Hnc-vZ-emo">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <segue destination="oFh-Kk-YtA" kind="unwind" identifier="helpToIntro" unwindAction="unwindToIntro:" id="UGS-TD-WtU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="If6-iB-MI6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="oFh-Kk-YtA" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="-1727" y="-927"/>
         </scene>
         <!--Capture Controller-->
         <scene sceneID="KQJ-D6-Dfx">
@@ -42,7 +65,7 @@
                     </view>
                     <connections>
                         <segue destination="dgq-ao-qfB" kind="show" identifier="captureToConfirm" id="Fe1-EF-8E7"/>
-                        <segue destination="XvE-HT-cyj" kind="unwind" identifier="backToIntro" unwindAction="unwindToIntro:" id="6uw-NI-7nX"/>
+                        <segue destination="XvE-HT-cyj" kind="unwind" identifier="captureToIntro" unwindAction="unwindToIntro:" id="6uw-NI-7nX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qt5-cy-kNX" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -64,8 +87,8 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <segue destination="BM6-aZ-Mq1" kind="unwind" identifier="backToCapture" unwindAction="unwindToCapture:" id="zLa-By-iSI"/>
-                        <segue destination="wq9-1F-fxy" kind="show" id="EnM-Ms-ZmX"/>
+                        <segue destination="BM6-aZ-Mq1" kind="unwind" identifier="confirmToCapture" unwindAction="unwindToCapture:" id="zLa-By-iSI"/>
+                        <segue destination="wq9-1F-fxy" kind="show" identifier="confirmToShare" id="EnM-Ms-ZmX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2LR-91-cO2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -73,10 +96,10 @@
             </objects>
             <point key="canvasLocation" x="-262" y="-1974"/>
         </scene>
-        <!--View Controller-->
+        <!--Share Controller-->
         <scene sceneID="ly5-8l-yX7">
             <objects>
-                <viewController id="wq9-1F-fxy" sceneMemberID="viewController">
+                <viewController id="wq9-1F-fxy" customClass="ShareController" customModule="Reenact" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="z02-UK-43c"/>
                         <viewControllerLayoutGuide type="bottom" id="Vfb-Gf-W18"/>
@@ -87,7 +110,7 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <segue destination="w3L-3u-QGm" kind="unwind" unwindAction="unwindToIntro:" id="JBA-fl-ahE"/>
+                        <segue destination="w3L-3u-QGm" kind="unwind" identifier="shareToIntro" unwindAction="unwindToIntro:" id="JBA-fl-ahE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NoV-8u-zIQ" userLabel="First Responder" sceneMemberID="firstResponder"/>

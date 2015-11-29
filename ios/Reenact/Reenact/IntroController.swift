@@ -40,7 +40,6 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         }
         else {
             // Landscape orientation.
-
         }
         
         view.addSubview(reenactLogoView)
@@ -77,33 +76,23 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
     }
 
     func chooseOriginalPhoto(sender: UIButton!) {
-        print("hi")
-        
         picker.allowsEditing = false
         picker.sourceType = .PhotoLibrary
         presentViewController(picker, animated: true, completion: nil)
-        
     }
     
     //MARK: Actions
     @IBAction func unwindToIntro(segue: UIStoryboardSegue) {
-        
     }
     
     //MARK: Delegates
-    func imagePickerController(
-        picker: UIImagePickerController,
-        didFinishPickingMediaWithInfo info: [String : AnyObject])
-    {
-        let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage //2
-        //myImageView.contentMode = .ScaleAspectFit //3
-        //myImageView.image = chosenImage //4
-        dismissViewControllerAnimated(true, completion: nil) //5
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+        dismissViewControllerAnimated(true, completion: nil)
         
         // Show the next view and set the camera background image to chosenImage
         self.originalPhoto = chosenImage
         self.performSegueWithIdentifier("introToCapture", sender: self)
-        
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
@@ -111,5 +100,8 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
       
     }
     
+    func showHelp(sender: UIButton!) {
+        self.performSegueWithIdentifier("introToHelp", sender: self)
+    }
 }
 

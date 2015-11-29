@@ -13,7 +13,8 @@ class ConfirmController: ReenactControllerBase {
     
     var originalPhoto: UIImage?
     var newPhoto: UIImage?
-
+    var combinedPhoto: UIImage?
+    
     let compareOriginal: UIImageView = UIImageView()
     let compareNew: UIImageView = UIImageView()
     let confirmButton: UIButton = UIButton()
@@ -63,8 +64,6 @@ class ConfirmController: ReenactControllerBase {
         }
         
         view.addSubview(compareNew)
-        
-        let buttonContainerSize = 100
         
         // Add confirm button.
         let confirmButtonImage = UIImage(named: "checkmark.png")
@@ -139,7 +138,8 @@ class ConfirmController: ReenactControllerBase {
         print("In prepareForSegue")
         
         if (segue.identifier == "confirmToShare") {
-            // let svc = segue.destinationViewController as! ShareController;
+            let svc = segue.destinationViewController as! ShareController;
+            svc.combinedPhoto = combinedPhoto
         }
     }
     
@@ -149,13 +149,37 @@ class ConfirmController: ReenactControllerBase {
     func confirmShot(sender: UIButton) {
         // Merge the two images.
         
+        // Portrait:
+        
+        let oldImageHeight = originalPhoto!.size.height
+        let oldImageWidth = originalPhoto!.size.width
+        
+        let newImageHeight = newPhoto!.size.height
+        let newImageWidth = newPhoto!.size.width
+        
+        let smallestHeight = min(originalPhoto!.size.height, newPhoto!.size.height)
+        let totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth )
+        
+        let finalSize = CGSize(width: totalWidth, height: smallestHeight)
+        
+        UIGraphicsBeginImageContext(finalSize)
+        
+        let originalDest = CGRect(x: 0, y: 0, width:( ( smallestHeight / oldImageHeight ) * oldImageWidth ), height: smallestHeight)
+        originalPhoto!.drawInRect(originalDest)
+        
+        let newDest = CGRect(x: ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), y: 0, width: ( ( smallestHeight / newImageHeight ) * newImageWidth ), height: smallestHeight)
+        newPhoto!.drawInRect(newDest)
+        
+        combinedPhoto = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
         // Send the final image off to the share controller.
-        // self.performSegueWithIdentifier("confirmToShare", sender: self)
+        self.performSegueWithIdentifier("confirmToShare", sender: self)
     }
     
     func cancelConfirmation(sender: UIButton) {
         // Go back to the capture view.
-        self.performSegueWithIdentifier("backToCapture", sender: self)
+        self.performSegueWithIdentifier("confirmToCapture", sender: self)
     }
     
     // MARK: Delegates
