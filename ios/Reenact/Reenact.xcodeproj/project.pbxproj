@@ -8,30 +8,37 @@
 
 /* Begin PBXBuildFile section */
 		AC2B59011C0977F000C0DC8E /* ConfirmController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2B59001C0977F000C0DC8E /* ConfirmController.swift */; };
-		AC2B59041C09921600C0DC8E /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B59031C09921600C0DC8E /* checkmark.png */; };
-		AC2B59061C0992C700C0DC8E /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B59051C0992C700C0DC8E /* back.png */; };
 		AC2B590A1C0A1D1300C0DC8E /* ReenactControllerBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2B59091C0A1D1300C0DC8E /* ReenactControllerBase.swift */; };
-		AC2B590C1C0AA2A100C0DC8E /* help.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B590B1C0AA2A100C0DC8E /* help.png */; };
+		AC2B590E1C0AA44000C0DC8E /* help.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B590D1C0AA44000C0DC8E /* help.png */; };
+		AC2B59131C0AA46100C0DC8E /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B590F1C0AA46100C0DC8E /* back.png */; };
+		AC2B59141C0AA46100C0DC8E /* camera-switch.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B59101C0AA46100C0DC8E /* camera-switch.png */; };
+		AC2B59151C0AA46100C0DC8E /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B59111C0AA46100C0DC8E /* camera.png */; };
+		AC2B59161C0AA46100C0DC8E /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B59121C0AA46100C0DC8E /* checkmark.png */; };
+		AC2B591A1C0AA57A00C0DC8E /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B59171C0AA57A00C0DC8E /* close.png */; };
+		AC2B591B1C0AA57A00C0DC8E /* replay.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B59181C0AA57A00C0DC8E /* replay.png */; };
+		AC2B591C1C0AA57A00C0DC8E /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B59191C0AA57A00C0DC8E /* share.png */; };
+		AC2B591E1C0AA59A00C0DC8E /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = AC2B591D1C0AA59A00C0DC8E /* logo.png */; };
 		AC6C4A071C07CCC10092A285 /* CaptureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC6C4A061C07CCC10092A285 /* CaptureController.swift */; };
-		AC6C4A0A1C0801C90092A285 /* camera-switch.png in Resources */ = {isa = PBXBuildFile; fileRef = AC6C4A081C0801C90092A285 /* camera-switch.png */; };
-		AC6C4A0B1C0801C90092A285 /* camera.png in Resources */ = {isa = PBXBuildFile; fileRef = AC6C4A091C0801C90092A285 /* camera.png */; };
 		ACEC31661C06765C00EFA165 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACEC31651C06765C00EFA165 /* AppDelegate.swift */; };
 		ACEC31681C06765C00EFA165 /* IntroController.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACEC31671C06765C00EFA165 /* IntroController.swift */; };
 		ACEC316B1C06765C00EFA165 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACEC31691C06765C00EFA165 /* Main.storyboard */; };
 		ACEC316D1C06765C00EFA165 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ACEC316C1C06765C00EFA165 /* Assets.xcassets */; };
 		ACEC31701C06765C00EFA165 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ACEC316E1C06765C00EFA165 /* LaunchScreen.storyboard */; };
-		ACEC31781C06767300EFA165 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = ACEC31771C06767300EFA165 /* logo.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AC2B59001C0977F000C0DC8E /* ConfirmController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfirmController.swift; sourceTree = "<group>"; };
-		AC2B59031C09921600C0DC8E /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = checkmark.png; path = "../../../firefox-os/img/icons/checkmark.png"; sourceTree = "<group>"; };
-		AC2B59051C0992C700C0DC8E /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = "../../../firefox-os/img/icons/back.png"; sourceTree = "<group>"; };
 		AC2B59091C0A1D1300C0DC8E /* ReenactControllerBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReenactControllerBase.swift; sourceTree = "<group>"; };
-		AC2B590B1C0AA2A100C0DC8E /* help.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = help.png; path = ../../../../../Desktop/help.png; sourceTree = "<group>"; };
+		AC2B590D1C0AA44000C0DC8E /* help.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help.png; sourceTree = "<group>"; };
+		AC2B590F1C0AA46100C0DC8E /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
+		AC2B59101C0AA46100C0DC8E /* camera-switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camera-switch.png"; sourceTree = "<group>"; };
+		AC2B59111C0AA46100C0DC8E /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = camera.png; sourceTree = "<group>"; };
+		AC2B59121C0AA46100C0DC8E /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark.png; sourceTree = "<group>"; };
+		AC2B59171C0AA57A00C0DC8E /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = close.png; sourceTree = "<group>"; };
+		AC2B59181C0AA57A00C0DC8E /* replay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = replay.png; sourceTree = "<group>"; };
+		AC2B59191C0AA57A00C0DC8E /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
+		AC2B591D1C0AA59A00C0DC8E /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		AC6C4A061C07CCC10092A285 /* CaptureController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptureController.swift; sourceTree = "<group>"; };
-		AC6C4A081C0801C90092A285 /* camera-switch.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "camera-switch.png"; path = "../../../firefox-os/img/icons/camera-switch.png"; sourceTree = "<group>"; };
-		AC6C4A091C0801C90092A285 /* camera.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = camera.png; path = "../../../firefox-os/img/icons/camera.png"; sourceTree = "<group>"; };
 		ACEC31621C06765C00EFA165 /* Reenact.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reenact.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACEC31651C06765C00EFA165 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		ACEC31671C06765C00EFA165 /* IntroController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroController.swift; sourceTree = "<group>"; };
@@ -39,7 +46,6 @@
 		ACEC316C1C06765C00EFA165 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ACEC316F1C06765C00EFA165 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ACEC31711C06765C00EFA165 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		ACEC31771C06767300EFA165 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logo.png; path = ../../../../../Downloads/logo.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,16 +80,19 @@
 			children = (
 				AC6C4A061C07CCC10092A285 /* CaptureController.swift */,
 				ACEC31651C06765C00EFA165 /* AppDelegate.swift */,
+				AC2B590F1C0AA46100C0DC8E /* back.png */,
+				AC2B591D1C0AA59A00C0DC8E /* logo.png */,
+				AC2B59171C0AA57A00C0DC8E /* close.png */,
+				AC2B59181C0AA57A00C0DC8E /* replay.png */,
+				AC2B59191C0AA57A00C0DC8E /* share.png */,
+				AC2B59101C0AA46100C0DC8E /* camera-switch.png */,
+				AC2B59111C0AA46100C0DC8E /* camera.png */,
+				AC2B59121C0AA46100C0DC8E /* checkmark.png */,
+				AC2B590D1C0AA44000C0DC8E /* help.png */,
 				AC2B59001C0977F000C0DC8E /* ConfirmController.swift */,
-				AC2B590B1C0AA2A100C0DC8E /* help.png */,
-				AC2B59051C0992C700C0DC8E /* back.png */,
 				ACEC31671C06765C00EFA165 /* IntroController.swift */,
 				ACEC31691C06765C00EFA165 /* Main.storyboard */,
 				AC2B59091C0A1D1300C0DC8E /* ReenactControllerBase.swift */,
-				AC6C4A081C0801C90092A285 /* camera-switch.png */,
-				AC2B59031C09921600C0DC8E /* checkmark.png */,
-				AC6C4A091C0801C90092A285 /* camera.png */,
-				ACEC31771C06767300EFA165 /* logo.png */,
 				ACEC316C1C06765C00EFA165 /* Assets.xcassets */,
 				ACEC316E1C06765C00EFA165 /* LaunchScreen.storyboard */,
 				ACEC31711C06765C00EFA165 /* Info.plist */,
@@ -150,15 +159,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ACEC31781C06767300EFA165 /* logo.png in Resources */,
+				AC2B591A1C0AA57A00C0DC8E /* close.png in Resources */,
+				AC2B590E1C0AA44000C0DC8E /* help.png in Resources */,
+				AC2B59161C0AA46100C0DC8E /* checkmark.png in Resources */,
+				AC2B59151C0AA46100C0DC8E /* camera.png in Resources */,
+				AC2B591C1C0AA57A00C0DC8E /* share.png in Resources */,
+				AC2B591B1C0AA57A00C0DC8E /* replay.png in Resources */,
+				AC2B59131C0AA46100C0DC8E /* back.png in Resources */,
+				AC2B59141C0AA46100C0DC8E /* camera-switch.png in Resources */,
+				AC2B591E1C0AA59A00C0DC8E /* logo.png in Resources */,
 				ACEC31701C06765C00EFA165 /* LaunchScreen.storyboard in Resources */,
-				AC2B590C1C0AA2A100C0DC8E /* help.png in Resources */,
 				ACEC316D1C06765C00EFA165 /* Assets.xcassets in Resources */,
-				AC2B59041C09921600C0DC8E /* checkmark.png in Resources */,
-				AC2B59061C0992C700C0DC8E /* back.png in Resources */,
 				ACEC316B1C06765C00EFA165 /* Main.storyboard in Resources */,
-				AC6C4A0B1C0801C90092A285 /* camera.png in Resources */,
-				AC6C4A0A1C0801C90092A285 /* camera-switch.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
