@@ -141,11 +141,6 @@ class ConfirmController: ReenactControllerBase {
         if (segue.identifier == "confirmToShare") {
             // let svc = segue.destinationViewController as! ShareController;
         }
-        
-        if (segue.identifier == "confirmToCapture") {
-            let svc = segue.destinationViewController as! CaptureController;
-            svc.originalPhoto = originalPhoto
-        }
     }
     
     
@@ -160,7 +155,7 @@ class ConfirmController: ReenactControllerBase {
     
     func cancelConfirmation(sender: UIButton) {
         // Go back to the capture view.
-        self.performSegueWithIdentifier("confirmToCapture", sender: self)
+        self.performSegueWithIdentifier("backToCapture", sender: self)
     }
     
     // MARK: Delegates

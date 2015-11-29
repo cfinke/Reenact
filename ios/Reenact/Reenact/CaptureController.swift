@@ -266,6 +266,9 @@ class CaptureController: ReenactControllerBase {
     }
     
     // MARK: Actions
+    @IBAction func unwindToCapture(segue: UIStoryboardSegue) {
+        
+    }
     
     func takePicture(sender: UIButton!) {
         print("Taking a picture.")
@@ -296,7 +299,7 @@ class CaptureController: ReenactControllerBase {
     }
     
     func cancelCapture(sender: UIButton!) {
-        self.performSegueWithIdentifier("captureToIntro", sender: self)
+        self.performSegueWithIdentifier("backToIntro", sender: self)
     }
     
     // MARK: Delegates

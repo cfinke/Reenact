@@ -85,6 +85,11 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         
     }
     
+    //MARK: Actions
+    @IBAction func unwindToIntro(segue: UIStoryboardSegue) {
+        
+    }
+    
     //MARK: Delegates
     func imagePickerController(
         picker: UIImagePickerController,
