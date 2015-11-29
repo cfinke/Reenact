@@ -29,8 +29,19 @@ class CaptureController: ReenactControllerBase {
     let switchCameraButton: UIButton = UIButton()
     let cancelButton: UIButton = UIButton()
     
+    let previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if originalPhoto!.size.width <= originalPhoto!.size.height {
+            print("Setting to portrait")
+            UIDevice.currentDevice().setValue(UIInterfaceOrientation.Portrait.rawValue, forKey: "orientation")
+        }
+        else {
+            print("Setting to landscape")
+            UIDevice.currentDevice().setValue(UIInterfaceOrientation.LandscapeLeft.rawValue, forKey: "orientation")
+        }
         
         let devices = AVCaptureDevice.devices()
         
@@ -42,141 +53,10 @@ class CaptureController: ReenactControllerBase {
             }
         }
 
-        // Add the original image overlay
-        originalPhotoOverlay.image = originalPhoto
-        originalPhotoOverlay.contentMode = .ScaleAspectFit
-        originalPhotoOverlay.alpha = 0.75
-        
-        if (view.bounds.size.width < view.bounds.size.height) {
-            // Portrait orientation.
-            originalPhotoOverlay.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: view.bounds.width,
-                height: view.bounds.height - 100
-            )
-        }
-        else {
-            // Landscape orientation.
-            originalPhotoOverlay.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: view.bounds.width - 100,
-                height: view.bounds.height
-            )
-        }
-        
-        view.addSubview(originalPhotoOverlay)
-        
-        // Add capture button.
-        let captureButtonImage = UIImage(named: "camera.png")
-        captureButton.setImage(captureButtonImage, forState: .Normal)
-        captureButton.contentMode = .ScaleAspectFit
-        
-        if (view.bounds.size.width < view.bounds.size.height) {
-            // Portrait orientation.
-
-            captureButton.frame = CGRect(
-                x: Int(round(view.bounds.width / 2) - round(CGFloat(buttonContainerSize) / 2)),
-                y: Int(view.bounds.height - CGFloat(buttonContainerSize)),
-                width: buttonContainerSize,
-                height: buttonContainerSize
-            )
-        }
-        else {
-            // Landscape
-            captureButton.frame = CGRect(
-                x: Int(view.bounds.width - CGFloat(buttonContainerSize)),
-                y: Int(round(view.bounds.height / 2) - round(CGFloat(buttonContainerSize) / 2)),
-                width: buttonContainerSize,
-                height: buttonContainerSize
-            )
-        }
-        
-        captureButton.addTarget(self, action:"takePicture:", forControlEvents: .TouchUpInside)
-        view.addSubview(captureButton)
-        
-        if captureDevices.count > 1 {
-            // Add switch button.
-            let switchCameraButtonImage = UIImage(named: "camera-switch.png")
-            switchCameraButton.setImage(switchCameraButtonImage, forState: .Normal)
-            switchCameraButton.contentMode = .ScaleAspectFit
-            
-            if (view.bounds.size.width < view.bounds.size.height) {
-                // Portrait orientation.
-                switchCameraButton.frame = CGRect(
-                    x: Int(round(view.bounds.width / 6 * 5) - round(CGFloat(smallButtonSize) / 2)),
-                    y: Int(
-                        view.bounds.height -
-                            CGFloat(buttonContainerSize) +
-                            round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
-                    ),
-                    width: smallButtonSize,
-                    height: smallButtonSize
-                )
-            }
-            else {
-                // Landscape
-                switchCameraButton.frame = CGRect(
-                    x: Int(
-                        view.bounds.width -
-                        CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
-                    ),
-                    y: Int(round(view.bounds.height / 6 * 5) - round(CGFloat(smallButtonSize) / 2)),
-                    width: smallButtonSize,
-                    height: smallButtonSize
-                )
-            }
-            
-            switchCameraButton.addTarget(self, action:"switchCamera:", forControlEvents: .TouchUpInside)
-            view.addSubview(switchCameraButton)
-        }
-        
-        let cancelButtonImage = UIImage(named: "back.png")
-        cancelButton.setImage(cancelButtonImage, forState: .Normal)
-        cancelButton.contentMode = .ScaleAspectFit
-        
-        if (view.bounds.size.width < view.bounds.size.height) {
-            // Portrait orientation.
-            cancelButton.frame = CGRect(
-                x: Int(round(view.bounds.width / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
-                y: Int(
-                    view.bounds.height -
-                        CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
-                ),
-                width: smallButtonSize,
-                height: smallButtonSize
-            )
-        }
-        else {
-            // Landscape
-            cancelButton.frame = CGRect(
-                x: Int(
-                    view.bounds.width -
-                        CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
-                ),
-                y: Int(round(view.bounds.height / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
-                width: smallButtonSize,
-                height: smallButtonSize
-            )
-        }
-        
-        cancelButton.addTarget(self, action:"cancelCapture:", forControlEvents: .TouchUpInside)
-        view.addSubview(cancelButton)
-
+        buildLayout(view.bounds.size)
         
         // Start fading the overlay image.
         startImageFade()
-        
-        if captureDevices.count != 0 {
-            beginSession()
-        }
-        else {
-            print("No capture device.")
-        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -192,6 +72,19 @@ class CaptureController: ReenactControllerBase {
             
             svc.originalPhoto = self.originalPhoto
             svc.newPhoto = self.newPhoto
+        }
+    }
+    
+    override func shouldAutorotate() -> Bool {
+        return false
+    }
+    
+    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        if originalPhoto!.size.width <= originalPhoto!.size.height {
+            return [UIInterfaceOrientationMask.Portrait]
+        }
+        else {
+            return [UIInterfaceOrientationMask.Landscape]
         }
     }
     
@@ -247,16 +140,31 @@ class CaptureController: ReenactControllerBase {
         if captureSession.canAddOutput(stillImageOutput) {
             captureSession.addOutput(stillImageOutput)
         }
-        if let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession) {
-            previewLayer.bounds = CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height)
-            previewLayer.position = CGPointMake(bounds.midX, bounds.midY)
-            previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-            let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height))
-            cameraPreview.layer.addSublayer(previewLayer)
-//            cameraPreview.addGestureRecognizer(UITapGestureRecognizer(target: self, action:"saveToCamera:"))
-            view.addSubview(cameraPreview)
-            view.sendSubviewToBack(cameraPreview)
+        
+        previewLayer.session = captureSession
+        
+        previewLayer.bounds = CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height)
+        
+        previewLayer.position = CGPointMake(bounds.midX, bounds.midY)
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height))
+        
+        let deviceOrientation = UIDevice.currentDevice().orientation
+        
+        if deviceOrientation == UIDeviceOrientation.LandscapeLeft {
+            previewLayer.connection.videoOrientation = AVCaptureVideoOrientation.LandscapeLeft
         }
+        else if deviceOrientation == UIDeviceOrientation.LandscapeRight {
+            previewLayer.connection.videoOrientation = AVCaptureVideoOrientation.LandscapeRight
+        }
+        else if deviceOrientation == UIDeviceOrientation.PortraitUpsideDown {
+            previewLayer.connection.videoOrientation = AVCaptureVideoOrientation.PortraitUpsideDown
+        }
+        
+        
+        cameraPreview.layer.addSublayer(previewLayer)
+        view.addSubview(cameraPreview)
+        view.sendSubviewToBack(cameraPreview)
     }
     
     func endSession() {
@@ -272,15 +180,16 @@ class CaptureController: ReenactControllerBase {
     
     func takePicture(sender: UIButton!) {
         print("Taking a picture.")
+        
+        let videoOrientation = previewLayer.connection.videoOrientation
+        
+        stillImageOutput.connectionWithMediaType(AVMediaTypeVideo).videoOrientation = videoOrientation
+        
         if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
             stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
                 (imageDataSampleBuffer, error) -> Void in
                 let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
                 self.newPhoto = UIImage(data: imageData)
-                
-                
-                print(self.newPhoto)
-                
                 self.performSegueWithIdentifier("captureToConfirm", sender: self)
             }
         }
@@ -304,5 +213,136 @@ class CaptureController: ReenactControllerBase {
     
     // MARK: Delegates
     
+    override func buildLayout(size: CGSize) {
+        super.buildLayout(size)
+        
+        // Add the original image overlay
+        originalPhotoOverlay.image = originalPhoto
+        originalPhotoOverlay.contentMode = .ScaleAspectFit
+        originalPhotoOverlay.alpha = 0.75
+        
+        if (size.width < size.height) {
+            // Portrait orientation.
+            originalPhotoOverlay.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: size.width,
+                height: size.height - 100
+            )
+        }
+        else {
+            // Landscape orientation.
+            originalPhotoOverlay.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: size.width - 100,
+                height: size.height
+            )
+        }
+        
+        view.addSubview(originalPhotoOverlay)
+        
+        // Add capture button.
+        let captureButtonImage = UIImage(named: "camera.png")
+        captureButton.setImage(captureButtonImage, forState: .Normal)
+        captureButton.contentMode = .ScaleAspectFit
+        
+        if (size.width < size.height) {
+            // Portrait orientation.
+            
+            captureButton.frame = CGRect(
+                x: Int(round(size.width / 2) - round(CGFloat(buttonContainerSize) / 2)),
+                y: Int(size.height - CGFloat(buttonContainerSize)),
+                width: buttonContainerSize,
+                height: buttonContainerSize
+            )
+        }
+        else {
+            // Landscape
+            captureButton.frame = CGRect(
+                x: Int(size.width - CGFloat(buttonContainerSize)),
+                y: Int(round(size.height / 2) - round(CGFloat(buttonContainerSize) / 2)),
+                width: buttonContainerSize,
+                height: buttonContainerSize
+            )
+        }
+        
+        captureButton.addTarget(self, action:"takePicture:", forControlEvents: .TouchUpInside)
+        view.addSubview(captureButton)
+        
+        if captureDevices.count > 1 {
+            // Add switch button.
+            let switchCameraButtonImage = UIImage(named: "camera-switch.png")
+            switchCameraButton.setImage(switchCameraButtonImage, forState: .Normal)
+            switchCameraButton.contentMode = .ScaleAspectFit
+            
+            if (size.width < size.height) {
+                // Portrait orientation.
+                switchCameraButton.frame = CGRect(
+                    x: Int(round(size.width / 6 * 5) - round(CGFloat(smallButtonSize) / 2)),
+                    y: Int(
+                        size.height -
+                            CGFloat(buttonContainerSize) +
+                            round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                    ),
+                    width: smallButtonSize,
+                    height: smallButtonSize
+                )
+            }
+            else {
+                // Landscape
+                switchCameraButton.frame = CGRect(
+                    x: Int(
+                        size.width -
+                            CGFloat(buttonContainerSize) +
+                            round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                    ),
+                    y: Int(round(size.height / 6 * 5) - round(CGFloat(smallButtonSize) / 2)),
+                    width: smallButtonSize,
+                    height: smallButtonSize
+                )
+            }
+            
+            switchCameraButton.addTarget(self, action:"switchCamera:", forControlEvents: .TouchUpInside)
+            view.addSubview(switchCameraButton)
+        }
+        
+        let cancelButtonImage = UIImage(named: "back.png")
+        cancelButton.setImage(cancelButtonImage, forState: .Normal)
+        cancelButton.contentMode = .ScaleAspectFit
+        
+        if (size.width < size.height) {
+            // Portrait orientation.
+            cancelButton.frame = CGRect(
+                x: Int(round(size.width / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
+                y: Int(
+                    size.height -
+                        CGFloat(buttonContainerSize) +
+                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                ),
+                width: smallButtonSize,
+                height: smallButtonSize
+            )
+        }
+        else {
+            // Landscape
+            cancelButton.frame = CGRect(
+                x: Int(
+                    size.width -
+                        CGFloat(buttonContainerSize) +
+                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                ),
+                y: Int(round(size.height / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
+                width: smallButtonSize,
+                height: smallButtonSize
+            )
+        }
+        
+        cancelButton.addTarget(self, action:"cancelCapture:", forControlEvents: .TouchUpInside)
+        view.addSubview(cancelButton)
+        
+        endSession()
+        beginSession()
+    }
 }
 

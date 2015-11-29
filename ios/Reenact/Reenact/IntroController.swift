@@ -16,49 +16,14 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
     var originalPhoto:UIImage?
     
     let choosePhotoButton: UIButton = UIButton()
+    let reenactLogoView: UIImageView = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         picker.delegate = self
-        
-        // Add the logo on the intro screen.
-        let reenactLogo = UIImage(named:"logo.png")
-        let reenactLogoView = UIImageView(image: reenactLogo)
-        reenactLogoView.contentMode = .ScaleAspectFit
-        
-        let reenactLogoWidth = round( min( view.bounds.size.width, view.bounds.size.height ) / 3 )
-        reenactLogoView.frame = CGRect(
-            x: round((view.bounds.size.width / 2) - (reenactLogoWidth / 2)),
-            y: round(view.bounds.size.height / 3),
-            width: reenactLogoWidth,
-            height: reenactLogoWidth
-        )
-        
-        if (view.bounds.size.width < view.bounds.size.height) {
-            // Portrait orientation.
-        }
-        else {
-            // Landscape orientation.
-        }
-        
-        view.addSubview(reenactLogoView)
-        
-        choosePhotoButton.setTitle("CHOOSE A PHOTO TO REENACT", forState: .Normal)
-        choosePhotoButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-        choosePhotoButton.backgroundColor = UIColor.blackColor()
-        choosePhotoButton.contentEdgeInsets = UIEdgeInsetsMake(7.0, 7.0, 7.0, 7.0)
-        choosePhotoButton.addTarget(self, action:"chooseOriginalPhoto:", forControlEvents: .TouchUpInside)
-        choosePhotoButton.titleLabel!.font = UIFont(name:"Helvetica Neue", size: 12)
-        choosePhotoButton.frame = CGRect(
-            x: round((view.bounds.width - 240) / 2),
-            y: round(view.bounds.height * 0.85),
-            width: 240,
-            height: 30
-        )
-        // @todo Use auto-layout to center this button horizontally and size it vertically and horizontally.
-        
-        view.addSubview(choosePhotoButton)
+
+        buildLayout(view.bounds.size)
     }
 
     override func didReceiveMemoryWarning() {
@@ -102,6 +67,41 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
     
     func showHelp(sender: UIButton!) {
         self.performSegueWithIdentifier("introToHelp", sender: self)
+    }
+    
+    override func buildLayout(size: CGSize) {
+        super.buildLayout(size)
+        
+        // Add the logo on the intro screen.
+        let reenactLogo = UIImage(named:"logo.png")
+        reenactLogoView.image = reenactLogo
+        reenactLogoView.contentMode = .ScaleAspectFit
+        
+        let reenactLogoWidth = round( min( size.width, size.height ) / 3 )
+        reenactLogoView.frame = CGRect(
+            x: round((size.width / 2) - (reenactLogoWidth / 2)),
+            y: round(size.height / 3),
+            width: reenactLogoWidth,
+            height: reenactLogoWidth
+        )
+        
+        view.addSubview(reenactLogoView)
+        
+        choosePhotoButton.setTitle("CHOOSE A PHOTO TO REENACT", forState: .Normal)
+        choosePhotoButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        choosePhotoButton.backgroundColor = UIColor.blackColor()
+        choosePhotoButton.contentEdgeInsets = UIEdgeInsetsMake(7.0, 7.0, 7.0, 7.0)
+        choosePhotoButton.addTarget(self, action:"chooseOriginalPhoto:", forControlEvents: .TouchUpInside)
+        choosePhotoButton.titleLabel!.font = UIFont(name:"Helvetica Neue", size: 12)
+        choosePhotoButton.frame = CGRect(
+            x: round((size.width - 240) / 2),
+            y: round(size.height * 0.85),
+            width: 240,
+            height: 30
+        )
+        // @todo Use auto-layout to center this button horizontally and size it vertically and horizontally.
+        
+        view.addSubview(choosePhotoButton)
     }
 }
 

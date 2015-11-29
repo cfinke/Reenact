@@ -19,4 +19,18 @@ class ReenactControllerBase: UIViewController {
         // Hide the navigation bar. We'll take care of navigation elements ourself.
         self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
+    
+    override func viewWillTransitionToSize(size: CGSize,
+        withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+            super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator);
+            
+            print("Rotating")
+            print(size)
+        
+        buildLayout(size)
+    }
+    
+    func buildLayout(size: CGSize){
+        view.subviews.forEach({ $0.removeFromSuperview() })
+    }
 }
