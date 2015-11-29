@@ -30,6 +30,10 @@ class ReenactControllerBase: UIViewController {
         buildLayout(size)
     }
     
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
+    
     func buildLayout(size: CGSize){
         view.subviews.forEach({ $0.removeFromSuperview() })
     }
