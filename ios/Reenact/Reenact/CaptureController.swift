@@ -113,19 +113,28 @@ class CaptureController: ReenactControllerBase {
         
     }
     
-    func getSelectedCamera() -> AVCaptureDevice {
-        return captureDevices[cameraIndex]
+    func getSelectedCamera() -> AVCaptureDevice? {
+        if captureDevices.count > cameraIndex + 1 {
+            return captureDevices[cameraIndex]
+        }
+        
+        return nil
     }
     
     func beginSession() {
-        captureSession.sessionPreset = AVCaptureSessionPresetLow
-
         captureDevice = getSelectedCamera()
         
+        if (nil == captureDevice) {
+            alert("The camera wouldn't start.")
+            return
+        }
+        
+        captureSession.sessionPreset = AVCaptureSessionPresetLow
+
         do {
             try deviceInput = AVCaptureDeviceInput(device: captureDevice)
         } catch _ {
-            print( "That didn't work. :(");
+            alert("Reenact couldn't load the camera preview.")
             return
         }
         
@@ -227,7 +236,7 @@ class CaptureController: ReenactControllerBase {
                 x: 0,
                 y: 0,
                 width: size.width,
-                height: size.height - buttonContainerSize
+                height: size.height - CGFloat(buttonContainerSize)
             )
         }
         else {
@@ -235,8 +244,8 @@ class CaptureController: ReenactControllerBase {
             originalPhotoOverlay.frame = CGRect(
                 x: 0,
                 y: 0,
-                width: size.width - buttonContainerSize,
-                height: size.height
+                width: Int(Float(size.width) - Float(buttonContainerSize)),
+                height: Int(size.height)
             )
         }
         
@@ -251,19 +260,19 @@ class CaptureController: ReenactControllerBase {
             // Portrait orientation.
             
             captureButton.frame = CGRect(
-                x: Int(round(size.width / 2) - round(CGFloat(buttonContainerSize) / 2)),
-                y: Int(size.height - CGFloat(buttonContainerSize)),
-                width: buttonContainerSize,
-                height: buttonContainerSize
+                x: Int(round(size.width / 2) - round(buttonContainerSize / 2)),
+                y: Int(size.height - buttonContainerSize),
+                width: Int(buttonContainerSize),
+                height: Int(buttonContainerSize)
             )
         }
         else {
             // Landscape
             captureButton.frame = CGRect(
-                x: Int(size.width - CGFloat(buttonContainerSize)),
-                y: Int(round(size.height / 2) - round(CGFloat(buttonContainerSize) / 2)),
-                width: buttonContainerSize,
-                height: buttonContainerSize
+                x: Int(size.width - buttonContainerSize),
+                y: Int(round(size.height / 2) - round(buttonContainerSize / 2)),
+                width: Int(buttonContainerSize),
+                height: Int(buttonContainerSize)
             )
         }
         
@@ -279,14 +288,14 @@ class CaptureController: ReenactControllerBase {
             if (size.width < size.height) {
                 // Portrait orientation.
                 switchCameraButton.frame = CGRect(
-                    x: Int(round(size.width / 6 * 5) - round(CGFloat(smallButtonSize) / 2)),
+                    x: Int(round(size.width / 6 * 5) - round(smallButtonSize / 2)),
                     y: Int(
                         size.height -
-                            CGFloat(buttonContainerSize) +
+                            buttonContainerSize +
                             round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
                     ),
-                    width: smallButtonSize,
-                    height: smallButtonSize
+                    width: Int(smallButtonSize),
+                    height: Int(smallButtonSize)
                 )
             }
             else {
@@ -294,12 +303,12 @@ class CaptureController: ReenactControllerBase {
                 switchCameraButton.frame = CGRect(
                     x: Int(
                         size.width -
-                            CGFloat(buttonContainerSize) +
-                            round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                            buttonContainerSize +
+                            round((buttonContainerSize - smallButtonSize) / 2)
                     ),
-                    y: Int(round(size.height / 6 * 5) - round(CGFloat(smallButtonSize) / 2)),
-                    width: smallButtonSize,
-                    height: smallButtonSize
+                    y: Int(round(size.height / 6 * 5) - round(smallButtonSize / 2)),
+                    width: Int(smallButtonSize),
+                    height: Int(smallButtonSize)
                 )
             }
             
@@ -314,14 +323,14 @@ class CaptureController: ReenactControllerBase {
         if (size.width < size.height) {
             // Portrait orientation.
             cancelButton.frame = CGRect(
-                x: Int(round(size.width / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
+                x: Int(round(size.width / 6 * 1) - round(smallButtonSize / 2)),
                 y: Int(
                     size.height -
                         CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                        round((buttonContainerSize - smallButtonSize) / 2)
                 ),
-                width: smallButtonSize,
-                height: smallButtonSize
+                width: Int(smallButtonSize),
+                height: Int(smallButtonSize)
             )
         }
         else {
@@ -329,12 +338,12 @@ class CaptureController: ReenactControllerBase {
             cancelButton.frame = CGRect(
                 x: Int(
                     size.width -
-                        CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                        buttonContainerSize +
+                        round((buttonContainerSize - smallButtonSize) / 2)
                 ),
-                y: Int(round(size.height / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
-                width: smallButtonSize,
-                height: smallButtonSize
+                y: Int(round(size.height / 6 * 1) - round(smallButtonSize / 2)),
+                width: Int(smallButtonSize),
+                height: Int(smallButtonSize)
             )
         }
         

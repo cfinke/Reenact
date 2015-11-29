@@ -78,19 +78,19 @@ class ShareController: ReenactControllerBase {
         if (size.width < size.height) {
             // Portrait orientation.
             shareButton.frame = CGRect(
-                x: Int(round(size.width / 2) - round(CGFloat(buttonContainerSize) / 2)),
-                y: Int(size.height - CGFloat(buttonContainerSize)),
-                width: smallButtonSize,
-                height: smallButtonSize
+                x: Int(round(size.width / 2) - round(smallButtonSize / 2)),
+                y: Int(size.height - buttonContainerSize + round(smallButtonSize / 2)),
+                width: Int(smallButtonSize),
+                height: Int(smallButtonSize)
             )
         }
         else {
             // Landscape
             shareButton.frame = CGRect(
-                x: Int(size.width - CGFloat(buttonContainerSize)),
-                y: Int(round(size.height / 2) - round(CGFloat(buttonContainerSize) / 2)),
-                width: smallButtonSize,
-                height: smallButtonSize
+                x: Int(size.width - buttonContainerSize + round(smallButtonSize / 2)),
+                y: Int(round(size.height / 2) - round(smallButtonSize / 2)),
+                width: Int(smallButtonSize),
+                height: Int(smallButtonSize)
             )
         }
         

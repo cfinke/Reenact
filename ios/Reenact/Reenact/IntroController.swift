@@ -80,7 +80,7 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         let reenactLogoWidth = round( min( size.width, size.height ) / 3 )
         reenactLogoView.frame = CGRect(
             x: round((size.width / 2) - (reenactLogoWidth / 2)),
-            y: round(size.height / 3),
+            y: round(size.height / 4),
             width: reenactLogoWidth,
             height: reenactLogoWidth
         )
@@ -95,7 +95,7 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         choosePhotoButton.titleLabel!.font = UIFont(name:"Helvetica Neue", size: 12)
         choosePhotoButton.frame = CGRect(
             x: round((size.width - 240) / 2),
-            y: round(size.height * 0.85),
+            y: round(size.height * 0.75),
             width: 240,
             height: 30
         )

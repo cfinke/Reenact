@@ -10,8 +10,8 @@ import UIKit
 import Foundation
 
 class ReenactControllerBase: UIViewController {
-    let buttonContainerSize: Int = 100
-    let smallButtonSize: Int = 60
+    let buttonContainerSize: CGFloat = 100.0
+    let smallButtonSize: CGFloat = 60.0
 
     override func viewDidLoad() {
         super.viewDidLoad();
@@ -32,5 +32,11 @@ class ReenactControllerBase: UIViewController {
     
     func buildLayout(size: CGSize){
         view.subviews.forEach({ $0.removeFromSuperview() })
+    }
+    
+    func alert(message: String) {
+        let alert = UIAlertController(title: "Uh-oh", message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "I understand", style: UIAlertActionStyle.Default, handler: nil))
+        self.presentViewController(alert, animated: true, completion: nil)
     }
 }

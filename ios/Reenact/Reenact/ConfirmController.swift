@@ -123,8 +123,8 @@ class ConfirmController: ReenactControllerBase {
                 compareOriginal.frame = CGRect(
                     x: 0,
                     y: 0,
-                    width: compareOriginalWidth,
-                    height: size.height - buttonContainerSize
+                    width: Int(compareOriginalWidth),
+                    height: Int(size.height - buttonContainerSize)
                 )
             }
             else {
@@ -213,26 +213,25 @@ class ConfirmController: ReenactControllerBase {
         
         // Add confirm button.
         let confirmButtonImage = UIImage(named: "checkmark.png")
-        let confirmButtonSize = buttonContainerSize
         confirmButton.setImage(confirmButtonImage, forState: .Normal)
         confirmButton.contentMode = .ScaleAspectFit
         
         if (size.width < size.height) {
             // Portrait orientation.
             confirmButton.frame = CGRect(
-                x: Int(round(size.width / 2) - round(CGFloat(confirmButtonSize) / 2)),
-                y: Int(size.height - CGFloat(buttonContainerSize)),
-                width: confirmButtonSize,
-                height: confirmButtonSize
+                x: Int(round(size.width / 2) - round(buttonContainerSize / 2)),
+                y: Int(size.height - buttonContainerSize),
+                width: Int(buttonContainerSize),
+                height: Int(buttonContainerSize)
             )
         }
         else {
             // Landscape
             confirmButton.frame = CGRect(
-                x: Int(size.width - CGFloat(buttonContainerSize)),
-                y: Int(round(size.height / 2) - round(CGFloat(confirmButtonSize) / 2)),
-                width: confirmButtonSize,
-                height: confirmButtonSize
+                x: Int(size.width - buttonContainerSize),
+                y: Int(round(size.height / 2) - round(buttonContainerSize / 2)),
+                width: Int(buttonContainerSize),
+                height: Int(buttonContainerSize)
             )
         }
         
@@ -247,14 +246,14 @@ class ConfirmController: ReenactControllerBase {
         if (size.width < size.height) {
             // Portrait orientation.
             cancelButton.frame = CGRect(
-                x: Int(round(size.width / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
+                x: Int(round(size.width / 6 * 1) - round(smallButtonSize / 2)),
                 y: Int(
                     size.height -
-                        CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                        buttonContainerSize +
+                        round((buttonContainerSize - smallButtonSize) / 2)
                 ),
-                width: smallButtonSize,
-                height: smallButtonSize
+                width: Int(smallButtonSize),
+                height: Int(smallButtonSize)
             )
         }
         else {
@@ -262,12 +261,12 @@ class ConfirmController: ReenactControllerBase {
             cancelButton.frame = CGRect(
                 x: Int(
                     size.width -
-                        CGFloat(buttonContainerSize) +
-                        round(CGFloat(buttonContainerSize - smallButtonSize) / 2)
+                        buttonContainerSize +
+                        round((buttonContainerSize - smallButtonSize) / 2)
                 ),
-                y: Int(round(size.height / 6 * 1) - round(CGFloat(smallButtonSize) / 2)),
-                width: smallButtonSize,
-                height: smallButtonSize
+                y: Int(round(size.height / 6 * 1) - round(smallButtonSize / 2)),
+                width: Int(smallButtonSize),
+                height: Int(smallButtonSize)
             )
         }
         
