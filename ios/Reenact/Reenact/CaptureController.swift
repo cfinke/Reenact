@@ -164,7 +164,8 @@ class CaptureController: ReenactControllerBase {
         previewLayer.bounds = CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height)
         
         previewLayer.position = CGPointMake(bounds.midX, bounds.midY)
-        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspect
+
         let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height))
         
         let deviceOrientation = UIDevice.currentDevice().orientation
