@@ -33,20 +33,6 @@ class HelpController: ReenactControllerBase {
     override func buildLayout(size: CGSize) {
         super.buildLayout(size)
         
-        let closeButtonImage = UIImage(named:"close.png")
-        let closeButtonSize = 30
-        let closeButtonOffset = 30
-        closeButton.setImage(closeButtonImage, forState: .Normal)
-        closeButton.frame = CGRect(
-            x: Int(size.width - CGFloat(closeButtonOffset) - CGFloat(closeButtonSize)),
-            y: closeButtonOffset,
-            width: closeButtonSize,
-            height: closeButtonSize
-        )
-        closeButton.contentMode = .ScaleAspectFit
-        closeButton.addTarget(self, action:"closeHelp:", forControlEvents: .TouchUpInside)
-        view.addSubview(closeButton)
-        
         let reenactLogo = UIImage(named:"logo.png")
         reenactLogoView.image = reenactLogo
         reenactLogoView.contentMode = .ScaleAspectFit
@@ -55,13 +41,14 @@ class HelpController: ReenactControllerBase {
         let instructionsFont = UIFont(name:"Helvetica Neue", size: 16.0)
         let textMargin = 30
         let lineHeight = textSize("x", font: instructionsFont!).height
-        let reenactLogoWidth = round( min( size.width, size.height ) / 3 )
+
+        let reenactLogoWidth = Int(round(min(size.height, size.width) / 2))
 
         if (size.width <= size.height) {
             // Add the logo on the intro screen.
             reenactLogoView.frame = CGRect(
-                x: round(size.width / 2) - round(reenactLogoWidth / 2),
-                y: round(size.height / 4) - round(reenactLogoWidth / 2),
+                x: Int(round(size.width / 2) - round(CGFloat(reenactLogoWidth) / 2)),
+                y: Int(round(size.height / 4) - round(CGFloat(reenactLogoWidth) / 2)),
                 width: reenactLogoWidth,
                 height: reenactLogoWidth
             )
@@ -100,10 +87,10 @@ class HelpController: ReenactControllerBase {
         }
         else {
             reenactLogoView.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: size.width / 2,
-                height: size.height
+                x: Int(round((size.width / 4) - (CGFloat(reenactLogoWidth) / 2))),
+                y: Int(round(size.height / 4)),
+                width: reenactLogoWidth,
+                height: reenactLogoWidth
             )
             
             let maxTextWidth = Int(size.width / 2) - (textMargin * 2)
@@ -139,6 +126,20 @@ class HelpController: ReenactControllerBase {
         }
         
         view.addSubview(reenactLogoView)
+        
+        let closeButtonImage = UIImage(named:"close.png")
+        let closeButtonSize = 30
+        let closeButtonOffset = 30
+        closeButton.setImage(closeButtonImage, forState: .Normal)
+        closeButton.frame = CGRect(
+            x: Int(size.width - CGFloat(closeButtonOffset) - CGFloat(closeButtonSize)),
+            y: closeButtonOffset,
+            width: closeButtonSize,
+            height: closeButtonSize
+        )
+        closeButton.contentMode = .ScaleAspectFit
+        closeButton.addTarget(self, action:"closeHelp:", forControlEvents: .TouchUpInside)
+        view.addSubview(closeButton)
     }
     
 }

@@ -79,12 +79,23 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         reenactLogoView.contentMode = .ScaleAspectFit
         
         let reenactLogoWidth = round( min( size.width, size.height ) / 2 )
-        reenactLogoView.frame = CGRect(
-            x: round((size.width / 2) - (reenactLogoWidth / 2)),
-            y: round(size.height / 4),
-            width: reenactLogoWidth,
-            height: reenactLogoWidth
-        )
+        
+        if size.width <= size.height {
+            reenactLogoView.frame = CGRect(
+                x: round((size.width / 2) - (reenactLogoWidth / 2)),
+                y: round(size.height / 4),
+                width: reenactLogoWidth,
+                height: reenactLogoWidth
+            )
+        }
+        else {
+            reenactLogoView.frame = CGRect(
+                x: round((size.width / 2) - (reenactLogoWidth / 2)),
+                y: round(size.height / 8),
+                width: reenactLogoWidth,
+                height: reenactLogoWidth
+            )
+        }
         
         view.addSubview(reenactLogoView)
         
