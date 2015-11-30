@@ -47,37 +47,56 @@ class HelpController: ReenactControllerBase {
         closeButton.addTarget(self, action:"closeHelp:", forControlEvents: .TouchUpInside)
         view.addSubview(closeButton)
         
-        let instructionString = "Reenact\n\nReenact photos with Reenact. Choose a photo, align the camera, and take the shot.\n\nFor help, email help@reenact.me\n\n@ReenactApp on Twitter"
-        
         let reenactLogo = UIImage(named:"logo.png")
         reenactLogoView.image = reenactLogo
         reenactLogoView.contentMode = .ScaleAspectFit
-        
-        let reenactLogoWidth = round( min( size.width, size.height ) / 3 )
-        let textMargin = 30
-        
-        let instructions = UITextView()
-        instructions.text = instructionString
-        instructions.textColor = UIColor.whiteColor()
-        instructions.backgroundColor = UIColor.blackColor()
-        instructions.font = UIFont(name:"Helvetica Neue", size: 16.0)
 
-        
+        let instructions: [String] = ["Reenact photos with Reenact. Choose a photo, align the camera, and take the shot.", "For help, email help@reenact.me", "@ReenactApp on Twitter", "http://reenact.me/"]
+        let instructionsFont = UIFont(name:"Helvetica Neue", size: 16.0)
+        let textMargin = 30
+        let lineHeight = textSize("x", font: instructionsFont!).height
+        let reenactLogoWidth = round( min( size.width, size.height ) / 3 )
+
         if (size.width <= size.height) {
             // Add the logo on the intro screen.
             reenactLogoView.frame = CGRect(
-                x: round((size.width / 2) - (reenactLogoWidth / 2)),
-                y: round(size.height / 4),
+                x: round(size.width / 2) - round(reenactLogoWidth / 2),
+                y: round(size.height / 4) - round(reenactLogoWidth / 2),
                 width: reenactLogoWidth,
                 height: reenactLogoWidth
             )
+
+            let maxTextWidth = Int(size.width) - (textMargin * 2)
+            var currentYOffset = CGFloat(Int(round(size.height / 2)))
             
-            instructions.frame = CGRect(
-                x: textMargin,
-                y: Int(round(size.height / 2)) + 25,
-                width: Int(size.width) - (textMargin * 2),
-                height: 200
-            )
+            for instruction in instructions {
+                var instructionSize = textSize(instruction, font: instructionsFont!)
+                
+                let numLines = ceil((instructionSize.width * 1.1) / CGFloat(maxTextWidth))
+                instructionSize.height = instructionSize.height * numLines * 1.5 // 1.5 is for line spacing
+                instructionSize.width = CGFloat(maxTextWidth)
+                
+                let instructionView = UITextView()
+                instructionView.text = instruction
+                instructionView.textColor = UIColor.whiteColor()
+                instructionView.backgroundColor = UIColor.blackColor()
+                instructionView.font = instructionsFont
+                instructionView.dataDetectorTypes = .Link
+                instructionView.editable = false
+                instructionView.selectable = true
+                
+                instructionView.frame = CGRect(
+                    x: textMargin,
+                    y: Int(round(currentYOffset)),
+                    width: maxTextWidth,
+                    height: Int(instructionSize.height)
+                )
+                
+                view.addSubview(instructionView)
+                
+                currentYOffset += instructionSize.height + CGFloat(lineHeight)
+            }
+            
         }
         else {
             reenactLogoView.frame = CGRect(
@@ -87,17 +106,39 @@ class HelpController: ReenactControllerBase {
                 height: size.height
             )
             
-            instructions.frame = CGRect(
-                x: textMargin + Int(round(size.width / 2)),
-                y: textMargin,
-                width: Int(round(size.width / 2)) - (textMargin * 2),
-                height: Int(size.height) - (textMargin * 2)
-            )
+            let maxTextWidth = Int(size.width / 2) - (textMargin * 2)
+            var currentYOffset = CGFloat(textMargin)
+            
+            for instruction in instructions {
+                var instructionSize = textSize(instruction, font: instructionsFont!)
+
+                let numLines = ceil((instructionSize.width * 1.1) / CGFloat(maxTextWidth))
+                instructionSize.height = instructionSize.height * numLines * 1.5 // 1.5 is for line spacing
+                instructionSize.width = CGFloat(maxTextWidth)
+                
+                let instructionView = UITextView()
+                instructionView.text = instruction
+                instructionView.textColor = UIColor.whiteColor()
+                instructionView.backgroundColor = UIColor.blackColor()
+                instructionView.font = instructionsFont
+                instructionView.dataDetectorTypes = .Link
+                instructionView.editable = false
+                instructionView.selectable = true
+                
+                instructionView.frame = CGRect(
+                    x: Int(round(size.width / 2)) + textMargin,
+                    y: Int(round(currentYOffset)),
+                    width: Int(instructionSize.width),
+                    height: Int(instructionSize.height)
+                )
+                
+                view.addSubview(instructionView)
+                
+                currentYOffset += instructionSize.height + CGFloat(lineHeight)
+            }
         }
         
         view.addSubview(reenactLogoView)
-        view.addSubview(instructions)
-
     }
     
 }

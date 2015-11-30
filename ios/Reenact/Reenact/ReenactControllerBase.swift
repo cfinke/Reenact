@@ -36,11 +36,7 @@ class ReenactControllerBase: UIViewController {
     
     override func viewWillTransitionToSize(size: CGSize,
         withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-            super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator);
-            
-            print("Rotating")
-            print(size)
-        
+        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator);
         buildLayout(size)
     }
     
