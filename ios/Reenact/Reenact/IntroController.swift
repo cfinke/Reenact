@@ -90,7 +90,7 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         
         let choosePhotoButtonFont = UIFont(name:"Helvetica Neue", size: 12)
         let choosePhotoButtonSize = textSize("CHOOSE A PHOTO TO REENACT", font: choosePhotoButtonFont!)
-        let choosePhotoButtonPadding: CGFloat = 7.0
+        let choosePhotoButtonPadding: CGFloat = 10.0
         
         choosePhotoButton.setTitle("CHOOSE A PHOTO TO REENACT", forState: .Normal)
         choosePhotoButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
@@ -99,7 +99,7 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         choosePhotoButton.addTarget(self, action:"chooseOriginalPhoto:", forControlEvents: .TouchUpInside)
         choosePhotoButton.titleLabel!.font = choosePhotoButtonFont
         choosePhotoButton.frame = CGRect(
-            x: round((size.width - choosePhotoButtonSize.width) / 2),
+            x: round((size.width - choosePhotoButtonSize.width) / 2) - choosePhotoButtonPadding,
             y: round(size.height * 0.75),
             width: choosePhotoButtonSize.width + (2 * choosePhotoButtonPadding),
             height: choosePhotoButtonSize.height + (2 * choosePhotoButtonPadding)
