@@ -18,6 +18,7 @@ class ConfirmController: ReenactControllerBase {
     let confirmButton: UIButton = UIButton()
     let cancelButton: UIButton = UIButton()
     let comparisonImage: UIImageView = UIImageView()
+    let loadingIndicator: UIImageView = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,9 +28,16 @@ class ConfirmController: ReenactControllerBase {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        combinedPhoto = buildComparison(originalPhoto, photo2: newPhoto)
-        comparisonImage.contentMode = .ScaleAspectFit
-        comparisonImage.image = combinedPhoto
+        
+        backgroundThread(
+            background: {
+                self.combinedPhoto = self.buildComparison(self.originalPhoto, photo2: self.newPhoto)
+            },
+            completion: {
+                self.comparisonImage.image = self.combinedPhoto
+                self.loadingIndicator.removeFromSuperview()
+            }
+        )
     }
     
     override func didReceiveMemoryWarning() {
@@ -76,6 +84,13 @@ class ConfirmController: ReenactControllerBase {
                 width: size.width,
                 height: size.height - buttonContainerSize
             )
+            
+            loadingIndicator.frame = CGRect(
+                x: size.width / 4,
+                y: ((size.height - buttonContainerSize) / 2) - (size.width / 4),
+                width: size.width / 2,
+                height: size.width / 2
+            )
         }
         else {
             // Landscape orientation.
@@ -85,9 +100,26 @@ class ConfirmController: ReenactControllerBase {
                 width: size.width - buttonContainerSize,
                 height: size.height
             )
+            
+            loadingIndicator.frame = CGRect(
+                x: ((size.width - buttonContainerSize) / 2) - (size.height / 4),
+                y: size.height / 4,
+                width: size.height / 2,
+                height: size.height / 2
+            )
         }
         
+        
+        comparisonImage.contentMode = .ScaleAspectFit
+        
+        loadingIndicator.alpha = 0.5
+        loadingIndicator.contentMode = .ScaleAspectFit
+        loadingIndicator.image = UIImage(named: "logo.png")
+
+        view.addSubview(loadingIndicator)
         view.addSubview(comparisonImage)
+        
+        rotatePlaceholder()
         
         // Add confirm button.
         let confirmButtonImage = UIImage(named: "checkmark.png")
@@ -188,8 +220,9 @@ class ConfirmController: ReenactControllerBase {
         UIGraphicsBeginImageContext(finalSize)
         
         photo1.drawInRect(originalDest)
+
         photo2.drawInRect(newDest)
-        
+
         // Add the Reenact logo
         let logoWidth = round(finalSize.width * 0.04)
         let logoOffset = round(finalSize.width * 0.01)
@@ -199,9 +232,22 @@ class ConfirmController: ReenactControllerBase {
         
         combinedPhoto = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-
+        
         return combinedPhoto!
     }
-    
+
+    func rotatePlaceholder() {
+        UIView.animateWithDuration(0.8, delay: 0.0, options: UIViewAnimationOptions.CurveLinear, animations: {
+            // Rotate the image here
+            self.loadingIndicator.transform = CGAffineTransformRotate(self.loadingIndicator.transform, CGFloat(M_PI))
+            
+            // As the options are set to .Repeat, there is no completion
+            }, completion: { (finished: Bool) -> Void in
+                if self.combinedPhoto == nil {
+                    self.rotatePlaceholder()
+                }
+            }
+        )
+    }
 }
 
