@@ -16,7 +16,8 @@ class ShareController: ReenactControllerBase {
     let comparisonImage: UIImageView = UIImageView()
     let shareButton: UIButton = UIButton()
     let restartButton: UIButton = UIButton()
-
+    let saveNotification: UIButton = UIButton()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -144,6 +145,33 @@ class ShareController: ReenactControllerBase {
         
         restartButton.addTarget(self, action:"startOver:", forControlEvents: .TouchUpInside)
         view.addSubview(restartButton)
+        
+        let saveNotificationFont = UIFont(name:"Helvetica Neue", size: 14)
+        var saveNotificationSize = textSize("Photo Saved", font: saveNotificationFont!)
+        let saveNotificationPadding: CGFloat = 10.0
+        
+        saveNotification.setTitle("Photo Saved", forState: .Normal)
+        saveNotification.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        saveNotification.backgroundColor = UIColor.blackColor()
+        saveNotification.contentEdgeInsets = UIEdgeInsetsMake(saveNotificationPadding, saveNotificationPadding, saveNotificationPadding, saveNotificationPadding)
+        saveNotification.titleLabel!.font = saveNotificationFont
+        saveNotificationSize.width *= 1.5
+        
+        saveNotification.frame = CGRect(
+            x: Int(round((size.width - saveNotificationSize.width) / 2) - saveNotificationPadding),
+            y: Int(saveNotificationSize.height),
+            width: Int((saveNotificationSize.width) + (2 * saveNotificationPadding)),
+            height: Int(saveNotificationSize.height + (2 * saveNotificationPadding))
+        )
+        
+        view.addSubview(saveNotification)
+        
+        UIView.animateWithDuration( 3.0, delay: 2.0, options: UIViewAnimationOptions.CurveEaseOut, animations : {
+            self.saveNotification.alpha = 0;
+            }, completion : {
+                (finished: Bool) -> Void in
+            }
+        )
         
     }
 }
