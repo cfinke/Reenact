@@ -88,19 +88,22 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         
         view.addSubview(reenactLogoView)
         
+        let choosePhotoButtonFont = UIFont(name:"Helvetica Neue", size: 12)
+        let choosePhotoButtonSize = textSize("CHOOSE A PHOTO TO REENACT", font: choosePhotoButtonFont!)
+        let choosePhotoButtonPadding: CGFloat = 7.0
+        
         choosePhotoButton.setTitle("CHOOSE A PHOTO TO REENACT", forState: .Normal)
         choosePhotoButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         choosePhotoButton.backgroundColor = UIColor.blackColor()
-        choosePhotoButton.contentEdgeInsets = UIEdgeInsetsMake(7.0, 7.0, 7.0, 7.0)
+        choosePhotoButton.contentEdgeInsets = UIEdgeInsetsMake(choosePhotoButtonPadding, choosePhotoButtonPadding, choosePhotoButtonPadding, choosePhotoButtonPadding)
         choosePhotoButton.addTarget(self, action:"chooseOriginalPhoto:", forControlEvents: .TouchUpInside)
-        choosePhotoButton.titleLabel!.font = UIFont(name:"Helvetica Neue", size: 12)
+        choosePhotoButton.titleLabel!.font = choosePhotoButtonFont
         choosePhotoButton.frame = CGRect(
-            x: round((size.width - 240) / 2),
+            x: round((size.width - choosePhotoButtonSize.width) / 2),
             y: round(size.height * 0.75),
-            width: 240,
-            height: 30
+            width: choosePhotoButtonSize.width + (2 * choosePhotoButtonPadding),
+            height: choosePhotoButtonSize.height + (2 * choosePhotoButtonPadding)
         )
-        // @todo Use auto-layout to center this button horizontally and size it vertically and horizontally.
         
         view.addSubview(choosePhotoButton)
         

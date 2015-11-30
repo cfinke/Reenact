@@ -51,4 +51,8 @@ class ReenactControllerBase: UIViewController {
     func buildLayout(size: CGSize){
         view.subviews.forEach({ $0.removeFromSuperview() })
     }
+    
+    func textSize(text: String, font: UIFont) -> CGSize {
+        return (text as NSString).sizeWithAttributes([NSFontAttributeName: font])
+    }
 }
