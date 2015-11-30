@@ -56,11 +56,9 @@ class CaptureController: ReenactControllerBase {
         super.viewDidAppear(animated)
         
         if originalPhoto.size.width <= originalPhoto.size.height {
-            print("Setting to portrait")
             UIDevice.currentDevice().setValue(UIInterfaceOrientation.Portrait.rawValue, forKey: "orientation")
         }
         else {
-            print("Setting to landscape")
             UIDevice.currentDevice().setValue(UIInterfaceOrientation.LandscapeLeft.rawValue, forKey: "orientation")
         }
         
@@ -156,7 +154,6 @@ class CaptureController: ReenactControllerBase {
         captureDevice = getSelectedCamera()
         
         if (nil == captureDevice) {
-            print("The camera wouldn't start.")
             cancelCapture(nil)
             return
         }
@@ -182,7 +179,6 @@ class CaptureController: ReenactControllerBase {
         do {
             try deviceInput = AVCaptureDeviceInput(device: captureDevice)
         } catch _ {
-            print("Reenact couldn't load the camera preview.")
             cancelCapture(nil)
             return
         }
@@ -403,27 +399,23 @@ class CaptureController: ReenactControllerBase {
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        print("touch began")
         //Get Touch Point
         let Point = touches.first!.locationInView(view)
-        print(Point)
+
         let cameraPoint = previewLayer.captureDevicePointOfInterestForPoint(Point)
-        print(cameraPoint)
+        
         //Assign Auto Focus and Auto Exposour
         if let device = captureDevice {
-            print("Got device")
             do {
                 try! device.lockForConfiguration()
-                print("Locked device")
+
                 if device.focusPointOfInterestSupported{
-                    print("focusPoint supported")
                     //Add Focus on Point
                     device.focusPointOfInterest = cameraPoint
                     device.focusMode = AVCaptureFocusMode.AutoFocus
                 }
                 
                 if device.exposurePointOfInterestSupported{
-                    print("exposurePoint supported")
                     //Add Exposure on Point
                     device.exposurePointOfInterest = cameraPoint
                     device.exposureMode = AVCaptureExposureMode.AutoExpose

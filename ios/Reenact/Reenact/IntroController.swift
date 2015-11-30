@@ -34,7 +34,6 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if (segue.identifier == "introToCapture") {
-            print("In prepareForSegue")
             let svc = segue.destinationViewController as! CaptureController;
             
             svc.originalPhoto = self.originalPhoto

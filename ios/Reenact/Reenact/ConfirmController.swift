@@ -46,8 +46,6 @@ class ConfirmController: ReenactControllerBase {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
-        print("In prepareForSegue")
-        
         if (segue.identifier == "confirmToShare") {
             let svc = segue.destinationViewController as! ShareController;
             svc.combinedPhoto = combinedPhoto
