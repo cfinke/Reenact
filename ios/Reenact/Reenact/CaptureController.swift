@@ -31,17 +31,10 @@ class CaptureController: ReenactControllerBase {
     
     let previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer()
     
+    var viewAppeared = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if originalPhoto!.size.width <= originalPhoto!.size.height {
-            print("Setting to portrait")
-            UIDevice.currentDevice().setValue(UIInterfaceOrientation.Portrait.rawValue, forKey: "orientation")
-        }
-        else {
-            print("Setting to landscape")
-            UIDevice.currentDevice().setValue(UIInterfaceOrientation.LandscapeLeft.rawValue, forKey: "orientation")
-        }
         
         let devices = AVCaptureDevice.devices()
         
@@ -59,6 +52,21 @@ class CaptureController: ReenactControllerBase {
         startImageFade()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if originalPhoto!.size.width <= originalPhoto!.size.height {
+            print("Setting to portrait")
+            UIDevice.currentDevice().setValue(UIInterfaceOrientation.Portrait.rawValue, forKey: "orientation")
+        }
+        else {
+            print("Setting to landscape")
+            UIDevice.currentDevice().setValue(UIInterfaceOrientation.LandscapeLeft.rawValue, forKey: "orientation")
+        }
+        
+        viewAppeared = true
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -74,10 +82,35 @@ class CaptureController: ReenactControllerBase {
     }
     
     override func shouldAutorotate() -> Bool {
-        return false
+        if originalPhoto!.size.width <= originalPhoto!.size.height {
+            if (UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeLeft ||
+                UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeRight ||
+                UIDevice.currentDevice().orientation == UIDeviceOrientation.Unknown) {
+                return false;
+            }
+        }
+        else {
+            if (UIDevice.currentDevice().orientation == UIDeviceOrientation.Portrait ||
+                UIDevice.currentDevice().orientation == UIDeviceOrientation.PortraitUpsideDown ||
+                UIDevice.currentDevice().orientation == UIDeviceOrientation.Unknown) {
+                return false;
+            }
+        }
+            
+        return true;
     }
     
     override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
+        if !viewAppeared {
+            return [
+                UIInterfaceOrientationMask.Portrait,
+                UIInterfaceOrientationMask.PortraitUpsideDown,
+                UIInterfaceOrientationMask.LandscapeRight,
+                UIInterfaceOrientationMask.LandscapeLeft,
+                UIInterfaceOrientationMask.Landscape
+            ]
+        }
+        
         if originalPhoto!.size.width <= originalPhoto!.size.height {
             return [UIInterfaceOrientationMask.Portrait]
         }
@@ -178,15 +211,17 @@ class CaptureController: ReenactControllerBase {
         let deviceOrientation = UIDevice.currentDevice().orientation
         
         if deviceOrientation == UIDeviceOrientation.LandscapeLeft {
-            previewLayer.connection.videoOrientation = AVCaptureVideoOrientation.LandscapeLeft
+            previewLayer.connection.videoOrientation = AVCaptureVideoOrientation.LandscapeRight
         }
         else if deviceOrientation == UIDeviceOrientation.LandscapeRight {
-            previewLayer.connection.videoOrientation = AVCaptureVideoOrientation.LandscapeRight
+            previewLayer.connection.videoOrientation = AVCaptureVideoOrientation.LandscapeLeft
         }
         else if deviceOrientation == UIDeviceOrientation.PortraitUpsideDown {
             previewLayer.connection.videoOrientation = AVCaptureVideoOrientation.PortraitUpsideDown
         }
-        
+        else {
+            previewLayer.connection.videoOrientation = AVCaptureVideoOrientation.Portrait
+        }
         
         cameraPreview.layer.addSublayer(previewLayer)
         view.addSubview(cameraPreview)

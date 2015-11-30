@@ -141,6 +141,5 @@ class HelpController: ReenactControllerBase {
         closeButton.addTarget(self, action:"closeHelp:", forControlEvents: .TouchUpInside)
         view.addSubview(closeButton)
     }
-    
 }
 
