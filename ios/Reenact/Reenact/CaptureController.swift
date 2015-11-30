@@ -65,8 +65,6 @@ class CaptureController: ReenactControllerBase {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
-        print("In prepareForSegue")
-        
         if (segue.identifier == "captureToConfirm") {
             let svc = segue.destinationViewController as! ConfirmController;
             
@@ -126,6 +124,7 @@ class CaptureController: ReenactControllerBase {
         
         if (nil == captureDevice) {
             print("The camera wouldn't start.")
+            cancelCapture(nil)
             return
         }
         
@@ -135,6 +134,7 @@ class CaptureController: ReenactControllerBase {
             try deviceInput = AVCaptureDeviceInput(device: captureDevice)
         } catch _ {
             print("Reenact couldn't load the camera preview.")
+            cancelCapture(nil)
             return
         }
         
@@ -188,8 +188,6 @@ class CaptureController: ReenactControllerBase {
     }
     
     func takePicture(sender: UIButton!) {
-        print("Taking a picture.")
-        
         // Make the camera set the orientation of the image when it's taken.
         let videoOrientation = previewLayer.connection.videoOrientation
         stillImageOutput.connectionWithMediaType(AVMediaTypeVideo).videoOrientation = videoOrientation
@@ -205,18 +203,13 @@ class CaptureController: ReenactControllerBase {
     }
     
     func switchCamera(sender: UIButton!) {
-        print("Switching camera")
         endSession()
-        print("Ended session")
         cameraIndex++
         cameraIndex %= captureDevices.count
-        print("Camera Index is now")
-        print(cameraIndex)
         beginSession()
-        
     }
     
-    func cancelCapture(sender: UIButton!) {
+    func cancelCapture(sender: UIButton?) {
         self.performSegueWithIdentifier("captureToIntro", sender: self)
     }
     
