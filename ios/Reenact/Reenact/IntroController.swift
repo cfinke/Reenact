@@ -13,7 +13,7 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
     
     let picker = UIImagePickerController()
     
-    var originalPhoto:UIImage?
+    var originalPhoto: UIImage!
     
     let choosePhotoButton: UIButton = UIButton()
     let reenactLogoView: UIImageView = UIImageView()

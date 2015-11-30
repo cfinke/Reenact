@@ -12,15 +12,15 @@ import AVFoundation
 class CaptureController: ReenactControllerBase {
     // MARK: Properties
     
-    var originalPhoto: UIImage?
-    var newPhoto: UIImage?
+    var originalPhoto: UIImage!
+    var newPhoto: UIImage!
     
     let captureSession = AVCaptureSession()
     
-    var captureDevice: AVCaptureDevice?
+    var captureDevice: AVCaptureDevice!
     var captureDevices: [AVCaptureDevice] = []
     var cameraIndex: Int = 0
-    var deviceInput: AVCaptureDeviceInput?
+    var deviceInput: AVCaptureDeviceInput!
     let stillImageOutput = AVCaptureStillImageOutput()
     
     // UI Elements
@@ -55,7 +55,7 @@ class CaptureController: ReenactControllerBase {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if originalPhoto!.size.width <= originalPhoto!.size.height {
+        if originalPhoto.size.width <= originalPhoto.size.height {
             print("Setting to portrait")
             UIDevice.currentDevice().setValue(UIInterfaceOrientation.Portrait.rawValue, forKey: "orientation")
         }
@@ -82,7 +82,7 @@ class CaptureController: ReenactControllerBase {
     }
     
     override func shouldAutorotate() -> Bool {
-        if originalPhoto!.size.width <= originalPhoto!.size.height {
+        if originalPhoto.size.width <= originalPhoto.size.height {
             if (UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeLeft ||
                 UIDevice.currentDevice().orientation == UIDeviceOrientation.LandscapeRight ||
                 UIDevice.currentDevice().orientation == UIDeviceOrientation.Unknown) {
@@ -111,7 +111,7 @@ class CaptureController: ReenactControllerBase {
             ]
         }
         
-        if originalPhoto!.size.width <= originalPhoto!.size.height {
+        if originalPhoto.size.width <= originalPhoto.size.height {
             return [UIInterfaceOrientationMask.Portrait]
         }
         else {
@@ -162,17 +162,17 @@ class CaptureController: ReenactControllerBase {
         }
         
         do {
-            try captureDevice?.lockForConfiguration()
+            try captureDevice.lockForConfiguration()
             
-            if captureDevice!.isExposureModeSupported(.ContinuousAutoExposure) {
-                captureDevice!.exposureMode = .ContinuousAutoExposure
+            if captureDevice.isExposureModeSupported(.ContinuousAutoExposure) {
+                captureDevice.exposureMode = .ContinuousAutoExposure
             }
             
-            if captureDevice!.isFocusModeSupported(.ContinuousAutoFocus) {
-                captureDevice!.focusMode = .ContinuousAutoFocus
+            if captureDevice.isFocusModeSupported(.ContinuousAutoFocus) {
+                captureDevice.focusMode = .ContinuousAutoFocus
             }
             
-            captureDevice!.unlockForConfiguration()
+            captureDevice.unlockForConfiguration()
         } catch _ {
             // Oh well.
         }

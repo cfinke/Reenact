@@ -11,7 +11,7 @@ import UIKit
 class ShareController: ReenactControllerBase {
     // MARK: Properties
     
-    var combinedPhoto: UIImage?
+    var combinedPhoto: UIImage!
     
     let comparisonImage: UIImageView = UIImageView()
     let shareButton: UIButton = UIButton()
@@ -35,7 +35,7 @@ class ShareController: ReenactControllerBase {
     }
     
     func share(sender: UIButton!) {
-        let objectsToShare = [combinedPhoto!]
+        let objectsToShare = [combinedPhoto]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
             
         self.presentViewController(activityVC, animated: true, completion: nil)

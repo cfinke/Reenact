@@ -11,9 +11,9 @@ import UIKit
 class ConfirmController: ReenactControllerBase {
     // MARK: Properties
     
-    var originalPhoto: UIImage?
-    var newPhoto: UIImage?
-    var combinedPhoto: UIImage?
+    var originalPhoto: UIImage!
+    var newPhoto: UIImage!
+    var combinedPhoto: UIImage!
     
     let confirmButton: UIButton = UIButton()
     let cancelButton: UIButton = UIButton()
@@ -27,7 +27,7 @@ class ConfirmController: ReenactControllerBase {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        combinedPhoto = buildComparison(originalPhoto!, photo2: newPhoto!)
+        combinedPhoto = buildComparison(originalPhoto, photo2: newPhoto)
         comparisonImage.contentMode = .ScaleAspectFit
         comparisonImage.image = combinedPhoto
     }
@@ -51,10 +51,10 @@ class ConfirmController: ReenactControllerBase {
     
     func confirmShot(sender: UIButton) {
         // Save the new shot separately.
-        UIImageWriteToSavedPhotosAlbum(newPhoto!, nil, nil, nil)
+        UIImageWriteToSavedPhotosAlbum(newPhoto, nil, nil, nil)
 
         // Save the combined image.
-        UIImageWriteToSavedPhotosAlbum(combinedPhoto!, nil, nil, nil)
+        UIImageWriteToSavedPhotosAlbum(combinedPhoto, nil, nil, nil)
         
         // Send the final image off to the share controller.
         self.performSegueWithIdentifier("confirmToShare", sender: self)
@@ -195,7 +195,7 @@ class ConfirmController: ReenactControllerBase {
         let logoOffset = round(finalSize.width * 0.01)
         let logoDest = CGRect(x: finalSize.width - logoWidth - logoOffset, y: finalSize.height - logoWidth - logoOffset, width: logoWidth, height: logoWidth)
         let logo = UIImage(named: "logo.png")
-        logo!.drawInRect(logoDest)
+        logo?.drawInRect(logoDest)
         
         combinedPhoto = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
