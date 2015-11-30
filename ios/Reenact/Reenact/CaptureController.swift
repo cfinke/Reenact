@@ -130,8 +130,15 @@ class CaptureController: ReenactControllerBase {
         
         do {
             try captureDevice?.lockForConfiguration()
-            captureDevice!.exposureMode = .ContinuousAutoExposure
-            captureDevice!.focusMode = .ContinuousAutoFocus
+            
+            if captureDevice!.isExposureModeSupported(.ContinuousAutoExposure) {
+                captureDevice!.exposureMode = .ContinuousAutoExposure
+            }
+            
+            if captureDevice!.isFocusModeSupported(.ContinuousAutoFocus) {
+                captureDevice!.focusMode = .ContinuousAutoFocus
+            }
+            
             captureDevice!.unlockForConfiguration()
         } catch _ {
             // Oh well.
