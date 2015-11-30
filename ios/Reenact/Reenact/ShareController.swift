@@ -71,15 +71,24 @@ class ShareController: ReenactControllerBase {
         view.addSubview(comparisonImage)
         
         // Add share button
+        
+
+        
         let shareButtonImage = UIImage(named: "share.png")
         shareButton.setImage(shareButtonImage, forState: .Normal)
         shareButton.contentMode = .ScaleAspectFit
+        
+        
         
         if (size.width < size.height) {
             // Portrait orientation.
             shareButton.frame = CGRect(
                 x: Int(round(size.width / 2) - round(smallButtonSize / 2)),
-                y: Int(size.height - buttonContainerSize + round(smallButtonSize / 2)),
+                y: Int(
+                    size.height
+                        - round(buttonContainerSize / 2)
+                        - round(smallButtonSize / 2)
+                ),
                 width: Int(smallButtonSize),
                 height: Int(smallButtonSize)
             )
@@ -87,7 +96,11 @@ class ShareController: ReenactControllerBase {
         else {
             // Landscape
             shareButton.frame = CGRect(
-                x: Int(size.width - buttonContainerSize + round(smallButtonSize / 2)),
+                x: Int(
+                    size.width
+                        - round(buttonContainerSize / 2)
+                        - round(smallButtonSize / 2)
+                ),
                 y: Int(round(size.height / 2) - round(smallButtonSize / 2)),
                 width: Int(smallButtonSize),
                 height: Int(smallButtonSize)
@@ -101,15 +114,33 @@ class ShareController: ReenactControllerBase {
         let restartButtonImage = UIImage(named: "replay.png")
         restartButton.setImage(restartButtonImage, forState: .Normal)
         restartButton.contentMode = .ScaleAspectFit
-        restartButton.alpha = 0.75;
-        restartButton.backgroundColor = UIColor.blackColor()
         
-        restartButton.frame = CGRect(
-            x: 30,
-            y: 30,
-            width: smallButtonSize,
-            height: smallButtonSize
-        )
+        if (size.width < size.height) {
+            // Portrait orientation.
+            restartButton.frame = CGRect(
+                x: Int(round(size.width / 6 * 5) - round(smallButtonSize / 2)),
+                y: Int(
+                    size.height
+                        - round(buttonContainerSize / 2)
+                        - round(smallButtonSize / 2)
+                ),
+                width: Int(smallButtonSize),
+                height: Int(smallButtonSize)
+            )
+        }
+        else {
+            // Landscape
+            restartButton.frame = CGRect(
+                x: Int(
+                    size.width
+                        - round(buttonContainerSize / 2)
+                        - round(smallButtonSize / 2)
+                ),
+                y: Int(round(size.height / 6 * 5) - round(smallButtonSize / 2)),
+                width: Int(smallButtonSize),
+                height: Int(smallButtonSize)
+            )
+        }
         
         restartButton.addTarget(self, action:"startOver:", forControlEvents: .TouchUpInside)
         view.addSubview(restartButton)
