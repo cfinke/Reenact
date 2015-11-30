@@ -128,6 +128,15 @@ class CaptureController: ReenactControllerBase {
             return
         }
         
+        do {
+            try captureDevice?.lockForConfiguration()
+            captureDevice!.exposureMode = .ContinuousAutoExposure
+            captureDevice!.focusMode = .ContinuousAutoFocus
+            captureDevice!.unlockForConfiguration()
+        } catch _ {
+            // Oh well.
+        }
+        
         captureSession.sessionPreset = AVCaptureSessionPresetLow
 
         do {
