@@ -15,15 +15,21 @@ class ConfirmController: ReenactControllerBase {
     var newPhoto: UIImage?
     var combinedPhoto: UIImage?
     
-    let compareOriginal: UIImageView = UIImageView()
-    let compareNew: UIImageView = UIImageView()
     let confirmButton: UIButton = UIButton()
     let cancelButton: UIButton = UIButton()
+    let comparisonImage: UIImageView = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         buildLayout(view.bounds.size)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        combinedPhoto = buildComparison(originalPhoto!, photo2: newPhoto!)
+        comparisonImage.contentMode = .ScaleAspectFit
+        comparisonImage.image = combinedPhoto
     }
     
     override func didReceiveMemoryWarning() {
@@ -46,54 +52,6 @@ class ConfirmController: ReenactControllerBase {
     func confirmShot(sender: UIButton) {
         // Save the new shot separately.
         UIImageWriteToSavedPhotosAlbum(newPhoto!, nil, nil, nil)
-        
-        // Merge the two images.
-        
-        let oldImageHeight = originalPhoto!.size.height
-        let oldImageWidth = originalPhoto!.size.width
-        
-        let newImageHeight = newPhoto!.size.height
-        let newImageWidth = newPhoto!.size.width
-        
-        var finalSize: CGSize
-        var originalDest: CGRect
-        var newDest: CGRect
-        
-        if (oldImageWidth <= oldImageHeight) {
-            // Portrait:
-            let smallestHeight = min(originalPhoto!.size.height, newPhoto!.size.height)
-            let totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth )
-            
-            finalSize = CGSize(width: totalWidth, height: smallestHeight)
-
-            originalDest = CGRect(x: 0, y: 0, width:( ( smallestHeight / oldImageHeight ) * oldImageWidth ), height: smallestHeight)
-            newDest = CGRect(x: ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), y: 0, width: ( ( smallestHeight / newImageHeight ) * newImageWidth ), height: smallestHeight)
-        }
-        else {
-            // Landscape
-            let smallestWidth = min(originalPhoto!.size.width, newPhoto!.size.width)
-            let totalHeight = ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) + ( ( smallestWidth / newImageWidth ) * newImageHeight )
-            
-            finalSize = CGSize(width: smallestWidth, height: totalHeight)
-            
-            originalDest = CGRect(x: 0, y: 0, width: smallestWidth, height: ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) )
-            newDest = CGRect(x: 0, y:( ( smallestWidth / oldImageWidth ) * oldImageHeight ), width: smallestWidth, height:( ( smallestWidth / newImageWidth ) * newImageHeight ) )
-        }
-        
-        UIGraphicsBeginImageContext(finalSize)
-        
-        originalPhoto!.drawInRect(originalDest)
-        newPhoto!.drawInRect(newDest)
-        
-        // Add the Reenact logo
-        let logoWidth = round(finalSize.width * 0.04)
-        let logoOffset = round(finalSize.width * 0.01)
-        let logoDest = CGRect(x: finalSize.width - logoWidth - logoOffset, y: finalSize.height - logoWidth - logoOffset, width: logoWidth, height: logoWidth)
-        let logo = UIImage(named: "logo.png")
-        logo!.drawInRect(logoDest)
-        
-        combinedPhoto = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
 
         // Save the combined image.
         UIImageWriteToSavedPhotosAlbum(combinedPhoto!, nil, nil, nil)
@@ -110,106 +68,26 @@ class ConfirmController: ReenactControllerBase {
     override func buildLayout(size: CGSize) {
         super.buildLayout(size)
         
-        compareOriginal.image = originalPhoto
-        compareOriginal.contentMode = .ScaleAspectFit
-        
         if (size.width < size.height) {
             // Portrait orientation.
-            
-            if originalPhoto!.size.width <= originalPhoto!.size.height {
-                // Portrait photos
-                let compareOriginalWidth = round( size.width / 2 )
-                
-                compareOriginal.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: Int(compareOriginalWidth),
-                    height: Int(size.height - buttonContainerSize)
-                )
-            }
-            else {
-                // Landscape photos
-                let compareOriginalHeight = round((size.height - CGFloat(buttonContainerSize)) / 2)
-                
-                compareOriginal.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: size.width,
-                    height: compareOriginalHeight
-                )
-            }
+            comparisonImage.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: size.width,
+                height: size.height - buttonContainerSize
+            )
         }
         else {
             // Landscape orientation.
-            if originalPhoto!.size.width <= originalPhoto!.size.height {
-                // Portrait photos
-                compareOriginal.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: round(CGFloat(size.width - CGFloat(buttonContainerSize)) / 2),
-                    height: size.height
-                )
-            }
-            else {
-                // Landscape photos
-                compareOriginal.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: size.width - CGFloat(buttonContainerSize),
-                    height: round(size.height / 2)
-                )
-            }
+            comparisonImage.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: size.width - buttonContainerSize,
+                height: size.height
+            )
         }
         
-        view.addSubview(compareOriginal)
-        
-        compareNew.image = newPhoto
-        compareNew.contentMode = .ScaleAspectFit
-        
-        if (size.width <= size.height) {
-            // Portrait orientation.
-            if originalPhoto!.size.width <= originalPhoto!.size.height {
-                // Portrait photos
-                compareNew.frame = CGRect(
-                    x: round(size.width / 2),
-                    y: 0,
-                    width: round( size.width / 2 ),
-                    height: size.height - CGFloat(buttonContainerSize)
-                )
-            }
-            else {
-                // Landscape photos
-                compareNew.frame = CGRect(
-                    x: 0,
-                    y: round((size.height - CGFloat(buttonContainerSize)) / 2),
-                    width: size.width,
-                    height: round((size.height - CGFloat(buttonContainerSize)) / 2)
-                )
-            }
-
-        }
-        else {
-            // Landscape orientation.
-            if originalPhoto!.size.width <= originalPhoto!.size.height {
-                // Portrait photos
-                compareNew.frame = CGRect(
-                    x: round(CGFloat(size.width - CGFloat(buttonContainerSize)) / 2),
-                    y: 0,
-                    width: round(CGFloat(size.width - CGFloat(buttonContainerSize)) / 2),
-                    height: size.height
-                )
-            }
-            else {
-                compareNew.frame = CGRect(
-                    x: 0,
-                    y: round(size.height / 2),
-                    width: size.width - CGFloat(buttonContainerSize),
-                    height: round(size.height / 2)
-                )
-            }
-        }
-        
-        view.addSubview(compareNew)
+        view.addSubview(comparisonImage)
         
         // Add confirm button.
         let confirmButtonImage = UIImage(named: "checkmark.png")
@@ -273,6 +151,56 @@ class ConfirmController: ReenactControllerBase {
         cancelButton.addTarget(self, action:"cancelConfirmation:", forControlEvents: .TouchUpInside)
         view.addSubview(cancelButton)
 
+    }
+    
+    func buildComparison(photo1: UIImage, photo2: UIImage) -> UIImage {
+        let oldImageHeight = photo1.size.height
+        let oldImageWidth = photo1.size.width
+        
+        let newImageHeight = photo2.size.height
+        let newImageWidth = photo2.size.width
+        
+        var finalSize: CGSize
+        var originalDest: CGRect
+        var newDest: CGRect
+        
+        if (oldImageWidth <= oldImageHeight) {
+            // Portrait:
+            let smallestHeight = min(photo1.size.height, photo2.size.height)
+            let totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth )
+            
+            finalSize = CGSize(width: totalWidth, height: smallestHeight)
+            
+            originalDest = CGRect(x: 0, y: 0, width:( ( smallestHeight / oldImageHeight ) * oldImageWidth ), height: smallestHeight)
+            newDest = CGRect(x: ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), y: 0, width: ( ( smallestHeight / newImageHeight ) * newImageWidth ), height: smallestHeight)
+        }
+        else {
+            // Landscape
+            let smallestWidth = min(photo1.size.width, photo2.size.width)
+            let totalHeight = ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) + ( ( smallestWidth / newImageWidth ) * newImageHeight )
+            
+            finalSize = CGSize(width: smallestWidth, height: totalHeight)
+            
+            originalDest = CGRect(x: 0, y: 0, width: smallestWidth, height: ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) )
+            newDest = CGRect(x: 0, y:( ( smallestWidth / oldImageWidth ) * oldImageHeight ), width: smallestWidth, height:( ( smallestWidth / newImageWidth ) * newImageHeight ) )
+        }
+        
+        UIGraphicsBeginImageContext(finalSize)
+        
+        photo1.drawInRect(originalDest)
+        photo2.drawInRect(newDest)
+        
+        // Add the Reenact logo
+        let logoWidth = round(finalSize.width * 0.04)
+        let logoOffset = round(finalSize.width * 0.01)
+        let logoDest = CGRect(x: finalSize.width - logoWidth - logoOffset, y: finalSize.height - logoWidth - logoOffset, width: logoWidth, height: logoWidth)
+        let logo = UIImage(named: "logo.png")
+        logo!.drawInRect(logoDest)
+        
+        combinedPhoto = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return combinedPhoto!
     }
     
 }
