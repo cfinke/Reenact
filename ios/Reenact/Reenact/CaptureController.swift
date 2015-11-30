@@ -137,7 +137,7 @@ class CaptureController: ReenactControllerBase {
             // Oh well.
         }
         
-        captureSession.sessionPreset = AVCaptureSessionPresetLow
+        captureSession.sessionPreset = AVCaptureSessionPresetPhoto
 
         do {
             try deviceInput = AVCaptureDeviceInput(device: captureDevice)
@@ -254,27 +254,30 @@ class CaptureController: ReenactControllerBase {
         view.addSubview(originalPhotoOverlay)
         
         // Add capture button.
-        let captureButtonImage = UIImage(named: "camera.png")
+        let captureButtonImage = UIImage(named: "camera-circle.png")
         captureButton.setImage(captureButtonImage, forState: .Normal)
+        let captureButtonActiveImage = UIImage(named: "camera-circle-active.png")
+        captureButton.setImage(captureButtonActiveImage, forState: .Highlighted)
+        captureButton.setImage(captureButtonActiveImage, forState: .Selected)
         captureButton.contentMode = .ScaleAspectFit
         
         if (size.width < size.height) {
             // Portrait orientation.
             
             captureButton.frame = CGRect(
-                x: Int(round(size.width / 2) - round(buttonContainerSize / 2)),
-                y: Int(size.height - buttonContainerSize),
-                width: Int(buttonContainerSize),
-                height: Int(buttonContainerSize)
+                x: Int(round(size.width / 2) - round(largeButtonSize / 2)),
+                y: Int(size.height - round(buttonContainerSize/2) - round(largeButtonSize/2)),
+                width: Int(largeButtonSize),
+                height: Int(largeButtonSize)
             )
         }
         else {
             // Landscape
             captureButton.frame = CGRect(
-                x: Int(size.width - buttonContainerSize),
+                x: Int(size.width - round(buttonContainerSize/2) - round(largeButtonSize/2)),
                 y: Int(round(size.height / 2) - round(buttonContainerSize / 2)),
-                width: Int(buttonContainerSize),
-                height: Int(buttonContainerSize)
+                width: Int(largeButtonSize),
+                height: Int(largeButtonSize)
             )
         }
         

@@ -12,7 +12,8 @@ import Foundation
 class ReenactControllerBase: UIViewController {
     let buttonContainerSize: CGFloat = 100.0
     let smallButtonSize: CGFloat = 60.0
-
+    let largeButtonSize: CGFloat = 80.0
+    
     override func viewDidLoad() {
         super.viewDidLoad();
         
