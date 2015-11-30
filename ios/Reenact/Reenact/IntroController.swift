@@ -78,7 +78,7 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         reenactLogoView.image = reenactLogo
         reenactLogoView.contentMode = .ScaleAspectFit
         
-        let reenactLogoWidth = round( min( size.width, size.height ) / 3 )
+        let reenactLogoWidth = round( min( size.width, size.height ) / 2 )
         reenactLogoView.frame = CGRect(
             x: round((size.width / 2) - (reenactLogoWidth / 2)),
             y: round(size.height / 4),
@@ -88,7 +88,7 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
         
         view.addSubview(reenactLogoView)
         
-        let choosePhotoButtonFont = UIFont(name:"Helvetica Neue", size: 12)
+        let choosePhotoButtonFont = UIFont(name:"Helvetica Neue", size: 14)
         let choosePhotoButtonSize = textSize("CHOOSE A PHOTO TO REENACT", font: choosePhotoButtonFont!)
         let choosePhotoButtonPadding: CGFloat = 10.0
         
