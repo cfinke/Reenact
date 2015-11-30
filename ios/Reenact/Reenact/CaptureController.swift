@@ -346,5 +346,36 @@ class CaptureController: ReenactControllerBase {
         endSession()
         beginSession()
     }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        print("touch began")
+        //Get Touch Point
+        let Point = touches.first!.locationInView(view)
+        print(Point)
+        let cameraPoint = previewLayer.captureDevicePointOfInterestForPoint(Point)
+        print(cameraPoint)
+        //Assign Auto Focus and Auto Exposour
+        if let device = captureDevice {
+            print("Got device")
+            do {
+                try! device.lockForConfiguration()
+                print("Locked device")
+                if device.focusPointOfInterestSupported{
+                    print("focusPoint supported")
+                    //Add Focus on Point
+                    device.focusPointOfInterest = cameraPoint
+                    device.focusMode = AVCaptureFocusMode.AutoFocus
+                }
+                
+                if device.exposurePointOfInterestSupported{
+                    print("exposurePoint supported")
+                    //Add Exposure on Point
+                    device.exposurePointOfInterest = cameraPoint
+                    device.exposureMode = AVCaptureExposureMode.AutoExpose
+                }
+                device.unlockForConfiguration()
+            }
+        }
+    }
 }
 
