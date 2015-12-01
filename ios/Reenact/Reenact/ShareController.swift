@@ -37,7 +37,7 @@ class ShareController: ReenactControllerBase {
     func share(sender: UIButton!) {
         let objectsToShare = [combinedPhoto]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-            
+        activityVC.popoverPresentationController!.sourceView = sender
         self.presentViewController(activityVC, animated: true, completion: nil)
     }
     
@@ -96,13 +96,14 @@ class ShareController: ReenactControllerBase {
         }
         else {
             // Landscape
+            let xPos = size.width
+                - round(buttonContainerSize / 2)
+                - round(smallButtonSize / 2);
+            let yPos = round(size.height / 2) - round(smallButtonSize / 2);
+            
             shareButton.frame = CGRect(
-                x: Int(
-                    size.width
-                        - round(buttonContainerSize / 2)
-                        - round(smallButtonSize / 2)
-                ),
-                y: Int(round(size.height / 2) - round(smallButtonSize / 2)),
+                x: Int(xPos),
+                y: Int(yPos),
                 width: Int(smallButtonSize),
                 height: Int(smallButtonSize)
             )
@@ -131,13 +132,14 @@ class ShareController: ReenactControllerBase {
         }
         else {
             // Landscape
+            let xPos = size.width
+                    - round(buttonContainerSize / 2)
+                    - round(smallButtonSize / 2);
+            let yPos = round(size.height / 6 * 5) - round(smallButtonSize / 2);
+            
             restartButton.frame = CGRect(
-                x: Int(
-                    size.width
-                        - round(buttonContainerSize / 2)
-                        - round(smallButtonSize / 2)
-                ),
-                y: Int(round(size.height / 6 * 5) - round(smallButtonSize / 2)),
+                x: Int(xPos),
+                y: Int(yPos),
                 width: Int(smallButtonSize),
                 height: Int(smallButtonSize)
             )
@@ -157,13 +159,22 @@ class ShareController: ReenactControllerBase {
         saveNotification.titleLabel!.font = saveNotificationFont
         saveNotificationSize.width *= 1.5
         
-        saveNotification.frame = CGRect(
-            x: Int(round((size.width - saveNotificationSize.width) / 2) - saveNotificationPadding),
-            y: Int(saveNotificationSize.height),
-            width: Int((saveNotificationSize.width) + (2 * saveNotificationPadding)),
-            height: Int(saveNotificationSize.height + (2 * saveNotificationPadding))
-        )
-        
+        if (size.width <= size.height) {
+            saveNotification.frame = CGRect(
+                x: Int(round((size.width - saveNotificationSize.width) / 2) - saveNotificationPadding),
+                y: Int(saveNotificationSize.height),
+                width: Int((saveNotificationSize.width) + (2 * saveNotificationPadding)),
+                height: Int(saveNotificationSize.height + (2 * saveNotificationPadding))
+            )
+        }
+        else {
+            saveNotification.frame = CGRect(
+                x: Int(((size.width - buttonContainerSize - saveNotificationSize.width) / 2) - saveNotificationPadding),
+                y: Int(saveNotificationSize.height),
+                width: Int((saveNotificationSize.width) + (2 * saveNotificationPadding)),
+                height: Int(saveNotificationSize.height + (2 * saveNotificationPadding))
+            )
+        }
         view.addSubview(saveNotification)
         
         UIView.animateWithDuration( 3.0, delay: 2.0, options: UIViewAnimationOptions.CurveEaseOut, animations : {

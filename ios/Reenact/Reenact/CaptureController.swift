@@ -312,9 +312,15 @@ class CaptureController: ReenactControllerBase {
         }
         else {
             // Landscape
+            let xPos = size.width
+                - round(buttonContainerSize/2)
+                - round(largeButtonSize/2);
+            let yPos = round(size.height / 2)
+                - round(buttonContainerSize / 2);
+            
             captureButton.frame = CGRect(
-                x: Int(size.width - round(buttonContainerSize/2) - round(largeButtonSize/2)),
-                y: Int(round(size.height / 2) - round(buttonContainerSize / 2)),
+                x: Int(xPos),
+                y: Int(yPos),
                 width: Int(largeButtonSize),
                 height: Int(largeButtonSize)
             )
