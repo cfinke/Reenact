@@ -37,7 +37,7 @@ class ShareController: ReenactControllerBase {
     func share(sender: UIButton!) {
         let objectsToShare = [combinedPhoto]
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-        activityVC.popoverPresentationController!.sourceView = sender
+        activityVC.popoverPresentationController?.sourceView = sender
         self.presentViewController(activityVC, animated: true, completion: nil)
     }
     
