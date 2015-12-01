@@ -316,7 +316,7 @@ class CaptureController: ReenactControllerBase {
                 - round(buttonContainerSize/2)
                 - round(largeButtonSize/2);
             let yPos = round(size.height / 2)
-                - round(buttonContainerSize / 2);
+                - round(largeButtonSize / 2);
             
             captureButton.frame = CGRect(
                 x: Int(xPos),
