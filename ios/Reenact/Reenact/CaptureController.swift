@@ -128,7 +128,7 @@ class CaptureController: ReenactControllerBase {
     
     func fadeOut() {
         UIView.animateWithDuration( 5.0, delay: 0, options: UIViewAnimationOptions.CurveEaseOut, animations : {
-            self.originalPhotoOverlay.alpha = 0;
+            self.originalPhotoOverlay.alpha = 0.25
             }, completion : {
                 (finished: Bool) -> Void in
                 self.fadeIn()
@@ -138,7 +138,7 @@ class CaptureController: ReenactControllerBase {
     
     func fadeIn() {
         UIView.animateWithDuration( 5.0, delay: 0, options: UIViewAnimationOptions.CurveEaseIn, animations : {
-            self.originalPhotoOverlay.alpha = 0.75
+            self.originalPhotoOverlay.alpha = 0.85
             }, completion : {
                 (finished: Bool) -> Void in
                 self.fadeOut()
@@ -302,7 +302,7 @@ class CaptureController: ReenactControllerBase {
             originalPhotoOverlay.alpha = 1.0
         }
         else {
-            originalPhotoOverlay.alpha = 0.75
+            originalPhotoOverlay.alpha = 0.85
         }
         
         if (size.width < size.height) {
