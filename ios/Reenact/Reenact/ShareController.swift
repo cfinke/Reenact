@@ -177,13 +177,14 @@ class ShareController: ReenactControllerBase {
         }
         view.addSubview(saveNotification)
         
-        UIView.animateWithDuration( 3.0, delay: 2.0, options: UIViewAnimationOptions.CurveEaseOut, animations : {
-            self.saveNotification.alpha = 0;
-            }, completion : {
-                (finished: Bool) -> Void in
-            }
-        )
-        
+        if !screenshotMode {
+            UIView.animateWithDuration( 3.0, delay: 2.0, options: UIViewAnimationOptions.CurveEaseOut, animations : {
+                self.saveNotification.alpha = 0;
+                }, completion : {
+                    (finished: Bool) -> Void in
+                }
+            )
+        }        
     }
 }
 

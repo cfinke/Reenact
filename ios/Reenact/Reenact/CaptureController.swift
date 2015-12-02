@@ -49,7 +49,9 @@ class CaptureController: ReenactControllerBase {
         buildLayout(view.bounds.size)
         
         // Start fading the overlay image.
-        startImageFade()
+        if !screenshotMode {
+            startImageFade()
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -151,6 +153,19 @@ class CaptureController: ReenactControllerBase {
     }
     
     func beginSession() {
+        if screenshotMode {
+            let screenshotCameraPreview = UIImageView()
+            let screenshotCameraPreviewImage = UIImage(named: screenshotModeOrientation + "-new.jpg")
+            screenshotCameraPreview.image = screenshotCameraPreviewImage
+            screenshotCameraPreview.frame = originalPhotoOverlay.frame
+            screenshotCameraPreview.contentMode = .ScaleAspectFit
+            
+            view.addSubview(screenshotCameraPreview)
+            view.sendSubviewToBack(screenshotCameraPreview)
+            
+            return
+        }
+        
         captureDevice = getSelectedCamera()
         
         if (nil == captureDevice) {
@@ -236,16 +251,22 @@ class CaptureController: ReenactControllerBase {
     }
     
     func takePicture(sender: UIButton!) {
-        // Make the camera set the orientation of the image when it's taken.
-        let videoOrientation = previewLayer.connection.videoOrientation
-        stillImageOutput.connectionWithMediaType(AVMediaTypeVideo).videoOrientation = videoOrientation
-        
-        if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
-            stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
-                (imageDataSampleBuffer, error) -> Void in
-                let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
-                self.newPhoto = UIImage(data: imageData)
-                self.performSegueWithIdentifier("captureToConfirm", sender: self)
+        if screenshotMode {
+            self.newPhoto = UIImage(named: screenshotModeOrientation + "-new.jpg")
+            self.performSegueWithIdentifier("captureToConfirm", sender: self)
+        }
+        else {
+            // Make the camera set the orientation of the image when it's taken.
+            let videoOrientation = previewLayer.connection.videoOrientation
+            stillImageOutput.connectionWithMediaType(AVMediaTypeVideo).videoOrientation = videoOrientation
+            
+            if let videoConnection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo) {
+                stillImageOutput.captureStillImageAsynchronouslyFromConnection(videoConnection) {
+                    (imageDataSampleBuffer, error) -> Void in
+                    let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(imageDataSampleBuffer)
+                    self.newPhoto = UIImage(data: imageData)
+                    self.performSegueWithIdentifier("captureToConfirm", sender: self)
+                }
             }
         }
     }
@@ -269,7 +290,13 @@ class CaptureController: ReenactControllerBase {
         // Add the original image overlay
         originalPhotoOverlay.image = originalPhoto
         originalPhotoOverlay.contentMode = .ScaleAspectFit
-        originalPhotoOverlay.alpha = 0.75
+        
+        if screenshotMode {
+            originalPhotoOverlay.alpha = 1.0
+        }
+        else {
+            originalPhotoOverlay.alpha = 0.75
+        }
         
         if (size.width < size.height) {
             // Portrait orientation.
@@ -329,7 +356,7 @@ class CaptureController: ReenactControllerBase {
         captureButton.addTarget(self, action:"takePicture:", forControlEvents: .TouchUpInside)
         view.addSubview(captureButton)
         
-        if captureDevices.count > 1 {
+        if screenshotMode || captureDevices.count > 1 {
             // Add switch button.
             let switchCameraButtonImage = UIImage(named: "camera-switch.png")
             switchCameraButton.setImage(switchCameraButtonImage, forState: .Normal)
@@ -405,6 +432,11 @@ class CaptureController: ReenactControllerBase {
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if screenshotMode {
+            self.originalPhotoOverlay.alpha = (self.originalPhotoOverlay.alpha + 0.1) % 1
+            return
+        }
+        
         //Get Touch Point
         let Point = touches.first!.locationInView(view)
 

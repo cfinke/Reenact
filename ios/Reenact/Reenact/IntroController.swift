@@ -41,9 +41,16 @@ class IntroController: ReenactControllerBase, UIImagePickerControllerDelegate, U
     }
 
     func chooseOriginalPhoto(sender: UIButton!) {
-        picker.allowsEditing = false
-        picker.sourceType = .PhotoLibrary
-        presentViewController(picker, animated: true, completion: nil)
+        if screenshotMode {
+            // Show the next view and set the camera background image to chosenImage
+            self.originalPhoto = UIImage(named: screenshotModeOrientation + "-old.jpg")
+            self.performSegueWithIdentifier("introToCapture", sender: self)
+        }
+        else {
+            picker.allowsEditing = false
+            picker.sourceType = .PhotoLibrary
+            presentViewController(picker, animated: true, completion: nil)
+        }
     }
     
     //MARK: Actions
