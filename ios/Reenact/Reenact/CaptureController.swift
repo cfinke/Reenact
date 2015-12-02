@@ -25,6 +25,8 @@ class CaptureController: ReenactControllerBase {
     var cameraIndex: Int = 0
     var captureMethod: String!
     
+    let captureMethods = ["overlay", "comparison"]
+    
     // UI Elements
     let originalPhotoOverlay: UIImageView = UIImageView()
     let captureButton: UIButton = UIButton()
@@ -565,8 +567,46 @@ class CaptureController: ReenactControllerBase {
     
     override func swipeRight() {
         super.swipeRight()
+
+        // Switch to the previous capture method.
+        var index = captureMethods.indexOf(captureMethod)
         
-        cancelCapture(nil)
+        if nil == index {
+            index = 0
+        }
+        
+        if 0 == index {
+            return
+        }
+        
+        index! -= 1
+        
+        captureMethod = captureMethods[index!]
+        NSUserDefaults.standardUserDefaults().setObject(captureMethod, forKey: "captureMethod")
+        
+        buildLayout(view.bounds.size)
+    }
+    
+    override func swipeLeft() {
+        super.swipeLeft()
+        
+        // Switch to the next capture method.
+        var index = captureMethods.indexOf(captureMethod)
+        
+        if nil == index {
+            index = captureMethods.count - 1
+        }
+        
+        if captureMethods.count - 1 == index {
+            return
+        }
+        
+        index! += 1
+        
+        captureMethod = captureMethods[index!]
+        NSUserDefaults.standardUserDefaults().setObject(captureMethod, forKey: "captureMethod")
+        
+        buildLayout(view.bounds.size)
     }
 }
 
