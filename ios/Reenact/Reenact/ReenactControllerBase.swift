@@ -15,7 +15,7 @@ class ReenactControllerBase: UIViewController {
     let largeButtonSize: CGFloat = 65.0
     
     let screenshotMode = false
-    let screenshotModeOrientation = "landscape"
+    let screenshotModeOrientation = "portrait"
     
     override func viewDidLoad() {
         super.viewDidLoad();
