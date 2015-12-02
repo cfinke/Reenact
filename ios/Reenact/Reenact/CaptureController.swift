@@ -45,6 +45,9 @@ class CaptureController: ReenactControllerBase {
                 captureDevices.append(device as! AVCaptureDevice)
             }
         }
+        
+        // Get the last-used camera.
+        cameraIndex = NSUserDefaults.standardUserDefaults().integerForKey("cameraIndex")
 
         buildLayout(view.bounds.size)
         
@@ -275,6 +278,10 @@ class CaptureController: ReenactControllerBase {
         endSession()
         cameraIndex++
         cameraIndex %= captureDevices.count
+        
+        // Save the last-used camera so that it defaults to this one next time.
+        NSUserDefaults.standardUserDefaults().setInteger(cameraIndex, forKey: "cameraIndex")
+        
         beginSession()
     }
     
