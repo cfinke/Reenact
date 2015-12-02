@@ -469,5 +469,11 @@ class CaptureController: ReenactControllerBase {
             }
         }
     }
+    
+    override func swipeRight() {
+        super.swipeRight()
+        
+        cancelCapture(nil)
+    }
 }
 

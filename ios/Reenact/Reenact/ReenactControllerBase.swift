@@ -22,6 +22,15 @@ class ReenactControllerBase: UIViewController {
         
         // Hide the navigation bar. We'll take care of navigation elements ourself.
         self.navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        let leftSwipe = UISwipeGestureRecognizer(target: self, action: Selector("handleSwipes:"))
+        let rightSwipe = UISwipeGestureRecognizer(target: self, action: Selector("handleSwipes:"))
+        
+        leftSwipe.direction = .Left
+        rightSwipe.direction = .Right
+        
+        view.addGestureRecognizer(leftSwipe)
+        view.addGestureRecognizer(rightSwipe)
     }
     
     override func shouldAutorotate() -> Bool {
@@ -69,4 +78,16 @@ class ReenactControllerBase: UIViewController {
             }
         }
     }
+    
+    func handleSwipes(sender: UISwipeGestureRecognizer) {
+        if (sender.direction == .Right) {
+            swipeRight()
+        }
+        else if (sender.direction == .Left) {
+            swipeLeft()
+        }
+    }
+    
+    func swipeRight(){}
+    func swipeLeft(){}
 }

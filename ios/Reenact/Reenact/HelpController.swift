@@ -26,7 +26,7 @@ class HelpController: ReenactControllerBase {
     }
     
     // MARK: Actions
-    func closeHelp(sender: UIButton!) {
+    func closeHelp(sender: UIButton?) {
         self.performSegueWithIdentifier("helpToIntro", sender: self)
     }
     
@@ -140,6 +140,13 @@ class HelpController: ReenactControllerBase {
         closeButton.contentMode = .ScaleAspectFit
         closeButton.addTarget(self, action:"closeHelp:", forControlEvents: .TouchUpInside)
         view.addSubview(closeButton)
+    }
+    
+    
+    override func swipeRight() {
+        super.swipeRight()
+        
+        closeHelp(nil)
     }
 }
 

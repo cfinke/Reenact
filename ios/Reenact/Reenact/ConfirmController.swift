@@ -66,7 +66,7 @@ class ConfirmController: ReenactControllerBase {
         self.performSegueWithIdentifier("confirmToShare", sender: self)
     }
     
-    func cancelConfirmation(sender: UIButton) {
+    func cancelConfirmation(sender: UIButton?) {
         // Go back to the capture view.
         self.performSegueWithIdentifier("confirmToCapture", sender: self)
     }
@@ -246,6 +246,12 @@ class ConfirmController: ReenactControllerBase {
                 }
             }
         )
+    }
+    
+    override func swipeRight() {
+        super.swipeRight()
+        
+        cancelConfirmation(nil)
     }
 }
 
