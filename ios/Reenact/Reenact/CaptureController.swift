@@ -213,6 +213,13 @@ class CaptureController: ReenactControllerBase {
             return
         }
         
+        if captureDevice.position == .Front {
+            originalPhotoOverlay.transform = CGAffineTransformMakeScale(-1, 1)
+        }
+        else {
+            originalPhotoOverlay.transform = CGAffineTransformIdentity
+        }
+        
         do {
             try captureDevice.lockForConfiguration()
             
@@ -267,14 +274,6 @@ class CaptureController: ReenactControllerBase {
                     width: Int(round(size.width / 2)),
                     height: Int(size.height - CGFloat(buttonContainerSize))
                 )
-                
-                previewLayer.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: Int(round(size.width / 2)),
-                    height: Int(size.height - CGFloat(buttonContainerSize))
-                )
-
             }
             else {
                 // Landscape
@@ -284,16 +283,16 @@ class CaptureController: ReenactControllerBase {
                     width: Int(size.width - CGFloat(buttonContainerSize)),
                     height: Int(round(size.height / 2))
                 )
-                
-                previewLayer.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: Int(size.width - CGFloat(buttonContainerSize)),
-                    height: Int(round(size.height / 2))
-                )
-
             }
         }
+        
+        previewLayer.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: cameraPreview.frame.width,
+            height: cameraPreview.frame.height
+        )
+
         
         let deviceOrientation = UIDevice.currentDevice().orientation
         
