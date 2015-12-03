@@ -19,11 +19,9 @@ class CaptureController: ReenactControllerBase {
     
     var captureDevice: AVCaptureDevice!
     var captureDevices: [AVCaptureDevice] = []
+    var cameraIndex: Int = 0
     var deviceInput: AVCaptureDeviceInput!
     let stillImageOutput = AVCaptureStillImageOutput()
-    
-    var cameraIndex: Int = 0
-    var captureMethod: String!
     
     // UI Elements
     let originalPhotoOverlay: UIImageView = UIImageView()
@@ -50,23 +48,12 @@ class CaptureController: ReenactControllerBase {
         
         // Get the last-used camera.
         cameraIndex = NSUserDefaults.standardUserDefaults().integerForKey("cameraIndex")
-        
-        let storedCaptureMethod = NSUserDefaults.standardUserDefaults().stringForKey("captureMethod")
-        
-        if nil == storedCaptureMethod {
-            captureMethod = "overlay"
-        }
-        else {
-            captureMethod = storedCaptureMethod!
-        }
-        
+
         buildLayout(view.bounds.size)
         
         // Start fading the overlay image.
         if !screenshotMode {
-            if "overlay" == captureMethod {
-                startImageFade()
-            }
+            startImageFade()
         }
     }
     
@@ -168,37 +155,13 @@ class CaptureController: ReenactControllerBase {
         return nil
     }
     
-    func beginSession(size: CGSize) {
+    func beginSession() {
         if screenshotMode {
             let screenshotCameraPreview = UIImageView()
             let screenshotCameraPreviewImage = UIImage(named: screenshotModeOrientation + "-new.jpg")
             screenshotCameraPreview.image = screenshotCameraPreviewImage
+            screenshotCameraPreview.frame = originalPhotoOverlay.frame
             screenshotCameraPreview.contentMode = .ScaleAspectFit
-            
-            if "overlay" == captureMethod {
-                screenshotCameraPreview.frame = originalPhotoOverlay.frame
-                
-            }
-            else if "comparison" == captureMethod {
-                if (size.width <= size.height) {
-                    // Portrait
-                    screenshotCameraPreview.frame = CGRect(
-                        x: Int(round(size.width / 2)),
-                        y: 0,
-                        width: Int(round(size.width / 2)),
-                        height: Int(size.height - CGFloat(buttonContainerSize))
-                    )
-                }
-                else {
-                    // Landscape
-                    screenshotCameraPreview.frame = CGRect(
-                        x: 0,
-                        y: Int(round(size.height / 2)),
-                        width: Int(size.width - CGFloat(buttonContainerSize)),
-                        height: Int(round(size.height / 2))
-                    )
-                }
-            }
             
             view.addSubview(screenshotCameraPreview)
             view.sendSubviewToBack(screenshotCameraPreview)
@@ -247,7 +210,8 @@ class CaptureController: ReenactControllerBase {
         
         captureSession.addInput(deviceInput)
 
-
+        
+        let bounds = self.originalPhotoOverlay.layer.bounds;
         
         captureSession.sessionPreset = AVCaptureSessionPresetPhoto
         captureSession.startRunning()
@@ -258,33 +222,12 @@ class CaptureController: ReenactControllerBase {
         
         previewLayer.session = captureSession
         
+        previewLayer.bounds = CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height)
+        
+        previewLayer.position = CGPointMake(bounds.midX, bounds.midY)
         previewLayer.videoGravity = AVLayerVideoGravityResizeAspect
 
-        let cameraPreview = UIView()
-        
-        if "overlay" == captureMethod {
-            cameraPreview.frame = self.originalPhotoOverlay.frame
-        }
-        else if "comparison" == captureMethod {
-            if (size.width <= size.height) {
-                // Portrait
-                cameraPreview.frame = CGRect(
-                    x: Int(round(size.width / 2)),
-                    y: 0,
-                    width: Int(round(size.width / 2)),
-                    height: Int(size.height - CGFloat(buttonContainerSize))
-                )
-            }
-            else {
-                // Landscape
-                cameraPreview.frame = CGRect(
-                    x: 0,
-                    y: Int(round(size.height / 2)),
-                    width: Int(size.width - CGFloat(buttonContainerSize)),
-                    height: Int(round(size.height / 2))
-                )
-            }
-        }
+        let cameraPreview = UIView(frame: CGRectMake(0.0, 0.0, bounds.size.width, bounds.size.height))
         
         previewLayer.frame = CGRect(
             x: 0,
@@ -354,7 +297,7 @@ class CaptureController: ReenactControllerBase {
         // Save the last-used camera so that it defaults to this one next time.
         NSUserDefaults.standardUserDefaults().setInteger(cameraIndex, forKey: "cameraIndex")
         
-        beginSession(view.frame.size)
+        beginSession()
     }
     
     func cancelCapture(sender: UIButton?) {
@@ -373,48 +316,27 @@ class CaptureController: ReenactControllerBase {
         if screenshotMode {
             originalPhotoOverlay.alpha = 1.0
         }
-        else if "overlay" == captureMethod {
+        else {
             originalPhotoOverlay.alpha = 0.85
         }
         
-        if (size.width <= size.height) {
+        if (size.width < size.height) {
             // Portrait orientation.
-            if "overlay" == captureMethod {
-                originalPhotoOverlay.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: size.width,
-                    height: size.height - CGFloat(buttonContainerSize)
-                )
-            }
-            else if "comparison" == captureMethod {
-                originalPhotoOverlay.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: Int(round(size.width / 2)),
-                    height: Int(size.height - CGFloat(buttonContainerSize))
-                )
-
-            }
+            originalPhotoOverlay.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: size.width,
+                height: size.height - CGFloat(buttonContainerSize)
+            )
         }
         else {
             // Landscape orientation.
-            if "overlay" == captureMethod {
-                originalPhotoOverlay.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: Int(Float(size.width) - Float(buttonContainerSize)),
-                    height: Int(size.height)
-                )
-            }
-            else if "comparison" == captureMethod {
-                originalPhotoOverlay.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: Int(Float(size.width) - Float(buttonContainerSize)),
-                    height: Int(round(size.height/2))
-                )
-            }
+            originalPhotoOverlay.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: Int(Float(size.width) - Float(buttonContainerSize)),
+                height: Int(size.height)
+            )
         }
         
         view.addSubview(originalPhotoOverlay)
@@ -528,7 +450,7 @@ class CaptureController: ReenactControllerBase {
         view.addSubview(cancelButton)
         
         endSession()
-        beginSession(size)
+        beginSession()
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
