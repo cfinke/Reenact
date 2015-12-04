@@ -24,6 +24,7 @@
     <string name="error_couldnt_copy_merged_file">Reenact couldn\'t save your comparison photo to your photo gallery.</string>
     <string name="error_couldnt_read_original_photo">Reenact couldn\'t read the photo you selected.</string>
     <string name="error_couldnt_read_new_photo">Reenact couldn\'t read the photo you just took.</string>
+    <string name="error_couldnt_set_preview_size">Reenact couldn\'t set the camera preview size on your device. The camera and photo may not line up.</string>
 
 </resources>
 

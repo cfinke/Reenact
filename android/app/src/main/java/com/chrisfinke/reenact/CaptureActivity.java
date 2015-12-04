@@ -287,7 +287,12 @@ public class CaptureActivity extends ReenactActivity {
             previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight));
         }
 
-        mCamera.setParameters(parameters);
+        try {
+            mCamera.setParameters(parameters);
+        } catch (Exception e) {
+            // Setting the preview size failed for some reason.
+            alert(R.string.error_couldnt_set_preview_size).show();
+        }
     }
 
     private Camera.Size getBestPreviewSize(final List<Camera.Size> sizes, final int w, final int h) {
