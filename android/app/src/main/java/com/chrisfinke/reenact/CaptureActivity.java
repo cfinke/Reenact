@@ -114,11 +114,8 @@ public class CaptureActivity extends ReenactActivity {
         ImageView imageView = (ImageView) findViewById(R.id.original_image);
         fadeOriginalImageInAndOut(imageView);
 
-        try {
-            fitImageInImageView(originalPhotoUri, imageView);
-        } catch (FileNotFoundException e) {
-            fatalAlert(R.string.error_original_photo_missing).show();
-        }
+        // The image will be placed inside the view after the camera is instantiated, since
+        // it may have to be modified based on the active camera.
     }
 
     private void clearOriginalPhoto(){
@@ -197,11 +194,17 @@ public class CaptureActivity extends ReenactActivity {
             Camera.CameraInfo info = new Camera.CameraInfo();
             Camera.getCameraInfo(cameraId, info);
 
-            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                findViewById(R.id.original_image).setScaleX(-1f);
-            }
-            else {
-                findViewById(R.id.original_image).setScaleX(1f);
+            ImageView imageView = (ImageView) findViewById(R.id.original_image);
+
+            try {
+                if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    fitImageInImageViewMirrored(originalPhotoUri, imageView);
+                }
+                else {
+                    fitImageInImageView(originalPhotoUri, imageView);
+                }
+            } catch (FileNotFoundException e) {
+                fatalAlert(R.string.error_original_photo_missing).show();
             }
         }
 

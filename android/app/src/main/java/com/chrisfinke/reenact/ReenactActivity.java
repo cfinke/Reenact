@@ -141,7 +141,27 @@ public class ReenactActivity extends Activity {
         return alertDialog;
     }
 
+    protected final void fitImageInImageViewMirrored(Uri imageUri, ImageView imageView) throws FileNotFoundException {
+        Matrix matrix = new Matrix();
+
+        float orientation = (float) getOrientation(imageUri);
+
+        // The image data itself is rotated 90 degrees from its display, but the matrix operates on the pre-display data.
+        if (orientation == 90 || orientation == 270) {
+            matrix.preScale(1, -1);
+        }
+        else {
+            matrix.preScale(-1, 1);
+        }
+
+        fitImageInImageViewWithMatrix(imageUri, imageView, matrix);
+    }
+
     protected final void fitImageInImageView(Uri imageUri, ImageView imageView) throws FileNotFoundException {
+        fitImageInImageViewWithMatrix(imageUri, imageView, new Matrix());
+    }
+
+    protected final void fitImageInImageViewWithMatrix(Uri imageUri, ImageView imageView, Matrix matrix) throws FileNotFoundException {
         InputStream imageStream = null;
 
         Point windowSize = new Point();
@@ -161,17 +181,13 @@ public class ReenactActivity extends Activity {
         float orientation = (float) getOrientation(imageUri);
 
         if (orientation > 0) {
-            Bitmap imageforView = BitmapFactory.decodeStream(imageStream, null, bitmapOptions);
-
-            Matrix matrix = new Matrix();
             matrix.postRotate(orientation);
+        }
 
-            imageforView = Bitmap.createBitmap(imageforView, 0, 0, imageforView.getWidth(), imageforView.getHeight(), matrix, true);
-            imageView.setImageBitmap(imageforView);
-        }
-        else {
-            imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));
-        }
+        Bitmap imageforView = BitmapFactory.decodeStream(imageStream, null, bitmapOptions);
+
+        imageforView = Bitmap.createBitmap(imageforView, 0, 0, imageforView.getWidth(), imageforView.getHeight(), matrix, true);
+        imageView.setImageBitmap(imageforView);
     }
 
     public void flipViewForRTL(final int viewId) {
@@ -189,11 +205,6 @@ public class ReenactActivity extends Activity {
     public void flipView(final int viewId) {
         if (LOG) Log.d(LOG_TAG, "Flipping " + viewId);
         findViewById(viewId).setScaleX(-1);
-    }
-
-    public void unflipView(final int viewId) {
-        if (LOG) Log.d(LOG_TAG, "Unflipping " + viewId);
-        findViewById(viewId).setScaleX(1);
     }
 
     public boolean isRTL(){
