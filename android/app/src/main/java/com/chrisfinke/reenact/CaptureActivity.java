@@ -218,7 +218,16 @@ public class CaptureActivity extends ReenactActivity {
             if (LOG) Log.d(LOG_TAG, "Supported Size: " + size.width + "x" + size.height);
         }
 
-        Camera.Size bestPreviewSize = getBestPreviewSize(supportedSizes, width, height);
+        Camera.Size bestPreviewSize;
+
+        if (display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180) {
+            bestPreviewSize = getBestPreviewSize(supportedSizes, height, width);
+
+        }
+        else {
+            bestPreviewSize = getBestPreviewSize(supportedSizes, width, height);
+
+        }
 
         if (LOG) Log.d(LOG_TAG, "Setting preview size to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
 
@@ -251,38 +260,16 @@ public class CaptureActivity extends ReenactActivity {
             bestPreviewContainerWidth = maxPreviewWidth;
         }
 
-        if(display.getRotation() == Surface.ROTATION_0)
-        {
-            if (LOG) Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
-            parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
+        if (LOG) Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+        parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
 
+        if(display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180)
+        {
             if (LOG) Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
             previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerHeight, bestPreviewContainerWidth));
         }
-
-        if(display.getRotation() == Surface.ROTATION_90)
+        else if(display.getRotation() == Surface.ROTATION_90 || display.getRotation() == Surface.ROTATION_270)
         {
-            if (LOG) Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
-            parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
-
-            if (LOG) Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
-            previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight));
-        }
-
-        if(display.getRotation() == Surface.ROTATION_180)
-        {
-            if (LOG) Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.height + "x" + bestPreviewSize.width);
-            parameters.setPreviewSize(bestPreviewSize.height, bestPreviewSize.width);
-
-            if (LOG) Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
-            previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerHeight, bestPreviewContainerWidth));
-        }
-
-        if(display.getRotation() == Surface.ROTATION_270)
-        {
-            if (LOG) Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
-            parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
-
             if (LOG) Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
             previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight));
         }
