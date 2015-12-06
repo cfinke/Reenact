@@ -178,12 +178,22 @@ public class ReenactActivity extends Activity {
         try {
             int layoutDirection = getResources().getConfiguration().getLayoutDirection();
             if (layoutDirection == View.LAYOUT_DIRECTION_RTL) {
-                findViewById(viewId).setScaleX(-1);
+                flipView(viewId);
             }
         }
         catch (NoSuchMethodError e) {
             // getLayoutDirection doesn't exist until API 17
         }
+    }
+
+    public void flipView(final int viewId) {
+        if (LOG) Log.d(LOG_TAG, "Flipping " + viewId);
+        findViewById(viewId).setScaleX(-1);
+    }
+
+    public void unflipView(final int viewId) {
+        if (LOG) Log.d(LOG_TAG, "Unflipping " + viewId);
+        findViewById(viewId).setScaleX(1);
     }
 
     public boolean isRTL(){

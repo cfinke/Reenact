@@ -193,6 +193,18 @@ public class CaptureActivity extends ReenactActivity {
             // This case is handled in startCamera()
         }
 
+        if (null != c) {
+            Camera.CameraInfo info = new Camera.CameraInfo();
+            Camera.getCameraInfo(cameraId, info);
+
+            if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                findViewById(R.id.original_image).setScaleX(-1f);
+            }
+            else {
+                findViewById(R.id.original_image).setScaleX(1f);
+            }
+        }
+
         return c;
     }
 
