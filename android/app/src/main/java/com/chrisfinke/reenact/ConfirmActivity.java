@@ -25,6 +25,8 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.graphics.Matrix;
+
 public class ConfirmActivity extends ReenactActivity {
     private Uri originalPhotoUri;
     private Uri newPhotoTempUri;
@@ -335,6 +337,14 @@ public class ConfirmActivity extends ReenactActivity {
 
         BitmapFactory.decodeFileDescriptor(oldFileDescriptor.getFileDescriptor(), null, oldOptions);
         Bitmap oldImage = BitmapFactory.decodeFileDescriptor(oldFileDescriptor.getFileDescriptor(), null, oldOptions);
+
+        float orientation = (float) getOrientation(thenImage);
+
+        if (orientation > 0) {
+            Matrix rotationMatrix = new Matrix();
+            rotationMatrix.postRotate(orientation);
+            oldImage = Bitmap.createBitmap(oldImage, 0, 0, oldImage.getWidth(), oldImage.getHeight(), rotationMatrix, true);
+        }
 
         comboImage.drawBitmap(oldImage, new Rect(0, 0, oldImage.getWidth(), oldImage.getHeight()), oldImageDest, null);
 

@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +19,8 @@ import android.widget.ImageView;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import android.graphics.Matrix;
 
 public class ReenactActivity extends Activity {
     public final static Integer PICK_IMAGE_TO_REENACT = 1;
@@ -95,6 +100,15 @@ public class ReenactActivity extends Activity {
             }
         }
 
+        int orientation = getOrientation(imageUri);
+        if (LOG) Log.d(LOG_TAG, "Orientation is " + orientation);
+
+        if (orientation == 90 || orientation == 270){
+            int tmp = dimensions[0];
+            dimensions[0] = dimensions[1];
+            dimensions[1] = tmp;
+        }
+
         return dimensions;
     }
 
@@ -143,7 +157,21 @@ public class ReenactActivity extends Activity {
         if (LOG) Log.d(LOG_TAG, "Using sampleSize " + sampleSize);
 
         imageStream = getContentResolver().openInputStream(imageUri);
-        imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));
+
+        float orientation = (float) getOrientation(imageUri);
+
+        if (orientation > 0) {
+            Bitmap imageforView = BitmapFactory.decodeStream(imageStream, null, bitmapOptions);
+
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+
+            imageforView = Bitmap.createBitmap(imageforView, 0, 0, imageforView.getWidth(), imageforView.getHeight(), matrix, true);
+            imageView.setImageBitmap(imageforView);
+        }
+        else {
+            imageView.setImageBitmap(BitmapFactory.decodeStream(imageStream, null, bitmapOptions));
+        }
     }
 
     public void flipViewForRTL(final int viewId) {
@@ -170,5 +198,28 @@ public class ReenactActivity extends Activity {
         }
 
         return false;
+    }
+
+    public int getOrientation(Uri photoUri) {
+        Cursor cursor = getContentResolver().query(
+                photoUri,
+                new String[] { MediaStore.Images.ImageColumns.ORIENTATION },
+                null, null, null
+        );
+
+        try {
+            if (cursor.getCount() != 1) {
+                cursor.close();
+                return -1;
+            }
+        } catch (NullPointerException e) {
+            if (LOG) Log.d(LOG_TAG, "Couldn't get cursor count.", e);
+            return -1;
+        }
+
+        cursor.moveToFirst();
+        int orientation = cursor.getInt(0);
+        cursor.close();
+        return orientation;
     }
 }
