@@ -136,6 +136,10 @@ public class ReenactActivity extends Activity implements GestureDetector.OnGestu
 
         int sampleSize = (int) Math.max(1, Math.floor((float) 1 / oldRatio));
 
+        // Most images we're loading into views don't need to be super-high quality.
+        // Pre-emptively sacrifice some quality for lower memory usage.
+        sampleSize *= 2;
+
         return sampleSize;
     }
 
