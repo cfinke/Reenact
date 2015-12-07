@@ -53,8 +53,8 @@
     </LinearLayout>
     <ImageButton
         android:background="#00000000"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
         android:src="@drawable/ic_action_action_help"
@@ -105,6 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:textColorLink="@android:color/white"
                     android:text="@string/help_instructions" />
                 <TextView
                     android:textSize="16dp"
@@ -112,6 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:textColorLink="@android:color/white"
                     android:text="http://reenact.me/" />
                 <TextView
                     android:textSize="16sp"
@@ -124,8 +126,8 @@
         </LinearLayout>
         <ImageButton
             android:background="#00000000"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
             android:src="@drawable/ic_action_navigation_close"
