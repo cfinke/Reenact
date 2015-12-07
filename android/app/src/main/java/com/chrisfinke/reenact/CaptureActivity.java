@@ -231,9 +231,23 @@ public class CaptureActivity extends ReenactActivity {
         }
     }
 
-    public void updatePreviewSize(final int width, final int height) {
+    public void updatePreviewSize(int width, int height) {
         if (null == mCamera) {
             return;
+        }
+
+        int[] originalImageDimensions = getImageDimensions(originalPhotoUri);
+
+        // If the image we're reenacting is portrait, ensure that the width/height pair reflect that.
+        // Sometimes they get passed in opposite, depending on when the rotation happened (I think).
+        if (
+                (width > height && originalImageDimensions[0] < originalImageDimensions[1])
+            ||
+                (width < height && originalImageDimensions[0] > originalImageDimensions[1])
+                ) {
+            int tmp = width;
+            width = height;
+            height = tmp;
         }
 
         log("Passed to updatePreviewSize: " + width + "x" + height);
@@ -249,19 +263,28 @@ public class CaptureActivity extends ReenactActivity {
         log("Setting camera preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
         parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
 
-        RelativeLayout cameraPreviewContainer = (RelativeLayout) findViewById(R.id.camera_preview_container);
-        int maxPreviewWidth = cameraPreviewContainer.getWidth();
-        int maxPreviewHeight = cameraPreviewContainer.getHeight();
+        int displayedPreviewWidth = bestPreviewSize.width;
+        int displayedPreviewHeight = bestPreviewSize.height;
+
+        // If the preview width/height doesn't match the original image orientation, swap them.
+        // This won't affect the actual preview setting, only the calculations for the preview frame.
+        if (originalImageDimensions[0] < originalImageDimensions[1]) {
+            displayedPreviewWidth = bestPreviewSize.height;
+            displayedPreviewHeight = bestPreviewSize.width;
+        }
+
+        int maxPreviewWidth = width;
+        int maxPreviewHeight = height;
 
         log("Max preview size is " + maxPreviewWidth + "x" + maxPreviewHeight);
 
         int bestPreviewContainerHeight = maxPreviewHeight;
-        int bestPreviewContainerWidth = (int) Math.round(((float) maxPreviewHeight / bestPreviewSize.height) * bestPreviewSize.width);
+        int bestPreviewContainerWidth = (int) Math.round(((float) maxPreviewHeight / displayedPreviewHeight) * displayedPreviewWidth);
 
         if (bestPreviewContainerWidth > maxPreviewWidth) {
             // Using all of the available height overran the available width. Use the available width instead.
             bestPreviewContainerWidth = maxPreviewWidth;
-            bestPreviewContainerHeight = (int) Math.round(((float) maxPreviewWidth / bestPreviewSize.width) * bestPreviewSize.height);
+            bestPreviewContainerHeight = (int) Math.round(((float) maxPreviewWidth / displayedPreviewWidth) * displayedPreviewHeight);
         }
 
         log("Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
@@ -284,9 +307,17 @@ public class CaptureActivity extends ReenactActivity {
         }
     }
 
-    private Camera.Size getBestPreviewSize(final List<Camera.Size> sizes, final int w, final int h) {
+    private Camera.Size getBestPreviewSize(final List<Camera.Size> sizes, int w, int h) {
         Camera.Size bestSize = sizes.get(0);
         double bestRatio = 0;
+
+        // I'm pretty sure that the camera sizes are always given in landscape mode.
+        if (h > w) {
+            int tmp = h;
+            h = w;
+            w = tmp;
+        }
+
         double ratioToMatch = (double) w / h;
 
         for (Camera.Size size : sizes) {
