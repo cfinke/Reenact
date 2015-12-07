@@ -178,16 +178,17 @@ public class CaptureActivity extends ReenactActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         int cameraId = settings.getInt("cameraId", 0);
 
+        log("There are " + Camera.getNumberOfCameras() + " cameras.");
         log("Getting camera #" + cameraId);
 
         Camera c = null;
 
         try {
             c = Camera.open(cameraId);
-        }
-        catch (Exception e){
+        } catch (Exception e){
             // Camera is not available (in use or does not exist)
             // This case is handled in startCamera()
+            log("Couldn't get camera instance", e);
         }
 
         if (null != c) {
@@ -246,7 +247,8 @@ public class CaptureActivity extends ReenactActivity {
 
         }
 
-        log("Setting preview size to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+        log("Setting camera preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+        parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
 
         RelativeLayout cameraPreviewContainer = (RelativeLayout) findViewById(R.id.camera_preview_container);
         int maxPreviewWidth = cameraPreviewContainer.getWidth();
@@ -255,40 +257,36 @@ public class CaptureActivity extends ReenactActivity {
         if ( display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180) {
             maxPreviewWidth = cameraPreviewContainer.getHeight();
             maxPreviewHeight = cameraPreviewContainer.getWidth();
+            log("Swapping max preview width and height.");
         }
 
-        int[] imageDimensions = getImageDimensions(originalPhotoUri);
-        double imageRatio = (double) ((float) imageDimensions[0] / imageDimensions[1]);
-        double previewRatio = (double) ((float) maxPreviewWidth / maxPreviewHeight);
+        log("Max preview size is " + maxPreviewWidth + "x" + maxPreviewHeight);
 
-        int bestPreviewContainerWidth;
-        int bestPreviewContainerHeight;
+        int bestPreviewContainerHeight = maxPreviewHeight;
+        int bestPreviewContainerWidth = (int) Math.round(((float) maxPreviewHeight / bestPreviewSize.height) * bestPreviewSize.width);
+
+        if (bestPreviewContainerWidth > maxPreviewWidth) {
+            bestPreviewContainerWidth = maxPreviewWidth;
+            bestPreviewContainerHeight = (int) Math.round(((float) maxPreviewWidth / bestPreviewSize.width) * bestPreviewSize.height);
+        }
 
         FrameLayout previewContainer = (FrameLayout) findViewById(R.id.camera_preview);
-
-        if (imageRatio > previewRatio){
-            // Height is limiter.
-            bestPreviewContainerHeight = maxPreviewHeight;
-            bestPreviewContainerWidth = Math.round(((float) maxPreviewHeight / bestPreviewSize.height) * bestPreviewSize.width);
-        }
-        else {
-            // Width is limiter.
-            bestPreviewContainerHeight = Math.round(((float) maxPreviewWidth / bestPreviewSize.width) * bestPreviewSize.height);
-            bestPreviewContainerWidth = maxPreviewWidth;
-        }
-
-        log("Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
-        parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
 
         if(display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180)
         {
             log("Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
-            previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerHeight, bestPreviewContainerWidth));
+
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight);
+            layoutParams.setMargins((maxPreviewWidth - bestPreviewContainerHeight) / 2, (maxPreviewHeight - bestPreviewContainerWidth) / 2, (maxPreviewWidth - bestPreviewContainerHeight) / 2, (maxPreviewHeight - bestPreviewContainerWidth) / 2);
+            previewContainer.setLayoutParams(layoutParams);
         }
         else if(display.getRotation() == Surface.ROTATION_90 || display.getRotation() == Surface.ROTATION_270)
         {
             log("Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
-            previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight));
+
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight);
+            layoutParams.setMargins((maxPreviewWidth - bestPreviewContainerWidth) / 2, (maxPreviewHeight - bestPreviewContainerHeight) / 2, (maxPreviewWidth - bestPreviewContainerWidth) / 2, (maxPreviewHeight - bestPreviewContainerHeight) / 2);
+            previewContainer.setLayoutParams(layoutParams);
         }
 
         try {
