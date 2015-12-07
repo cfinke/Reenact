@@ -47,7 +47,17 @@ public class ShareActivity extends ReenactActivity {
         finish();
     }
 
-    public void startOver(final View view) {
+    public void startOver() {
         onBackPressed();
+    }
+
+    public void startOver(final View view) {
+        startOver();
+    }
+
+    @Override
+    public void onSwipeRight() {
+        super.onSwipeRight();
+        startOver();
     }
 }

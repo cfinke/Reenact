@@ -12,7 +12,10 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -22,7 +25,9 @@ import java.io.InputStream;
 
 import android.graphics.Matrix;
 
-public class ReenactActivity extends Activity {
+public class ReenactActivity extends Activity implements GestureDetector.OnGestureListener {
+    private GestureDetectorCompat mDetector;
+
     public final static Integer PICK_IMAGE_TO_REENACT = 1;
 
     public final static String ORIGINAL_PHOTO_PATH = "com.chrisfinke.reenact.ORIGINAL_PHOTO_PATH";
@@ -40,6 +45,72 @@ public class ReenactActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mDetector = new GestureDetectorCompat(this,this);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.mDetector.onTouchEvent(event);
+        // Be sure to call the superclass implementation
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent event) {
+        log("onDown: " + event.toString());
+        return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
+        log("onFling: " + event1.toString() + event2.toString());
+
+        if (Math.abs(event1.getX() - event2.getX()) >= 200) {
+            if (event1.getX() < event2.getX()) {
+                if (isRTL()) {
+                    onSwipeLeft();
+                }
+                else {
+                    onSwipeRight();
+                }
+            }
+            else {
+                if (isRTL()) {
+                    onSwipeRight();
+                }
+                else {
+                    onSwipeLeft();
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public void onSwipeRight() {}
+    public void onSwipeLeft() {}
+
+    @Override
+    public void onLongPress(MotionEvent event) {
+        log("onLongPress: " + event.toString());
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        log("onScroll: " + e1.toString() + e2.toString());
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent event) {
+        log("onShowPress: " + event.toString());
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent event) {
+        log("onSingleTapUp: " + event.toString());
+        return true;
     }
 
     protected int getOptimalSampleSize(final Uri imageUri, final int maxWidth, final int maxHeight) {

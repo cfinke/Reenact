@@ -118,9 +118,19 @@ public class ConfirmActivity extends ReenactActivity {
         flipViewForRTL(R.id.back_button);
     }
 
-    public void goBack(final View view) {
+    public void goBack() {
         super.onBackPressed();
         finish();
+    }
+
+    public void goBack(final View view) {
+        goBack();
+    }
+
+    @Override
+    public void onSwipeRight() {
+        super.onSwipeRight();
+        goBack();
     }
 
     private static File getOutputMediaFile(final int type, final String prefix){
