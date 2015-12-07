@@ -78,19 +78,19 @@ public class ReenactActivity extends Activity {
         try {
             imageStream = getContentResolver().openInputStream(imageUri);
         } catch (FileNotFoundException e ){
-            if (LOG) Log.d(LOG_TAG, "FileNotFound", e);
+            log("FileNotFound", e);
             return dimensions;
         }
 
         try {
             BitmapRegionDecoder decoder = BitmapRegionDecoder.newInstance(imageStream, false);
 
-            if (LOG) Log.d(LOG_TAG, "Image dimensions: " + decoder.getWidth() + "x" + decoder.getHeight());
+            log("Image dimensions: " + decoder.getWidth() + "x" + decoder.getHeight());
 
             dimensions[0] = decoder.getWidth();
             dimensions[1] = decoder.getHeight();
         } catch (IOException e){
-            if (LOG) Log.d(LOG_TAG, "IOException", e);
+            log("IOException", e);
             return dimensions;
         } finally {
             try {
@@ -101,7 +101,7 @@ public class ReenactActivity extends Activity {
         }
 
         int orientation = getOrientation(imageUri);
-        if (LOG) Log.d(LOG_TAG, "Orientation is " + orientation);
+        log("Orientation is " + orientation);
 
         if (orientation == 90 || orientation == 270){
             int tmp = dimensions[0];
@@ -167,14 +167,14 @@ public class ReenactActivity extends Activity {
         Point windowSize = new Point();
         getWindowManager().getDefaultDisplay().getSize(windowSize);
 
-        if (LOG) Log.d(LOG_TAG, "imageView max size: " + windowSize.x + "x" + windowSize.y);
+        log("imageView max size: " + windowSize.x + "x" + windowSize.y);
 
         int sampleSize = getOptimalSampleSize(imageUri, windowSize.x, windowSize.y);
 
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = sampleSize;
 
-        if (LOG) Log.d(LOG_TAG, "Using sampleSize " + sampleSize);
+        log("Using sampleSize " + sampleSize);
 
         imageStream = getContentResolver().openInputStream(imageUri);
 
@@ -203,7 +203,7 @@ public class ReenactActivity extends Activity {
     }
 
     public void flipView(final int viewId) {
-        if (LOG) Log.d(LOG_TAG, "Flipping " + viewId);
+        log("Flipping " + viewId);
         findViewById(viewId).setScaleX(-1);
     }
 
@@ -234,7 +234,7 @@ public class ReenactActivity extends Activity {
                 return -1;
             }
         } catch (NullPointerException e) {
-            if (LOG) Log.d(LOG_TAG, "Couldn't get cursor count.", e);
+            log("Couldn't get cursor count.", e);
             return -1;
         }
 
@@ -242,5 +242,13 @@ public class ReenactActivity extends Activity {
         int orientation = cursor.getInt(0);
         cursor.close();
         return orientation;
+    }
+
+    static public void log(String logMessage) {
+        if (LOG) Log.d(LOG_TAG, logMessage);
+    }
+
+    static public void log(String logMessage, Throwable e) {
+        if (LOG) Log.d(LOG_TAG, logMessage, e);
     }
 }

@@ -46,14 +46,14 @@ public class CaptureActivity extends ReenactActivity {
         Intent intent = getIntent();
         originalPhotoUri = intent.getParcelableExtra(ORIGINAL_PHOTO_PATH);
 
-        if (LOG) Log.d(LOG_TAG, "Received original photo URI: " + originalPhotoUri.toString());
+        log("Received original photo URI: " + originalPhotoUri.toString());
 
         int[] originalImageDimensions = getImageDimensions(originalPhotoUri);
 
         int imageHeight = originalImageDimensions[1];
         int imageWidth = originalImageDimensions[0];
 
-        if (LOG) Log.d(LOG_TAG, "Original image dimensions: " + imageWidth + "x" + imageHeight);
+        log("Original image dimensions: " + imageWidth + "x" + imageHeight);
 
         if ( imageWidth > imageHeight ) {
             orientation = "landscape";
@@ -73,7 +73,7 @@ public class CaptureActivity extends ReenactActivity {
         ImageView switchButton = (ImageView) findViewById(R.id.switch_camera);
 
         if (Camera.getNumberOfCameras() == 1) {
-            if (LOG) Log.d(LOG_TAG, "Only one camera. Hiding switch button.");
+            log("Only one camera. Hiding switch button.");
             switchButton.setVisibility(View.INVISIBLE);
         }
 
@@ -95,7 +95,7 @@ public class CaptureActivity extends ReenactActivity {
     public void goBack(final View view) {
         super.onBackPressed();
 
-        if (LOG) Log.d(LOG_TAG, "Going back.");
+        log("Going back.");
 
         finish();
     }
@@ -104,7 +104,7 @@ public class CaptureActivity extends ReenactActivity {
     protected void onPause() {
         super.onPause();
 
-        if (LOG) Log.d(LOG_TAG, "onPause");
+        log("onPause");
 
         releaseCamera();
         clearOriginalPhoto();
@@ -178,7 +178,7 @@ public class CaptureActivity extends ReenactActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         int cameraId = settings.getInt("cameraId", 0);
 
-        if (LOG) Log.d(LOG_TAG, "Getting camera #" + cameraId);
+        log("Getting camera #" + cameraId);
 
         Camera c = null;
 
@@ -225,12 +225,14 @@ public class CaptureActivity extends ReenactActivity {
             return;
         }
 
+        log("Passed to updatePreviewSize: " + width + "x" + height);
+
         Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         Camera.Parameters parameters = mCamera.getParameters();
         List<Camera.Size> supportedSizes = parameters.getSupportedPreviewSizes();
 
         for (Camera.Size size : supportedSizes) {
-            if (LOG) Log.d(LOG_TAG, "Supported Size: " + size.width + "x" + size.height);
+            log("Supported Size: " + size.width + "x" + size.height);
         }
 
         Camera.Size bestPreviewSize;
@@ -244,7 +246,7 @@ public class CaptureActivity extends ReenactActivity {
 
         }
 
-        if (LOG) Log.d(LOG_TAG, "Setting preview size to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+        log("Setting preview size to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
 
         RelativeLayout cameraPreviewContainer = (RelativeLayout) findViewById(R.id.camera_preview_container);
         int maxPreviewWidth = cameraPreviewContainer.getWidth();
@@ -275,17 +277,17 @@ public class CaptureActivity extends ReenactActivity {
             bestPreviewContainerWidth = maxPreviewWidth;
         }
 
-        if (LOG) Log.d(LOG_TAG, "Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
+        log("Setting preview to " + bestPreviewSize.width + "x" + bestPreviewSize.height);
         parameters.setPreviewSize(bestPreviewSize.width, bestPreviewSize.height);
 
         if(display.getRotation() == Surface.ROTATION_0 || display.getRotation() == Surface.ROTATION_180)
         {
-            if (LOG) Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
+            log("Setting preview container size to " + bestPreviewContainerHeight + "x" + bestPreviewContainerWidth);
             previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerHeight, bestPreviewContainerWidth));
         }
         else if(display.getRotation() == Surface.ROTATION_90 || display.getRotation() == Surface.ROTATION_270)
         {
-            if (LOG) Log.d(LOG_TAG, "Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
+            log("Setting preview container size to " + bestPreviewContainerWidth + "x" + bestPreviewContainerHeight);
             previewContainer.setLayoutParams(new RelativeLayout.LayoutParams(bestPreviewContainerWidth, bestPreviewContainerHeight));
         }
 
@@ -322,7 +324,7 @@ public class CaptureActivity extends ReenactActivity {
             // Rotate it to the orientation that we expect.
             int deviceOrientation = getResources().getConfiguration().orientation;
 
-            if (LOG) Log.d(LOG_TAG, "Orientation: " + deviceOrientation);
+            log("Orientation: " + deviceOrientation);
 
             if ( deviceOrientation != Configuration.ORIENTATION_LANDSCAPE ) {
                 Bitmap storedBitmap = BitmapFactory.decodeByteArray(data, 0, data.length, null);
@@ -330,7 +332,7 @@ public class CaptureActivity extends ReenactActivity {
 
                 switch (deviceOrientation) {
                     case Configuration.ORIENTATION_PORTRAIT:
-                        if (LOG) Log.d(LOG_TAG, "Rotating 90.");
+                        log("Rotating 90.");
                         mat.postRotate(90);
                         break;
                 }
@@ -350,7 +352,7 @@ public class CaptureActivity extends ReenactActivity {
             try {
                 newPhotoTempFile = File.createTempFile("reenact", "jpg", tempOutputDir);
             } catch (IOException e){
-                if (LOG) Log.d(LOG_TAG, "Couldn't create temp file to save new photo.");
+                log("Couldn't create temp file to save new photo.");
 
                 fatalAlert(R.string.error_couldnt_save_single_file).show();
 
@@ -362,19 +364,19 @@ public class CaptureActivity extends ReenactActivity {
                 fos.write(data);
                 fos.close();
             } catch (FileNotFoundException e) {
-                if (LOG) Log.d(LOG_TAG, "File not found: " + e.getMessage());
+                log("File not found: " + e.getMessage());
 
                 fatalAlert(R.string.error_couldnt_copy_single_file).show();
 
                 return;
             } catch (IOException e) {
-                if (LOG) Log.d(LOG_TAG, "Error accessing file: " + e.getMessage());
+                log("Error accessing file: " + e.getMessage());
 
                 fatalAlert(R.string.error_couldnt_copy_single_file).show();
 
                 return;
             } finally {
-                if (LOG) Log.d(LOG_TAG, "Finished writing file.");
+                log("Finished writing file.");
             }
 
             // Start the confirmation activity.
@@ -433,14 +435,14 @@ public class CaptureActivity extends ReenactActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (LOG) Log.d(LOG_TAG, "onStop");
+        log("onStop");
         releaseCamera();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (LOG) Log.d(LOG_TAG, "onResume");
+        log("onResume");
         initializeOriginalPhoto();
         startCamera();
     }
@@ -462,7 +464,7 @@ public class CaptureActivity extends ReenactActivity {
     }
 
     public void startPreviewFailed(Exception e){
-        if (LOG) Log.d(LOG_TAG, "Error setting camera preview: " + e.getMessage());
+        log("Error setting camera preview: " + e.getMessage());
 
         fatalAlert(R.string.error_no_camera_preview).show();
     }

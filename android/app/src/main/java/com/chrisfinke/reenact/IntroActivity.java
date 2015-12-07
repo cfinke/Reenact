@@ -24,19 +24,19 @@ public class IntroActivity extends ReenactActivity {
     }
 
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data){
-        if (LOG) Log.d(LOG_TAG, "Activity ended.");
+        log("Activity ended.");
 
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK){
-            if (LOG) Log.d(LOG_TAG, "Result code ok.");
+            log("Result code ok.");
 
             if (requestCode == PICK_IMAGE_TO_REENACT){
-                if (LOG) Log.d(LOG_TAG, "Requestcode ok.");
+                log("Requestcode ok.");
 
                 Uri selectedImageUri = data.getData();
 
-                if (LOG) Log.d(LOG_TAG, selectedImageUri.toString());
+                log(selectedImageUri.toString());
 
                 Intent intent = new Intent(this, CaptureActivity.class);
                 intent.putExtra(ORIGINAL_PHOTO_PATH, selectedImageUri);
@@ -44,7 +44,7 @@ public class IntroActivity extends ReenactActivity {
             }
         }
         else {
-            if (LOG) Log.d(LOG_TAG, "activityResult was not OK.");
+            log("activityResult was not OK.");
         }
     }
 
