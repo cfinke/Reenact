@@ -13,7 +13,7 @@
     <string name="error_alert_title">Uh-oh</string>
     <string name="error_alert_button_label">I understand.</string>
 
-    <string name="error_no_camera">The camera wouldn\'t start.</string>
+    <string name="error_no_camera">The camera wouldn\'t start. Ensure that Reenact has permission to access your camera (in Settings > Apps > Reenact).</string>
     <string name="error_no_camera_preview">Reenact couldn\'t load the camera preview.</string>
     <string name="error_original_photo_missing">Reenact couldn\'t load the photo you selected.</string>
     <string name="error_new_photo_missing">Reenact couldn\'t load the photo you just took.</string>
