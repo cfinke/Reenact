@@ -14,13 +14,24 @@ public class IntroActivity extends ReenactActivity {
     }
 
     public void choosePhoto(final View view) {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(
-                Intent.createChooser(intent, getResources().getText(R.string.choose_photo_label)),
-                PICK_IMAGE_TO_REENACT
-        );
+        if (screenshotMode){
+            Uri selectedImageUri = Uri.parse("android.resource://com.chrisfinke.reenact/drawable/" + screenshotModeOrientation + "_old");
+
+            log("screenshotOld: " + selectedImageUri.toString());
+
+            Intent intent = new Intent(this, CaptureActivity.class);
+            intent.putExtra(ORIGINAL_PHOTO_PATH, selectedImageUri);
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(
+                    Intent.createChooser(intent, getResources().getText(R.string.choose_photo_label)),
+                    PICK_IMAGE_TO_REENACT
+            );
+        }
     }
 
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data){

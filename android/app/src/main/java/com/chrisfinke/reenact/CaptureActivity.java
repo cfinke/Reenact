@@ -72,7 +72,7 @@ public class CaptureActivity extends ReenactActivity {
 
         ImageView switchButton = (ImageView) findViewById(R.id.switch_camera);
 
-        if (Camera.getNumberOfCameras() == 1) {
+        if (!screenshotMode && Camera.getNumberOfCameras() == 1) {
             log("Only one camera. Hiding switch button.");
             switchButton.setVisibility(View.INVISIBLE);
         }
@@ -83,10 +83,18 @@ public class CaptureActivity extends ReenactActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // get an image from the camera
-                        mCamera.takePicture(null, null, mPicture);
-                    }
+                        if (screenshotMode) {
+                            Intent intent = new Intent(CaptureActivity.this, ConfirmActivity.class);
+                            intent.putExtra(ORIGINAL_PHOTO_PATH, originalPhotoUri);
+                            intent.putExtra(NEW_PHOTO_TEMP_PATH, Uri.parse("android.resource://com.chrisfinke.reenact/drawable/" + screenshotModeOrientation + "_new"));
+                            startActivity(intent);
+                        }
+                        else {
+                            // get an image from the camera
+                            mCamera.takePicture(null, null, mPicture);
+                        }
                 }
+    }
         );
 
         flipViewForRTL(R.id.back_button);
@@ -121,8 +129,21 @@ public class CaptureActivity extends ReenactActivity {
     }
 
     private void initializeOriginalPhoto(){
-        ImageView imageView = (ImageView) findViewById(R.id.original_image);
-        fadeOriginalImageInAndOut(imageView);
+        final ImageView imageView = (ImageView) findViewById(R.id.original_image);
+
+        if (!screenshotMode) {
+            fadeOriginalImageInAndOut(imageView);
+        }
+        else {
+            imageView.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            imageView.setAlpha( ( imageView.getAlpha() + 0.1f ) % 1 );
+                        }
+                    }
+            );
+        }
 
         // The image will be placed inside the view after the camera is instantiated, since
         // it may have to be modified based on the active camera.
@@ -140,6 +161,20 @@ public class CaptureActivity extends ReenactActivity {
 
     protected boolean startCamera() {
         // Create an instance of Camera
+
+        if (screenshotMode) {
+            try {
+                fitImageInImageView(originalPhotoUri, (ImageView) findViewById(R.id.original_image));
+                fitImageInImageView(
+                        Uri.parse("android.resource://com.chrisfinke.reenact/drawable/" + screenshotModeOrientation + "_new"),
+                        (ImageView) findViewById(R.id.screenshot_mode_camera_preview)
+                );
+            } catch (FileNotFoundException e) {
+                log("Couldn't find new screenshot file or old screenshot file", e);
+            }
+
+            return true;
+        }
 
         if (mCamera != null){
             return true;

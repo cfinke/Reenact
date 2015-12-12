@@ -42,6 +42,9 @@ public class ReenactActivity extends Activity implements GestureDetector.OnGestu
 
     static final boolean LOG = BuildConfig.DEBUG;
 
+    public final boolean screenshotMode = false;
+    public final String screenshotModeOrientation = "portrait";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
