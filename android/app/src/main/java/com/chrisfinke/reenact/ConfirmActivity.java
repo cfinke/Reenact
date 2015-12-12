@@ -1,19 +1,13 @@
 package com.chrisfinke.reenact;
 
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,11 +19,19 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import android.graphics.Matrix;
-
 public class ConfirmActivity extends ReenactActivity {
     private Uri originalPhotoUri;
     private Uri newPhotoTempUri;
+
+    private int templateIndex = 0;
+
+    private Object[][][] templates = {
+            new Object[][]{new Object[]{Color.WHITE}, new Object[]{0, 0, 0, 0, 0}, new Object[]{"", ""}} // No margins. Just side-by-side.
+            , new Object[][]{new Object[]{Color.WHITE}, new Object[]{0, 0, 0, 0, 1}, new Object[]{"", ""}} // Just a single white center divider.
+            , new Object[][]{new Object[]{Color.BLACK}, new Object[]{0, 0, 0, 0, 1}, new Object[]{"", ""}} // Just a single black center divider.
+            , new Object[][]{new Object[]{Color.WHITE}, new Object[]{2, 2, 2, 2, 2}, new Object[]{"", ""}} // Just a single white center divider.
+            , new Object[][]{new Object[]{Color.BLACK}, new Object[]{2, 2, 2, 2, 2}, new Object[]{"", ""}} // Just a single black center divider.
+    };
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -55,7 +57,30 @@ public class ConfirmActivity extends ReenactActivity {
     @Override
     public void onSwipeRight() {
         super.onSwipeRight();
-        goBack();
+        showLastTemplate();
+    }
+
+    @Override
+    public void onSwipeLeft() {
+        super.onSwipeRight();
+        showNextTemplate();
+    }
+
+    private void showNextTemplate() {
+        clearComboPhoto();
+        templateIndex += 1;
+        templateIndex %= templates.length;
+        initializeComboPhoto();
+    }
+
+    private void showLastTemplate() {
+        clearComboPhoto();
+        templateIndex -= 1;
+
+        if (templateIndex < 0){
+            templateIndex = templates.length - 1;
+        }
+        initializeComboPhoto();
     }
 
     private static File getOutputMediaFile(final int type, final String prefix){
@@ -167,172 +192,14 @@ public class ConfirmActivity extends ReenactActivity {
      */
 
     public Bitmap combineImages(final Uri thenImage, final Uri nowImage) {
-        int[] thenImageDimensions = getImageDimensions(thenImage);
+        PhotoTemplate template = new PhotoTemplate(this, thenImage, nowImage);
 
-        int cWidth = thenImageDimensions[0];
-        int cHeight = thenImageDimensions[1];
+        Object[][] templateSettings = templates[templateIndex];
 
-        if (cWidth == 0 || cHeight == 0) {
-            alert(R.string.error_couldnt_read_original_photo).show();
-            return null;
-        }
+        template.setMargins((int) templateSettings[1][0], (int) templateSettings[1][1], (int) templateSettings[1][2], (int) templateSettings[1][3], (int) templateSettings[1][4]);
+        template.setBackgroundColor((int) templateSettings[0][0]);
 
-        int[] nowImageDimensions = getImageDimensions(nowImage);
-
-        int sWidth = nowImageDimensions[0];
-        int sHeight = nowImageDimensions[1];
-
-        if (sWidth == 0 || sHeight == 0) {
-            alert(R.string.error_couldnt_read_new_photo).show();
-            return null;
-        }
-
-        int totalHeight;
-        int totalWidth;
-        float oldRatio;
-        float newRatio;
-
-        Rect oldImageDest;
-        Rect newImageDest;
-
-        if (cWidth < cHeight) {
-            log("Saving combination image in side-by-side format.");
-
-            int smallestHeight = Math.min(1024, Math.min(cHeight, sHeight));
-            totalHeight = smallestHeight;
-
-            int newOldHeight = totalHeight;
-            int newOldWidth = Math.round(((float) smallestHeight / cHeight) * cWidth);
-
-            int newNewHeight = totalHeight;
-            int newNewWidth = Math.round(((float) smallestHeight / sHeight) * sWidth);
-
-            totalWidth = newOldWidth + newNewWidth;
-
-            oldRatio = (float) smallestHeight / cHeight;
-            newRatio = (float) smallestHeight / sHeight;
-
-            if (isRTL()) {
-                // RTL languages would expect the "before" shot on the right.
-                oldImageDest = new Rect(newNewWidth, 0, newOldWidth + newNewWidth, newOldHeight);
-                newImageDest = new Rect(0, 0, newNewWidth, newNewHeight);
-            }
-            else {
-                oldImageDest = new Rect(0, 0, newOldWidth, newOldHeight);
-                newImageDest = new Rect(newOldWidth, 0, newOldWidth + newNewWidth, newNewHeight);
-            }
-        }
-        else {
-            log("Saving combination image in top-to-bottom format.");
-
-            int smallestWidth = Math.min(1024, Math.min(cWidth, sWidth));
-            totalWidth = smallestWidth;
-
-            int newOldWidth = totalWidth;
-            int newOldHeight = Math.round(((float) smallestWidth / cWidth) * cHeight);
-
-            int newNewWidth = totalWidth;
-            int newNewHeight = Math.round(((float) smallestWidth / sWidth) * sHeight);
-
-            totalHeight = newOldHeight + newNewHeight;
-
-            oldRatio = (float) smallestWidth / cWidth;
-            newRatio = (float) smallestWidth / sWidth;
-
-            oldImageDest = new Rect(0, 0, newOldWidth, newOldHeight);
-            newImageDest = new Rect(0, newOldHeight, newNewWidth, newOldHeight + newNewHeight);
-        }
-
-        Bitmap cs = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888);
-
-        Canvas comboImage = new Canvas(cs);
-
-        int oldSampleSize = (int) Math.max(1, Math.floor((float) 1 / oldRatio));
-        int newSampleSize = (int) Math.max(1, Math.floor((float) 1 / newRatio));
-
-        log("oldRatio:" + oldRatio);
-        log("newRatio:" + newRatio);
-
-        log("oldSampleSize:" + oldSampleSize);
-        log("newSampleSize:" + newSampleSize);
-
-        BitmapFactory.Options oldOptions = new BitmapFactory.Options();
-        oldOptions.inSampleSize = oldSampleSize;
-
-        AssetFileDescriptor oldFileDescriptor;
-
-        try {
-            oldFileDescriptor = getContentResolver().openAssetFileDescriptor(thenImage, "r");
-        } catch (FileNotFoundException e) {
-            log("File not found", e);
-
-            alert(R.string.error_original_photo_missing).show();
-            return null;
-        }
-
-        BitmapFactory.decodeFileDescriptor(oldFileDescriptor.getFileDescriptor(), null, oldOptions);
-        Bitmap oldImage = BitmapFactory.decodeFileDescriptor(oldFileDescriptor.getFileDescriptor(), null, oldOptions);
-
-        float orientation = (float) getOrientation(thenImage);
-
-        if (orientation > 0) {
-            Matrix rotationMatrix = new Matrix();
-            rotationMatrix.postRotate(orientation);
-            oldImage = Bitmap.createBitmap(oldImage, 0, 0, oldImage.getWidth(), oldImage.getHeight(), rotationMatrix, true);
-        }
-
-        comboImage.drawBitmap(oldImage, new Rect(0, 0, oldImage.getWidth(), oldImage.getHeight()), oldImageDest, null);
-
-        oldImage.recycle();
-        oldImage = null;
-        oldOptions = null;
-        oldFileDescriptor = null;
-
-        BitmapFactory.Options newOptions = new BitmapFactory.Options();
-        newOptions.inSampleSize = newSampleSize;
-
-        AssetFileDescriptor newFileDescriptor;
-
-        try {
-            newFileDescriptor = getContentResolver().openAssetFileDescriptor(nowImage, "r");
-        } catch (FileNotFoundException e) {
-            log("File not found", e);
-
-            alert(R.string.error_new_photo_missing).show();
-
-            return null;
-        }
-
-        BitmapFactory.decodeFileDescriptor(newFileDescriptor.getFileDescriptor(), null, newOptions);
-        Bitmap newImage = BitmapFactory.decodeFileDescriptor(newFileDescriptor.getFileDescriptor(), null, newOptions);
-
-        comboImage.drawBitmap(newImage, new Rect(0, 0, newImage.getWidth(), newImage.getHeight()), newImageDest, null);
-
-        newImage.recycle();
-        newImage = null;
-        newOptions = null;
-        newFileDescriptor = null;
-
-        // Add the Reenact logo to the lower right corner.
-        Resources resources = getResources();
-        Bitmap logoBitmap = BitmapFactory.decodeResource(resources, R.drawable.logo);
-
-        int logoWidth = (int) Math.round(totalWidth * 0.04);
-        int logoOffset = (int) Math.round(totalWidth * 0.01);
-
-        Rect logoSrc = new Rect(0, 0, logoBitmap.getWidth(), logoBitmap.getHeight());
-        Rect logoDest;
-
-        if (isRTL()) {
-            logoDest = new Rect(logoOffset, cs.getHeight() - logoWidth - logoOffset, logoOffset + logoWidth, cs.getHeight() - logoOffset);
-        }
-        else {
-            logoDest = new Rect(cs.getWidth() - logoWidth - logoOffset, cs.getHeight() - logoWidth - logoOffset, cs.getWidth() - logoOffset, cs.getHeight() - logoOffset);
-        }
-
-        comboImage.drawBitmap(logoBitmap, logoSrc, logoDest, null);
-
-        return cs;
+        return template.draw();
     }
 
     @Override

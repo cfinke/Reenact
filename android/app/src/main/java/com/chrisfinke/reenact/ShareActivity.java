@@ -1,7 +1,6 @@
 package com.chrisfinke.reenact;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;

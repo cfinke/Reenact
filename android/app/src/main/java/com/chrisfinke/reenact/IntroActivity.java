@@ -3,7 +3,6 @@ package com.chrisfinke.reenact;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 public class IntroActivity extends ReenactActivity {
