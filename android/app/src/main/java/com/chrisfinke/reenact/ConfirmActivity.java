@@ -40,81 +40,6 @@ public class ConfirmActivity extends ReenactActivity {
         originalPhotoUri = intent.getParcelableExtra(ORIGINAL_PHOTO_PATH);
         newPhotoTempUri = intent.getParcelableExtra(NEW_PHOTO_TEMP_PATH);
 
-        ImageView imageViewThen = (ImageView) findViewById(R.id.image_then);
-        ImageView imageViewNow = (ImageView) findViewById(R.id.image_now);
-
-        int[] oldImageDimensions = getImageDimensions(originalPhotoUri);
-        int[] newImageDimensions = getImageDimensions(newPhotoTempUri);
-
-        // Adjust the sizes of the thumbnails so that portrait images are the same height
-        // as each other and landscape are the same width.
-        int oldImageWidth = oldImageDimensions[0];
-        int oldImageHeight = oldImageDimensions[1];
-
-        int newImageWidth = newImageDimensions[0];
-        int newImageHeight = newImageDimensions[1];
-
-        log("oldImageHeight: " + oldImageHeight);
-        log("newImageHeight: " + newImageHeight);
-
-        LinearLayout previewContainer = (LinearLayout) findViewById(R.id.preview_container);
-
-        if ( newImageWidth < newImageHeight ) {
-            // Portrait.
-            // Ensure that the thumbnails are side-by-side.
-            previewContainer.setOrientation(LinearLayout.HORIZONTAL);
-
-            int shorterHeight = Math.min( oldImageHeight, newImageHeight );
-
-            int sameHeightOldImageWidth = Math.round( ( (float) shorterHeight / oldImageHeight ) * oldImageWidth);
-            int sameHeightNewImageWidth = Math.round( ( (float) shorterHeight / newImageHeight ) * newImageWidth);
-
-            float oldImageWeight = ( (float) sameHeightOldImageWidth ) / ( sameHeightOldImageWidth + sameHeightNewImageWidth );
-            float newImageWeight = ( (float) sameHeightNewImageWidth ) / ( sameHeightOldImageWidth + sameHeightNewImageWidth );
-
-            log("sameHeightOldImageWidth: " + sameHeightOldImageWidth);
-            log("sameHeightNewImageWidth: " + sameHeightNewImageWidth);
-
-            log("oldImageWeight: " + oldImageWeight);
-            log("newImageWeight: " + newImageWeight);
-
-            LinearLayout.LayoutParams oldParams = (LinearLayout.LayoutParams) imageViewThen.getLayoutParams();
-            oldParams.weight = oldImageWeight;
-            oldParams.width = 0;
-            oldParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
-            imageViewThen.setLayoutParams( oldParams );
-
-            LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams) imageViewNow.getLayoutParams();
-            newParams.weight = newImageWeight;
-            newParams.width = 0;
-            newParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
-            imageViewNow.setLayoutParams( newParams );
-        }
-        else {
-            // Ensure that the thumbnails are top-to-bottom.
-            previewContainer.setOrientation(LinearLayout.VERTICAL);
-
-            int shorterWidth = Math.min( oldImageWidth, newImageWidth );
-
-            int sameWidthOldImageHeight = Math.round(( (float) shorterWidth / oldImageWidth ) * oldImageHeight);
-            int sameWidthNewImageHeight = Math.round(( (float) shorterWidth / newImageWidth ) * newImageHeight);
-
-            float oldImageWeight = ( (float) sameWidthOldImageHeight ) / ( sameWidthOldImageHeight + sameWidthNewImageHeight );
-            float newImageWeight = ( (float) sameWidthNewImageHeight ) / ( sameWidthOldImageHeight + sameWidthNewImageHeight );
-
-            LinearLayout.LayoutParams oldParams = (LinearLayout.LayoutParams) imageViewThen.getLayoutParams();
-            oldParams.weight = oldImageWeight;
-            oldParams.height = 0;
-            oldParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            imageViewThen.setLayoutParams( oldParams );
-
-            LinearLayout.LayoutParams newParams = (LinearLayout.LayoutParams) imageViewNow.getLayoutParams();
-            newParams.weight = newImageWeight;
-            newParams.height = 0;
-            newParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            imageViewNow.setLayoutParams(newParams);
-        }
-
         flipViewForRTL(R.id.back_button);
     }
 
@@ -413,44 +338,22 @@ public class ConfirmActivity extends ReenactActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        initializeOriginalPhoto();
-        initializeNewPhoto();
+        initializeComboPhoto();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        clearOriginalPhoto();
-        clearNewPhoto();
+        clearComboPhoto();
     }
 
-    private void initializeOriginalPhoto(){
-        ImageView imageViewThen = (ImageView) findViewById(R.id.image_then);
-
-        try {
-            fitImageInImageView(originalPhotoUri, imageViewThen);
-        } catch (FileNotFoundException e) {
-            fatalAlert(R.string.error_new_photo_missing).show();
-        }
+    private void initializeComboPhoto(){
+        ImageView imageView = (ImageView) findViewById(R.id.image_combined_preview);
+        imageView.setImageBitmap(combineImages(originalPhotoUri, newPhotoTempUri));
     }
 
-    private void initializeNewPhoto(){
-        ImageView imageViewNow = (ImageView) findViewById(R.id.image_now);
-
-        try {
-            fitImageInImageView(newPhotoTempUri, imageViewNow);
-        } catch (FileNotFoundException e) {
-            fatalAlert(R.string.error_original_photo_missing).show();
-        }
-    }
-
-    private void clearOriginalPhoto(){
-        ImageView imageView = (ImageView) findViewById(R.id.image_then);
-        imageView.setImageBitmap(null);
-    }
-
-    private void clearNewPhoto(){
-        ImageView imageView = (ImageView) findViewById(R.id.image_now);
+    private void clearComboPhoto(){
+        ImageView imageView = (ImageView) findViewById(R.id.image_combined_preview);
         imageView.setImageBitmap(null);
     }
 

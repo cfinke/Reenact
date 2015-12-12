@@ -18,13 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/image_then"
-            android:layout_gravity="center"/>
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/image_now"
+            android:id="@+id/image_combined_preview"
             android:layout_gravity="center"/>
     </LinearLayout>
     <LinearLayout
