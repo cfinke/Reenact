@@ -1,7 +1,6 @@
 package com.chrisfinke.reenact;
 
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -99,7 +98,6 @@ public class PhotoTemplate {
 
         Rect oldImageDest;
         Rect newImageDest;
-        Rect logoDest;
 
         if (cWidth < cHeight) {
             context.log("Saving combination image in side-by-side format.");
@@ -138,25 +136,6 @@ public class PhotoTemplate {
                 oldImageDest = new Rect(marginLeft, marginTop, marginLeft + newOldWidth, marginTop + newOldHeight);
                 newImageDest = new Rect(marginLeft + marginCenter + newOldWidth, marginTop, newOldWidth + newNewWidth + marginLeft + marginCenter, newNewHeight + marginTop);
             }
-
-            int logoWidth = (int) Math.round(totalWidth * 0.04);
-
-            if (context.isRTL()) {
-                logoDest = new Rect(
-                        marginRight + logoWidth,
-                        marginTop + newNewHeight - (logoWidth * 2),
-                        marginRight + (2 * logoWidth),
-                        marginTop + newNewHeight - logoWidth
-                );
-            }
-            else {
-                logoDest = new Rect(
-                        marginLeft + newOldWidth + marginCenter + newNewWidth - (logoWidth * 2),
-                        marginTop + newNewHeight - (logoWidth * 2),
-                        marginLeft + newOldWidth + marginCenter + newNewWidth - logoWidth,
-                        marginTop + newNewHeight - logoWidth
-                );
-            }
         }
         else {
             context.log("Saving combination image in top-to-bottom format.");
@@ -188,25 +167,6 @@ public class PhotoTemplate {
 
             oldImageDest = new Rect(marginLeft, marginTop, newOldWidth + marginLeft, newOldHeight + marginTop);
             newImageDest = new Rect(marginLeft, newOldHeight + marginTop + marginCenter, newNewWidth + marginLeft, newOldHeight + newNewHeight + marginTop + marginCenter);
-
-            int logoWidth = (int) Math.round(totalWidth * 0.04);
-
-            if (context.isRTL()) {
-                logoDest = new Rect(
-                        marginLeft + logoWidth,
-                        marginTop + newOldHeight + marginCenter + newNewHeight - (logoWidth * 2),
-                        marginLeft + (2 * logoWidth),
-                        marginTop + newOldHeight + marginCenter + newNewHeight - logoWidth
-                );
-            }
-            else {
-                logoDest = new Rect(
-                        marginLeft + newNewWidth - (logoWidth * 2),
-                        marginTop + newOldHeight + marginCenter + newNewHeight - (logoWidth * 2),
-                        marginLeft + newNewWidth - logoWidth,
-                        marginTop + newOldHeight + marginCenter + newNewHeight - logoWidth
-                );
-            }
         }
 
         Bitmap cs = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888);
@@ -279,14 +239,6 @@ public class PhotoTemplate {
         newImage = null;
         newOptions = null;
         newFileDescriptor = null;
-
-        // Add the Reenact logo to the lower right corner.
-        Resources resources = context.getResources();
-        Bitmap logoBitmap = BitmapFactory.decodeResource(resources, R.drawable.logo);
-
-        Rect logoSrc = new Rect(0, 0, logoBitmap.getWidth(), logoBitmap.getHeight());
-
-        comboImage.drawBitmap(logoBitmap, logoSrc, logoDest, null);
 
         return cs;
     }
