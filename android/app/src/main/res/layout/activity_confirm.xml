@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:background="#000"
     >
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="5"
@@ -16,12 +16,36 @@
         android:id="@+id/preview_container"
         android:background="@drawable/confirm_gradient">
         <ImageView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:id="@+id/image_combined_preview"
             android:layout_gravity="center"/>
-    </LinearLayout>
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="80dp"
+            android:id="@+id/back_arrow"
+            android:layout_gravity="center"
+            android:background="#00000000"
+            android:scaleType="fitCenter"
+            android:src="@drawable/arrow_right"
+            android:scaleX="-1"
+            android:onClick="showLastTemplate"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="80dp"
+            android:id="@+id/forward_arrow"
+            android:layout_gravity="center"
+            android:background="#00000000"
+            android:scaleType="fitCenter"
+            android:src="@drawable/arrow_right"
+            android:onClick="showNextTemplate"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"

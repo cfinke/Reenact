@@ -66,11 +66,19 @@ public class ConfirmActivity extends ReenactActivity {
         showNextTemplate();
     }
 
+    public void showNextTemplate(final View view){
+        showNextTemplate();
+    }
+
     private void showNextTemplate() {
         clearComboPhoto();
         templateIndex += 1;
         templateIndex %= templates.length;
         initializeComboPhoto();
+    }
+
+    public void showLastTemplate(final View view){
+        showLastTemplate();
     }
 
     private void showLastTemplate() {
