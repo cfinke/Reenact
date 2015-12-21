@@ -26,11 +26,8 @@ public class ConfirmActivity extends ReenactActivity {
     private int templateIndex = 0;
 
     private Object[][][] templates = {
-            new Object[][]{new Object[]{Color.WHITE}, new Object[]{0, 0, 0, 0, 0}, new Object[]{"", ""}} // No margins. Just side-by-side.
-            , new Object[][]{new Object[]{Color.WHITE}, new Object[]{0, 0, 0, 0, 1}, new Object[]{"", ""}} // Just a single white center divider.
-            , new Object[][]{new Object[]{Color.BLACK}, new Object[]{0, 0, 0, 0, 1}, new Object[]{"", ""}} // Just a single black center divider.
-            , new Object[][]{new Object[]{Color.WHITE}, new Object[]{2, 2, 2, 2, 2}, new Object[]{"", ""}} // Just a single white center divider.
-            , new Object[][]{new Object[]{Color.BLACK}, new Object[]{2, 2, 2, 2, 2}, new Object[]{"", ""}} // Just a single black center divider.
+            new Object[][]{new Object[]{Color.WHITE}, new Object[]{0, 0, 0, 0, 0}, new Object[]{""}} // No margins. Just side-by-side.
+            , new Object[][]{new Object[]{Color.WHITE}, new Object[]{2, 2, 2, 2, 2}, new Object[]{""}} // A white frame around both photos.
     };
 
     @Override
