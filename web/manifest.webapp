@@ -1,0 +1,35 @@
+{
+	"version": "2",
+	"name": "Reenact",
+	"description": "Reenact photos with Reenact.",
+	"launch_path": "/index.html",
+	"fullscreen": "true",
+	"icons": {
+		"128": "/img/icons/icon128x128.png",
+		"512": "/img/icons/icon512x512.png"
+	},
+	"developer": {
+		"name": "Christopher Finke",
+		"url": "http://www.chrisfinke.com/"
+	},
+	"type": "privileged",
+	"permissions": {
+		"camera": {
+			"description": "Required for taking photos."
+		},
+		"device-storage:pictures": {
+			"access": "readwrite",
+			"description": "Required for selecting a photo to Reenact and for saving Reenacted photos."
+		}
+	},
+	"installs_allowed_from": [
+		"*"
+	],
+	"default_locale": "en-US",
+	"locales": {
+		"en-US": {
+			"name": "Reenact",
+			"description": "Reenact photos with Reenact."
+		}
+	}
+}
