@@ -73,8 +73,6 @@ var App = {
 };
 
 var Views = {
-	lockedOrientationViews : [ 'capture', 'confirm', 'next-step' ],
-
 	viewSpecificTimers : {},
 
 	show : function ( screenId ) {
@@ -101,14 +99,7 @@ var Views = {
 			Views.preViewHandlers[screenId]();
 		}
 
-		if ( Views.lockedOrientationViews.indexOf( screenId ) == -1 || ! App.persistentVar( 'lockedOrientation' ) ) {
-			//@todo screen.mozUnlockOrientation();
-			continueView();
-		}
-		else {
-		//	screen.orientation.lock( App.persistentVar( 'lockedOrientation' ) ).then( continueView );
 		continueView();
-		}
 	},
 
 	preViewHandlers : {
@@ -122,7 +113,6 @@ var Views = {
 	viewHandlers : {
 		'intro' : function () {
 			App.persistentVar( 'original-photo', null );
-			App.persistentVar( 'lockedOrientation', null );
 		},
 
 		'capture' : function () {
@@ -150,8 +140,6 @@ var Views = {
 				console.log( "photoIsLandscape: ", photoIsLandscape );
 
 				var targetOrientation = photoIsLandscape ? 'landscape' : 'portrait';
-
-				App.persistentVar( 'lockedOrientation', targetOrientation );
 
 				var maxWidth = document.getElementById( 'reenacter' ).clientWidth;
 				var maxHeight = document.getElementById( 'reenacter' ).clientHeight;
