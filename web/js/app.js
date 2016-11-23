@@ -154,65 +154,56 @@ var Views = {
 					maxHeight = temp;
 				}
 
-				//screen.orientation.lock( targetOrientation ).then( function () {
-					if ( photoIsLandscape ) {
-						document.getElementById( 'viewfinder' ).setAttribute( 'width', maxWidth );
-						document.getElementById( 'viewfinder' ).setAttribute( 'height', maxHeight );
-						
-						if ( realImageWidth / realImageHeight < maxWidth / maxHeight ) {
-							document.getElementById( 'original-photo' ).setAttribute( 'height', '100%' );
-							document.getElementById( 'original-photo' ).removeAttribute( 'width' );
-						}
-						else {
-							document.getElementById( 'original-photo' ).setAttribute( 'width', '100%' );
-							document.getElementById( 'original-photo' ).removeAttribute( 'height' );
-						}
+				if ( photoIsLandscape ) {
+					document.getElementById( 'viewfinder' ).setAttribute( 'width', maxWidth );
+					document.getElementById( 'viewfinder' ).setAttribute( 'height', maxHeight );
+					
+					if ( realImageWidth / realImageHeight < maxWidth / maxHeight ) {
+						document.getElementById( 'original-photo' ).setAttribute( 'height', '100%' );
+						document.getElementById( 'original-photo' ).removeAttribute( 'width' );
 					}
 					else {
-						// The swapped width/height values are intentional, since it is rotated.
-						document.getElementById( 'viewfinder' ).setAttribute( 'width', maxHeight );
-						document.getElementById( 'viewfinder' ).setAttribute( 'height', maxWidth );
-						
-						if ( realImageWidth / realImageHeight < maxWidth / maxHeight ) {
-							document.getElementById( 'original-photo' ).setAttribute( 'height', '100%' );
-							document.getElementById( 'original-photo' ).removeAttribute( 'width' );
-						}
-						else {
-							document.getElementById( 'original-photo' ).setAttribute( 'width', '100%' );
-							document.getElementById( 'original-photo' ).removeAttribute( 'height' );
-						}
+						document.getElementById( 'original-photo' ).setAttribute( 'width', '100%' );
+						document.getElementById( 'original-photo' ).removeAttribute( 'height' );
 					}
-
-					originalPhoto.style.visibility = '';
-					Camera.alignViewfinder();
+				}
+				else {
+					// The swapped width/height values are intentional, since it is rotated.
+					document.getElementById( 'viewfinder' ).setAttribute( 'width', maxHeight );
+					document.getElementById( 'viewfinder' ).setAttribute( 'height', maxWidth );
 					
-					if ( currentOrientation != targetOrientation ) {
-						// Hack: we can't tell when a rotation has finished happening (and all of the screen
-						// has finished redrawing, so we need to check that the viewfinder is properly
-						// aligned for a little bit.
-						Views.viewSpecificTimers['alignViewfinder'] = setInterval( Camera.alignViewfinder, 1000 );
+					if ( realImageWidth / realImageHeight < maxWidth / maxHeight ) {
+						document.getElementById( 'original-photo' ).setAttribute( 'height', '100%' );
+						document.getElementById( 'original-photo' ).removeAttribute( 'width' );
 					}
-					console.log("getting camera");
+					else {
+						document.getElementById( 'original-photo' ).setAttribute( 'width', '100%' );
+						document.getElementById( 'original-photo' ).removeAttribute( 'height' );
+					}
+				}
 
-					Camera.getCamera().then(
-						function resolved() {
-							Camera.startup();
+				originalPhoto.style.visibility = '';
+				Camera.alignViewfinder();
+				
+				if ( currentOrientation != targetOrientation ) {
+					// Hack: we can't tell when a rotation has finished happening (and all of the screen
+					// has finished redrawing, so we need to check that the viewfinder is properly
+					// aligned for a little bit.
+					Views.viewSpecificTimers['alignViewfinder'] = setInterval( Camera.alignViewfinder, 1000 );
+				}
+				console.log("getting camera");
 
-							App.loaded();
-						},
-						function rejected( reason ) {
-							alert( reason );
-							Views.show( 'intro' );
-						}
-					);
-					/*
-				}, function failedToLock() {
-					navigator.mozL10n.formatValue( "orientation-error" ).then( (string) => {
-						alert(string);
-						Views.show( 'capture' );
-					} );
-				} );
-				*/
+				Camera.getCamera().then(
+					function resolved() {
+						Camera.startup();
+
+						App.loaded();
+					},
+					function rejected( reason ) {
+						alert( reason );
+						Views.show( 'intro' );
+					}
+				);
 			};
 
 			originalPhoto.setAttribute( 'src', photoDataURL );
