@@ -8,10 +8,10 @@
         <link rel="stylesheet" href="css/app.css">
 		<link rel="localization" href="locales/reenact.{locale}.properties" />
 		<script type="text/javascript" src="js/l10n.js" defer></script>
-        <script type="text/javascript" src="js/app.js" defer></script>
         <script type="text/javascript" src="js/jquery.js" defer></script>
+        <script type="text/javascript" src="js/app.js" defer></script>
     </head>
-    <body>
+    <body cameraCount="1" orientation="landscape">
 		<section id="screen-intro" class="app-screen">
 			<label for="choose-photo" data-l10n-id="choose-instructions" id="choose-instructions"></label>
 			<input type="file" id="choose-photo" accept="image/*">
@@ -28,9 +28,8 @@
 			</div>
 		</section>
 		<section id="screen-confirm" class="app-screen">
-			<div id="photo-comparison" class="content-area">
-				<img id="photo-then" />
-				<img id="photo-now" />
+			<div class="content-area">
+				<img id="photo-final-confirm" />
 			</div>
 			<div class="buttons">
 				<button id="cancel-button" class="secondary"></button>
@@ -42,9 +41,9 @@
 				<img id="photo-final" />
 			</div>
 			<div class="buttons">
+				<button id="restart-button" class="secondary"></button>
 				<button id="share-button" class="primary"></button>
 			</div>
-			<button id="restart-button" class="secondary"></button>
 		</section>
 		<div id="loading">
 			<img src="img/icons/loading.svg" />

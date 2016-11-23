@@ -65,6 +65,10 @@ body {
 	text-align: center;
 }
 
+body[orientation=landscape] #screen-intro {
+	background-size: auto 50%;
+}
+
 #choose-instructions {
 	position: absolute;
 	left: 50%;
@@ -88,6 +92,8 @@ body {
 #viewfinder {
 	position: absolute;
 	z-index: 10;
+	top: 0;
+	left: 0;
 }
 
 #viewfinder.fading {
@@ -150,12 +156,7 @@ button.primary:active {
 }
 
 #restart-button {
-	background-image: url(../img/icons/arrow-back.png);
-	position: absolute;
-	top: .1in;
-	left: 0;
-	z-index: 20;
-	background-color: rgba( 0, 0, 0, .75 );
+	background-image: url(../img/icons/restart.png);
 }
 
 #share-button {
@@ -171,8 +172,16 @@ button.primary:active {
 	background-image: url(../img/icons/camera-switch.png);
 }
 
+body[cameraCount='1'] #camera-switch {
+	display: none;
+}
+
 #shutter-release {
-	background-image: url(../img/icons/camera.png);
+	background-image: url(../img/icons/camera-circle.png);
+}
+
+#shutter-release:active {
+	background-image: url(../img/icons/camera-circle-active.png);
 }
 
 #cancel-button {
@@ -189,23 +198,12 @@ button.primary:active {
 	text-align: center
 }
 
-body[photo-orientation='landscape'] #photo-then, body[photo-orientation='landscape'] #photo-now {
-	max-width: 100%;
-	height: auto;
-}
-
-body[photo-orientation='portrait'] #photo-then, body[photo-orientation='landscape'] #photo-now {
-	max-height: 100%;
-	width: auto;
-}
-
-@media screen and (orientation: landscape) {
-	.content-area {
+	body[orientation=landscape] .content-area {
 		height: 100%;
 		width: calc( 100% - 10% - 1in );
 	}
 
-	div.buttons {
+	body[orientation=landscape] div.buttons {
 		margin: 0 5%;
 		height: 100%;
 		width: 1in;
@@ -214,40 +212,39 @@ body[photo-orientation='portrait'] #photo-then, body[photo-orientation='landscap
 		top: 0;
 	}
 
-	div.buttons .primary {
+	body[orientation=landscape] div.buttons .primary {
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
 	}
 	
-	div.buttons .secondary {
+	body[orientation=landscape] div.buttons .secondary {
 		position: absolute;
 		left: calc( ( 1in - .6in ) / 2 );
 		bottom: 5%;
 	}
 	
-	div.buttons .tertiary {
+	body[orientation=landscape] div.buttons .tertiary {
 		position: absolute;
 		right: calc( ( 1in - .6in ) / 2 );
 		top: 5%;
 	}
 	
-	#photo-final {
+	body[orientation=landscape] #photo-final, body[orientation=landscape] #photo-final-confirm {
 		max-width: 100%;
 		max-height: 100%;
 		position: relative;
 		top: 50%;
 		transform: translateY(-50%);
 	}
-}
 
-@media screen and (orientation: portrait) {
-	.content-area {
+
+	body[orientation=portrait] .content-area {
 		width: 100%;
 		height: calc( 100% - 10% - 1in );
 	}
 
-	div.buttons {
+	body[orientation=portrait] div.buttons {
 		margin: 5% 0;
 		width: 100%;
 		height: 1in;
@@ -255,46 +252,28 @@ body[photo-orientation='portrait'] #photo-then, body[photo-orientation='landscap
 		bottom: 0;
 	}
 
-	div.buttons .primary {
+	body[orientation=portrait] div.buttons .primary {
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
 	}
 	
-	div.buttons .secondary {
+	body[orientation=portrait] div.buttons .secondary {
 		position: absolute;
 		top: calc( ( 1in - .6in ) / 2 );
 		left: 5%;
 	}
 	
-	div.buttons .tertiary {
+	body[orientation=portrait] div.buttons .tertiary {
 		position: absolute;
 		top: calc( ( 1in - .6in ) / 2 );
 		right: 5%;
 	}
 	
-	#photo-final {
+	body[orientation=portrait] #photo-final, body[orientation=portrait] #photo-final-confirm {
 		max-width: 100%;
 		max-height: 100%;
 		position: relative;
 		top: 50%;
 		transform: translateY(-50%);
 	}
-}
-
-body[orientation='portrait-primary'] video {
-	transform: rotate(270deg);
-	transform-origin: left top;
-}
-
-body[orientation='landscape-primary'] video {
-	transform: rotate(180deg);
-}
-
-body[orientation='portrait-secondary'] video {
-	transform: rotate(90deg);
-	transform-origin: left top;
-}
-
-body[orientation='landscape-secondary'] video {
-}
