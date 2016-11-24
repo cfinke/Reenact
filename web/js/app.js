@@ -1,8 +1,6 @@
 "use strict";
 
 var App = {
-	cameraScreens : [ 'capture' ],
-
 	persistentVars : { },
 
 	startup : function () {
@@ -30,7 +28,12 @@ var App = {
 	setOrientation : function () {
 		console.log( "App.setOrientation()" );
 
-		document.body.setAttribute( 'orientation', screen.mozOrientation );
+		if ( $( window ).width() < $( window ).height() ) {
+			document.body.setAttribute( 'orientation', 'portrait' );
+		}
+		else {
+			document.body.setAttribute( 'orientation', 'landscape' );
+		}
 
 		Camera.alignViewfinder();
 	},
@@ -70,36 +73,30 @@ var App = {
 			}
 		}
 	},
+	
+	handleResize : function () {
+		console.log( "Resize." );
+		App.setOrientation();
+		Views.show( App.persistentVar( 'current-screen' ) );
+	}
 };
 
 var Views = {
-	viewSpecificTimers : {},
-
 	show : function ( screenId ) {
 		App.loaded();
 		
-		Camera.shutdown();
-
-		for ( var i in Views.viewSpecificTimers ) {
-			clearTimeout( Views.viewSpecificTimers[i] );
-		}
-
-		function continueView() {
-			App.showScreen( screenId );
-			
-			if ( screenId in Views.viewHandlers ) {
-				Views.viewHandlers[screenId]();
-			}
-			else {
-				console.log( "No view handler for " + screenId );
-			}
-		}
-
 		if ( screenId in Views.preViewHandlers ) {
 			Views.preViewHandlers[screenId]();
 		}
 
-		continueView();
+		App.showScreen( screenId );
+		
+		if ( screenId in Views.viewHandlers ) {
+			Views.viewHandlers[screenId]();
+		}
+		else {
+			console.log( "No view handler for " + screenId );
+		}
 	},
 
 	preViewHandlers : {
@@ -121,13 +118,25 @@ var Views = {
 			var photoDataURL = App.persistentVar( 'original-photo-data-url' );
 			var originalPhoto = document.getElementById( 'original-photo' );
 
+			var maxWidth = document.getElementById( 'reenacter' ).clientWidth;
+			var maxHeight = document.getElementById( 'reenacter' ).clientHeight;
+
 			originalPhoto.onload = function () {
 				originalPhoto.onload = null;
 
 				var realImageWidth = originalPhoto.naturalWidth;
 				var realImageHeight = originalPhoto.naturalHeight;
 
-				// Force the new photo to be taken in the same orientation as the old photo.
+				// Center the image, making it as big as possible.
+				if ( realImageWidth / realImageHeight < maxWidth / maxHeight ) {
+					originalPhoto.style.height = '100%';
+					originalPhoto.style.width = 'auto';
+				}
+				else {
+					originalPhoto.style.width = '100%';
+					originalPhoto.style.height = 'auto';
+				}
+
 				var photoIsLandscape = realImageWidth > realImageHeight;
 				
 				if ( photoIsLandscape ) {
@@ -139,64 +148,29 @@ var Views = {
 				
 				console.log( "photoIsLandscape: ", photoIsLandscape );
 
-				var targetOrientation = photoIsLandscape ? 'landscape' : 'portrait';
-
-				var maxWidth = document.getElementById( 'reenacter' ).clientWidth;
-				var maxHeight = document.getElementById( 'reenacter' ).clientHeight;
-
-				var currentOrientation = $( 'body' ).attr( 'orientation' );
-				
-				console.log( currentOrientation, " to ", targetOrientation );
-				
-				if ( currentOrientation != targetOrientation ) {
-					var temp = maxWidth;
-					maxWidth = maxHeight;
-					maxHeight = temp;
-				}
-
-				if ( photoIsLandscape ) {
-					document.getElementById( 'viewfinder' ).setAttribute( 'width', maxWidth );
-					document.getElementById( 'viewfinder' ).setAttribute( 'height', maxHeight );
-					
-					if ( realImageWidth / realImageHeight < maxWidth / maxHeight ) {
-						document.getElementById( 'original-photo' ).setAttribute( 'height', '100%' );
-						document.getElementById( 'original-photo' ).removeAttribute( 'width' );
-					}
-					else {
-						document.getElementById( 'original-photo' ).setAttribute( 'width', '100%' );
-						document.getElementById( 'original-photo' ).removeAttribute( 'height' );
-					}
-				}
-				else {
-					// The swapped width/height values are intentional, since it is rotated.
-					document.getElementById( 'viewfinder' ).setAttribute( 'width', maxHeight );
-					document.getElementById( 'viewfinder' ).setAttribute( 'height', maxWidth );
-					
-					if ( realImageWidth / realImageHeight < maxWidth / maxHeight ) {
-						document.getElementById( 'original-photo' ).setAttribute( 'height', '100%' );
-						document.getElementById( 'original-photo' ).removeAttribute( 'width' );
-					}
-					else {
-						document.getElementById( 'original-photo' ).setAttribute( 'width', '100%' );
-						document.getElementById( 'original-photo' ).removeAttribute( 'height' );
-					}
-				}
-
 				originalPhoto.style.visibility = '';
+				
 				Camera.alignViewfinder();
 				
-				if ( currentOrientation != targetOrientation ) {
-					// Hack: we can't tell when a rotation has finished happening (and all of the screen
-					// has finished redrawing, so we need to check that the viewfinder is properly
-					// aligned for a little bit.
-					Views.viewSpecificTimers['alignViewfinder'] = setInterval( Camera.alignViewfinder, 1000 );
-				}
 				console.log("getting camera");
 
 				Camera.getCamera().then(
 					function resolved() {
-						Camera.startup();
-
+						var video = document.getElementById( 'viewfinder' );
+						
+						if ( video.videoWidth / video.videoHeight < maxWidth / maxHeight ) {
+							video.style.height = '100%';
+							video.style.width = 'auto';
+							video.style.left = Math.floor( ( $( '#reenacter' ).width() - $( '#viewfinder' ).width() ) / 2 ) + "px";
+							video.style.top = '0';
+						}
+						else {
+							video.style.width = '100%';
+							video.style.height = 'auto';
+							video.style.top = Math.floor( ( $( '#reenacter' ).height() - $( '#viewfinder' ).height() ) / 2 ) + "px";
+							video.style.left = '0';
+						}
+						
 						App.loaded();
 					},
 					function rejected( reason ) {
@@ -259,14 +233,6 @@ var Camera = {
 		return document.getElementById( 'viewfinder' );
 	},
 
-	startup : function ( camera ) {
-		console.log( "Camera.startup()" );
-	},
-
-	shutdown : function () {
-		console.log( "Camera.shutdown()" );
-	},
-
 	capture : function () {
 		console.log( "Camera.capture()" );
 
@@ -302,8 +268,12 @@ var Camera = {
 				
 				navigator.mediaDevices.getUserMedia( { video: true } ).then( function ( stream ) {
 					video.src = window.URL.createObjectURL( stream );
+					
+					video.addEventListener( "playing", function () {
+						resolve();
+					}, true );
+					
 					video.play();
-					resolve();
 				} );
 				
 				$( 'body' ).attr( 'cameraCount', '1' );
@@ -474,45 +444,20 @@ window.addEventListener( 'DOMContentLoaded', function () {
 	App.startup();
 } );
 
-screen.onmozorientationchange = function ( arg ) {
+window.addEventListener( "deviceorientation", function () {
 	console.log( "event: screen.onmozorientationchange" );
 
-	App.setOrientation();
-};
+	App.handleResize();
+}, true );
 
-window.addEventListener( 'beforeunload', function() {
-	console.log( "event: window.beforeunload" );
+var resizeTimeout = null;
 
-	Camera.shutdown();
+$( window ).on( 'resize', function () {
+	clearTimeout( resizeTimeout );
+	
+	resizeTimeout = setTimeout( App.handleResize, 250 );
 } );
-/*
 
-document.addEventListener( 'visibilitychange', function ( evt ) {
-	console.log( "event: document.visibilitychange", document.hidden );
-
-	if ( document.hidden ) {
-		// Release the camera so that other apps can use it.
-		Camera.shutdown();
-	}
-	else {
-		App.setOrientation();
-		
-		// Restore the previously active view.
-		var currentScreen = App.persistentVar( 'current-screen' );
-		
-		console.log( "currentScreen: ", currentScreen );
-		
-		if ( currentScreen ) {
-			if ( currentScreen != 'intro' ) {
-				Views.show( currentScreen );
-			}
-		}
-		else {
-			Views.show( 'intro' );
-		}
-	}
-} );
-*/
 jQuery( function ( $ ) {
 	$( '#choose-photo' ).on( 'change', function ( e ) {
 		var file = e.target.files[0];

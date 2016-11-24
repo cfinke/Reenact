@@ -92,8 +92,6 @@ body[orientation=landscape] #screen-intro {
 #viewfinder {
 	position: absolute;
 	z-index: 10;
-	top: 0;
-	left: 0;
 }
 
 #viewfinder.fading {
