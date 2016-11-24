@@ -529,38 +529,18 @@ function generateReenactedImage() {
 					var canvas = document.createElement( 'canvas' );
 					var context = canvas.getContext( '2d' );
 	
-					if ( newImageWidth < newImageHeight ) {
-						// Portrait.
-						console.log( "Portrait orientation." );
-		
-						var smallestHeight = Math.min( oldImageHeight, newImageHeight );
-						var totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth );
-						var totalHeight = smallestHeight;
-		
-						canvas.height = totalHeight;
-						canvas.width = totalWidth;
-		
-						console.log( "canvas height/width", canvas.height, canvas.width );
-		
-						context.drawImage( oldImageEl, 0, 0, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), ( ( smallestHeight / oldImageHeight ) * oldImageHeight ) );
-						context.drawImage( newImageEl, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), 0, ( ( smallestHeight / newImageHeight ) * newImageWidth ), ( ( smallestHeight / newImageHeight ) * newImageHeight ) );
-					}
-					else {
-						// Landscape
-						console.log( "Landscape orientation." );
-
-						var smallestWidth = Math.min( oldImageWidth, newImageWidth );
-						var totalHeight = ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) + ( ( smallestWidth / newImageWidth ) * newImageHeight );
-						var totalWidth = smallestWidth;
-		
-						canvas.height = totalHeight;
-						canvas.width = totalWidth;
-		
-						console.log( "canvas height/width", canvas.height, canvas.width );
-		
-						context.drawImage( oldImageEl, 0, 0, ( ( smallestWidth / oldImageWidth ) * oldImageWidth ), ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) );
-						context.drawImage( newImageEl, 0, ( ( smallestWidth / oldImageWidth ) * oldImageHeight ), ( ( smallestWidth / newImageWidth ) * newImageWidth ), ( ( smallestWidth / newImageWidth ) * newImageHeight ) );
-					}
+					// Portrait.
+					var smallestHeight = Math.min( oldImageHeight, newImageHeight );
+					var totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth );
+					var totalHeight = smallestHeight;
+	
+					canvas.height = totalHeight;
+					canvas.width = totalWidth;
+	
+					console.log( "canvas height/width", canvas.height, canvas.width );
+	
+					context.drawImage( oldImageEl, 0, 0, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), ( ( smallestHeight / oldImageHeight ) * oldImageHeight ) );
+					context.drawImage( newImageEl, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), 0, ( ( smallestHeight / newImageHeight ) * newImageWidth ), ( ( smallestHeight / newImageHeight ) * newImageHeight ) );
 		
 					console.log( "Finished drawing." );
 	
