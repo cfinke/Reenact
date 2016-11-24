@@ -85,6 +85,10 @@ var Views = {
 	show : function ( screenId ) {
 		App.loaded();
 		
+		document.getElementById( 'viewfinder' ).pause();
+		document.getElementById( 'viewfinder' ).removeAttribute( 'src' );
+		document.getElementById( 'viewfinder' ).load();
+		
 		if ( screenId in Views.preViewHandlers ) {
 			Views.preViewHandlers[screenId]();
 		}
