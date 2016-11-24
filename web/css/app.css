@@ -237,7 +237,7 @@ body[cameraCount='1'] #camera-switch {
 
 	body[orientation=portrait] .content-area {
 		width: 100%;
-		height: calc( 100% - 10% - 1.5in );
+		height: calc( 100% - 1.5in );
 	}
 
 	body[orientation=portrait] div.buttons {
