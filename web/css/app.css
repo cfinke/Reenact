@@ -162,8 +162,6 @@ button.primary:active {
 	border-radius: 50%;
 	background-color: #00c755;
 	background-size: 75%;
-	width: .75in;
-	height: .75in;
 }
 
 #camera-switch {
@@ -198,13 +196,12 @@ body[cameraCount='1'] #camera-switch {
 
 	body[orientation=landscape] .content-area {
 		height: 100%;
-		width: calc( 100% - 10% - 1in );
+		width: calc( 100% - 1.5in );
 	}
 
 	body[orientation=landscape] div.buttons {
-		margin: 0 5%;
 		height: 100%;
-		width: 1in;
+		width: 1.5in;
 		position: absolute;
 		right: 0;
 		top: 0;
@@ -214,17 +211,18 @@ body[cameraCount='1'] #camera-switch {
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
+		left: calc( ( 1.5in - 1in ) / 2 );
 	}
 	
 	body[orientation=landscape] div.buttons .secondary {
 		position: absolute;
-		left: calc( ( 1in - .6in ) / 2 );
+		left: calc( ( 1.5in - .6in ) / 2 );
 		bottom: 5%;
 	}
 	
 	body[orientation=landscape] div.buttons .tertiary {
 		position: absolute;
-		right: calc( ( 1in - .6in ) / 2 );
+		right: calc( ( 1.5in - .6in ) / 2 );
 		top: 5%;
 	}
 	
@@ -239,13 +237,12 @@ body[cameraCount='1'] #camera-switch {
 
 	body[orientation=portrait] .content-area {
 		width: 100%;
-		height: calc( 100% - 10% - 1in );
+		height: calc( 100% - 10% - 1.5in );
 	}
 
 	body[orientation=portrait] div.buttons {
-		margin: 5% 0;
 		width: 100%;
-		height: 1in;
+		height: 1.5in;
 		position: absolute;
 		bottom: 0;
 	}
@@ -254,17 +251,18 @@ body[cameraCount='1'] #camera-switch {
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
+		top: calc( ( 1.5in - 1in ) / 2 );
 	}
 	
 	body[orientation=portrait] div.buttons .secondary {
 		position: absolute;
-		top: calc( ( 1in - .6in ) / 2 );
+		top: calc( ( 1.5in - .6in ) / 2 );
 		left: 5%;
 	}
 	
 	body[orientation=portrait] div.buttons .tertiary {
 		position: absolute;
-		top: calc( ( 1in - .6in ) / 2 );
+		top: calc( ( 1.in - .6in ) / 2 );
 		right: 5%;
 	}
 	
