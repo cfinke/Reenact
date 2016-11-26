@@ -105,7 +105,10 @@ var Views = {
 
 	preViewHandlers : {
 		'capture' : function () {
+			document.getElementById( 'reenacter' ).style.visibility = '';
+			
 			document.getElementById( 'original-photo' ).style.visibility = 'hidden';
+			document.getElementById( 'shutter-release' ).removeAttribute( 'disabled' );
 			
 			document.getElementById( 'viewfinder' ).setAttribute( 'class', 'fading' );
 		}
@@ -242,7 +245,11 @@ var Camera = {
 
 		// Simulate a shutter closing.
 		new Audio( 'audio/shutter.opus' ).play();
-
+	
+		document.getElementById( 'reenacter' ).style.visibility = 'hidden';
+		
+		App.loading();
+		
 		var video = document.getElementById( 'viewfinder' );
 		var canvas = document.createElement( 'canvas' );
 		canvas.width = video.videoWidth;
@@ -481,7 +488,9 @@ jQuery( function ( $ ) {
 	
 	$( '#shutter-release' ).on( 'click', function ( evt ) {
 		console.log( "event: shutter-release.click" );
-
+		
+		$( this ).attr( 'disabled', 'disabled' );
+		
 		Camera.capture();
 	} );
 	

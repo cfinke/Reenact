@@ -150,22 +150,22 @@ button.primary:active {
 }
 
 #back-button {
-	background-image: url(../img/icons/back.png);
+	background-image: url(../img/icons/ic_arrow_back_white_48dp.png);
 }
 
 #restart-button {
-	background-image: url(../img/icons/restart.png);
+	background-image: url(../img/icons/ic_replay_white_48dp.png);
 }
 
 #share-button {
-	background-image: url(../img/icons/share.png);
+	background-image: url(../img/icons/ic_share_white_48dp.png);
 	border-radius: 50%;
 	background-color: #00c755;
 	background-size: 75%;
 }
 
 #camera-switch {
-	background-image: url(../img/icons/camera-switch.png);
+	background-image: url(../img/icons/ic_switch_camera_white_48dp.png);
 }
 
 body[cameraCount='1'] #camera-switch {
@@ -173,19 +173,24 @@ body[cameraCount='1'] #camera-switch {
 }
 
 #shutter-release {
-	background-image: url(../img/icons/camera-circle.png);
+	background-image: url(../img/icons/ic_camera_white_48dp.png);
 }
 
 #shutter-release:active {
-	background-image: url(../img/icons/camera-circle-active.png);
+	background-image: url(../img/icons/ic_camera_white_48dp.png);
+	background-size: 80%;
 }
 
 #cancel-button {
-	background-image: url(../img/icons/back.png);
+	background-image: url(../img/icons/ic_arrow_back_white_48dp.png);
 }
 
 #confirm-button {
-	background-image: url(../img/icons/checkmark.png);
+	background-image: url(../img/icons/ic_check_white_48dp.png);
+}
+
+#download-button {
+	background-image: url(../img/icons/ic_file_download_white_48dp.png);
 }
 
 .content-area h1 {
