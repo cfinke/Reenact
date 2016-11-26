@@ -210,7 +210,10 @@ var Views = {
 			
 			generateReenactedImage().then( function ( url ) {
 				console.log( url );
+				
 				$( '#photo-final' ).attr( 'src', url );
+				
+				$( '#download-button' ).attr( 'href', url );
 				
 				App.loaded();
 			}, function () {
@@ -433,7 +436,6 @@ window.addEventListener( 'DOMContentLoaded', function () {
 
 		document.location.href = App.persistentVar( 'final-photo-url' );
 	} );
-
 	
 	document.getElementById( 'restart-button' ).addEventListener( 'click', function ( evt ) {
 		console.log( "event: restart-button.click" );

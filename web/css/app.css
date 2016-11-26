@@ -117,35 +117,36 @@ div.buttons {
 	background-color: #000;
 }
 
-button {
+div.buttons a {
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: 75%;
 	background-color: transparent;
 	border: none;
+	display: inline-block;
 }
 
-button.primary {
+div.buttons a.primary {
 	background-size: 100%;
 	width: 1in;
 	height: 1in;
 }
 
-button.secondary {
+div.buttons a.secondary {
 	width: .6in;
 	height: .6in;
 }
 
-button.tertiary {
+div.buttons a.tertiary {
 	width: .6in;
 	height: .6in;
 }
 
-button:active {
+div.buttons a:active {
 	opacity: .75;
 }
 
-button.primary:active {
+div.buttons a.primary:active {
 	background-size: 100%;
 }
 
