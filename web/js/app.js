@@ -3,6 +3,8 @@
 var App = {
 	persistentVars : { },
 
+	videoStream : null,
+
 	checkSupport : function () {
 		return navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.URL && window.URL.createObjectURL;
 	},
@@ -109,6 +111,8 @@ var App = {
 			var video = document.getElementById( 'viewfinder' );
 			
 			navigator.mediaDevices.getUserMedia( { video: true } ).then( function ( stream ) {
+				App.videoStream = stream;
+				
 				video.src = window.URL.createObjectURL( stream );
 				
 				video.addEventListener( "playing", function () {
@@ -116,7 +120,6 @@ var App = {
 				}, true );
 				
 				video.play();
-				
 			} );
 		} );
 	},
@@ -154,9 +157,18 @@ var Views = {
 	show : function ( screenId ) {
 		App.loaded();
 		
-		document.getElementById( 'viewfinder' ).pause();
-		document.getElementById( 'viewfinder' ).removeAttribute( 'src' );
-		document.getElementById( 'viewfinder' ).load();
+		if ( App.videoStream ) {
+			if ( App.videoStream.getVideoTracks ) {
+				App.videoStream.getVideoTracks().forEach( function ( track ) {
+					track.stop();
+				} );
+			}
+			else {
+				App.videoStream.stop();
+			}
+			
+			App.videoStream = null;
+		}
 		
 		if ( screenId in Views.preViewHandlers ) {
 			Views.preViewHandlers[screenId]();
