@@ -102,6 +102,51 @@ var App = {
 		App.setOrientation();
 		
 		Views.show( App.persistentVar( 'current-screen' ) );
+	},
+	
+	getCamera : function () {
+		return new Promise( function ( resolve, reject ) {
+			var video = document.getElementById( 'viewfinder' );
+			
+			navigator.mediaDevices.getUserMedia( { video: true } ).then( function ( stream ) {
+				video.src = window.URL.createObjectURL( stream );
+				
+				video.addEventListener( "playing", function () {
+					resolve();
+				}, true );
+				
+				video.play();
+				
+			} );
+		} );
+	},
+	
+	capture : function () {
+		return new Promise( function ( resolve ) {
+			// Simulate a shutter closing.
+			new Audio( 'audio/shutter.opus' ).play();
+	
+			document.getElementById( 'reenacter' ).style.visibility = 'hidden';
+		
+			App.loading();
+		
+			var video = document.getElementById( 'viewfinder' );
+			var canvas = document.createElement( 'canvas' );
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+		
+			var context = canvas.getContext( '2d' );
+			var video = document.getElementById( 'viewfinder' );
+			context.drawImage( video, 0, 0, canvas.width, canvas.height );
+
+			document.getElementById( 'viewfinder' ).removeAttribute( 'class' );
+
+			canvas.toBlob( function ( imageData ) {
+				App.persistentVar( 'last-photo', imageData );
+		
+				resolve();
+			} );
+		} );
 	}
 };
 
@@ -132,6 +177,10 @@ var Views = {
 			document.getElementById( 'shutter-release' ).removeAttribute( 'disabled' );
 			
 			document.getElementById( 'viewfinder' ).setAttribute( 'class', 'fading' );
+		},
+		
+		'next-step' : function () {
+			$( '#download-button' ).attr( 'download', 'reenact-' + Date.now() + '.jpg' );
 		}
 	},
 
@@ -167,7 +216,7 @@ var Views = {
 
 				originalPhoto.style.visibility = '';
 
-				Camera.getCamera().then(
+				App.getCamera().then(
 					function resolved() {
 						var video = document.getElementById( 'viewfinder' );
 						
@@ -220,65 +269,8 @@ var Views = {
 				
 			App.loaded();
 		},
-	},
-};
-
-var Camera = {
-	get cameraIndex() {
-		var cameraIndex = App.cache( 'cameraIndex' );
-		
-		if ( ! cameraIndex ) {
-			return 0;
-		}
-		else {
-			return cameraIndex;
-		}
-	},
-
-	capture : function () {
-		// Simulate a shutter closing.
-		new Audio( 'audio/shutter.opus' ).play();
-	
-		document.getElementById( 'reenacter' ).style.visibility = 'hidden';
-		
-		App.loading();
-		
-		var video = document.getElementById( 'viewfinder' );
-		var canvas = document.createElement( 'canvas' );
-		canvas.width = video.videoWidth;
-		canvas.height = video.videoHeight;
-		
-		var context = canvas.getContext( '2d' );
-		var video = document.getElementById( 'viewfinder' );
-		context.drawImage( video, 0, 0, canvas.width, canvas.height );
-
-		document.getElementById( 'viewfinder' ).removeAttribute( 'class' );
-
-		canvas.toBlob( function ( imageData ) {
-			App.persistentVar( 'last-photo', imageData );
-		
-			Views.show( 'confirm' );
-		} );
-	},
-
-	getCamera : function () {
-		return new Promise( function ( resolve, reject ) {
-			var video = document.getElementById( 'viewfinder' );
-			
-			navigator.mediaDevices.getUserMedia( { video: true } ).then( function ( stream ) {
-				video.src = window.URL.createObjectURL( stream );
-				
-				video.addEventListener( "playing", function () {
-					resolve();
-				}, true );
-				
-				video.play();
-				
-			} );
-		} );
 	}
 };
-
 
 jQuery( function ( $ ) {
 	var resizeTimeout = null;
@@ -306,7 +298,9 @@ jQuery( function ( $ ) {
 	$( '#shutter-release' ).on( 'click', function ( evt ) {
 		$( this ).attr( 'disabled', 'disabled' );
 		
-		Camera.capture();
+		App.capture().then( function () {
+			Views.show( 'confirm' );
+		} );
 	} );
 	
 	$( '#restart-button, #back-button' ).on( 'click', function ( e ) {
