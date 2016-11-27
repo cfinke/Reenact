@@ -320,68 +320,7 @@ jQuery( function ( $ ) {
 		
 		App.loading();
 
-		App.persistentVar( 'final-photo-blob', App.persistentVar( 'last-photo' ) );
-		var filename = "reenact-" + Date.now() + ".jpg";
-
-			// Save merged image.
-	
-			// Find the smaller image.
-			var oldImageDataURL = App.persistentVar( 'original-photo-data-url' );
-	
-			var newImageDataURL = App.persistentVar( 'last-photo-data-url' );
-	
-			var oldImageEl = document.createElement( 'img' );
-	
-			oldImageEl.onload = function () {
-				var newImageEl = document.createElement( 'img' );
-		
-				var oldImageWidth = oldImageEl.naturalWidth;
-				var oldImageHeight = oldImageEl.naturalHeight;
-		
-				newImageEl.onload = function () {
-					var newImageWidth = newImageEl.naturalWidth;
-					var newImageHeight = newImageEl.naturalHeight;
-			
-					var canvas = document.createElement( 'canvas' );
-					var context = canvas.getContext( '2d' );
-			
-					if ( newImageWidth < newImageHeight ) {
-						// Portrait.
-						var smallestHeight = Math.min( oldImageHeight, newImageHeight );
-						var totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth );
-						var totalHeight = smallestHeight;
-				
-						canvas.height = totalHeight;
-						canvas.width = totalWidth;
-				
-						context.drawImage( oldImageEl, 0, 0, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), ( ( smallestHeight / oldImageHeight ) * oldImageHeight ) );
-						context.drawImage( newImageEl, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), 0, ( ( smallestHeight / newImageHeight ) * newImageWidth ), ( ( smallestHeight / newImageHeight ) * newImageHeight ) );
-					}
-					else {
-						// Landscape
-						var smallestWidth = Math.min( oldImageWidth, newImageWidth );
-						var totalHeight = ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) + ( ( smallestWidth / newImageWidth ) * newImageHeight );
-						var totalWidth = smallestWidth;
-				
-						canvas.height = totalHeight;
-						canvas.width = totalWidth;
-				
-						context.drawImage( oldImageEl, 0, 0, ( ( smallestWidth / oldImageWidth ) * oldImageWidth ), ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) );
-						context.drawImage( newImageEl, 0, ( ( smallestWidth / oldImageWidth ) * oldImageHeight ), ( ( smallestWidth / newImageWidth ) * newImageWidth ), ( ( smallestWidth / newImageWidth ) * newImageHeight ) );
-					}
-				
-					canvas.toBlob( function ( blob ) {
-						App.persistentVar( 'final-photo-blob', blob );
-				
-						Views.show( 'next-step' );
-					}, "image/jpeg" );
-				};
-		
-				newImageEl.setAttribute( 'src', newImageDataURL );
-			};
-	
-			oldImageEl.setAttribute( 'src', oldImageDataURL );
-
+		Views.show( 'next-step' );
 	} );
 	
 	$( '#cancel-button' ).on( 'click', function ( e ) {
