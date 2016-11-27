@@ -65,7 +65,7 @@ body {
 	text-align: center;
 }
 
-body.unsupported #screen-intro {
+body.unsupported #screen-intro, body.no-camera #screen-intro {
 	background-image: url(../img/icons/icon-sad512x512.png);
 }
 
@@ -73,11 +73,11 @@ body[orientation=landscape] #screen-intro {
 	background-size: auto 50%;
 }
 
-#browser-lacks-capability {
+.intro-roadblock {
 	display: none;
 }
 
-#choose-instructions, #browser-lacks-capability {
+.intro-message {
 	position: absolute;
 	left: 50%;
 	bottom: 15%;
@@ -97,11 +97,15 @@ body[orientation=landscape] #screen-intro {
 	cursor: pointer;
 }
 
-body.unsupported #choose-instructions {
+body.unsupported #choose-instructions, body.no-camera #choose-instructions {
 	display: none;
 }
 
 body.unsupported #browser-lacks-capability {
+	display: block;
+}
+
+body.no-camera #no-camera {
 	display: block;
 }
 
@@ -120,6 +124,15 @@ body.unsupported #browser-lacks-capability {
 	animation-iteration-count: infinite;
 	animation-name: inout;
 	animation-timing-function: linear;   
+}
+
+body.front-facing-camera #reenacter {
+	-moz-transform: scaleX(-1);
+	-o-transform: scaleX(-1);
+	-webkit-transform: scaleX(-1);
+	transform: scaleX(-1);
+	filter: FlipH;
+	-ms-filter: "FlipH";
 }
 
 #original-photo {
@@ -185,12 +198,8 @@ div.buttons a.primary:active {
 	background-size: 75%;
 }
 
-#camera-switch {
+#camera-mirror {
 	background-image: url(../img/icons/ic_switch_camera_white_48dp.png);
-}
-
-body[cameraCount='1'] #camera-switch {
-	display: none;
 }
 
 #shutter-release {

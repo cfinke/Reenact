@@ -12,11 +12,12 @@
 		<script type="text/javascript" src="js/jquery.js" defer></script>
 		<script type="text/javascript" src="js/app.js" defer></script>
 	</head>
-	<body cameraCount="1" orientation="landscape" cameraCount="1">
+	<body orientation="landscape">
 		<section id="screen-intro" class="app-screen">
-			<label for="choose-photo" data-l10n-id="choose-instructions" id="choose-instructions"></label>
+			<label for="choose-photo" data-l10n-id="choose-instructions" id="choose-instructions" class="intro-message"></label>
 			<input type="file" id="choose-photo" accept="image/*">
-			<p id="browser-lacks-capability" data-l10n-id="browser-lacks-capability"></p>
+			<p id="browser-lacks-capability" data-l10n-id="browser-lacks-capability" class="intro-roadblock intro-message"></p>
+			<p id="no-camera" data-l10n-id="no-camera" class="intro-roadblock intro-message"></p>
 		</section>
 		<section id="screen-capture" class="app-screen">
 			<div id="reenacter" class="content-area">
@@ -26,7 +27,7 @@
 			<div class="buttons">
 				<a id="back-button" class="secondary"></a>
 				<a id="shutter-release" class="primary"></a>
-				<a id="camera-switch" class="tertiary"></a>
+				<a id="camera-mirror" class="tertiary"></a>
 			</div>
 		</section>
 		<section id="screen-confirm" class="app-screen">

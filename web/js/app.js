@@ -20,25 +20,28 @@ var App = {
 					var cameraCount = 0;
 		
 					devices.forEach( function ( device ) {
+						console.log( device );
 						if ( 'videoinput' === device.kind ) {
 							cameraCount++;
 						}
 					} );
-			
-					App.persistentVar( 'cameraCount', cameraCount );
-					$( 'body' ).attr( 'cameraCount', cameraCount );
+					
+					if ( cameraCount === 0 ) {
+						$( 'body' ).addClass( 'no-camera' );
+					}
+					
+					Views.show( 'intro' );
 				} );
 			}
 			else {
-				App.persistentVar( 'cameraCount', 1 );
+				Views.show( 'intro' );
 			}
 		}
 		else {
 			$( 'body' ).addClass( 'unsupported' );
+			
+			Views.show( 'intro' );
 		}
-
-
-		Views.show( 'intro' );
 	},
 
 	showScreen : function ( screenId ) {
@@ -247,8 +250,6 @@ var Camera = {
 		}
 	},
 
-	cameraCount : 0,
-
 	capture : function () {
 		console.log( "Camera.capture()" );
 
@@ -428,15 +429,15 @@ window.addEventListener( 'DOMContentLoaded', function () {
 		Views.show( 'intro' );
 	} );
 
-	document.getElementById( 'camera-switch' ).addEventListener( 'click', function ( evt ) {
+	document.getElementById( 'camera-mirror' ).addEventListener( 'click', function ( evt ) {
 		console.log( "event: camera-switch.click" );
-
-		var cameraIndex = parseInt( App.cache( 'cameraIndex' ), 10 ) || 0;
-		cameraIndex++;
-		cameraIndex %= App.persistentVar( 'cameraCount' );
-		App.cache( 'cameraIndex', cameraIndex );
-
-		Views.show( 'capture' );
+		
+		if ( $( "body" ).hasClass( 'front-facing-camera' ) ) {
+			$( "body" ).removeClass( 'front-facing-camera' );
+		}
+		else {
+			$( "body" ).addClass( "front-facing-camera" );
+		}
 	} );
 
 	App.startup();
