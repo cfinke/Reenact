@@ -10,6 +10,10 @@
 	}
 }
 
+#browser-lacks-capability {
+	display: none;
+}
+
 html, body {
 	margin: 0;
 	padding: 0;
@@ -69,7 +73,7 @@ body[orientation=landscape] #screen-intro {
 	background-size: auto 50%;
 }
 
-#choose-instructions {
+#choose-instructions, #browser-lacks-capability {
 	position: absolute;
 	left: 50%;
 	bottom: 15%;
@@ -80,9 +84,9 @@ body[orientation=landscape] #screen-intro {
 	text-transform: uppercase;
 	transform: translateX(-50%);
 	font-size: 80%;
-	white-space: nowrap;
 	padding: .75ex 3ex;
 	box-shadow: 0px 3px 9px -3px rgba(0,0,0,0.5);
+	max-width: 50%;
 }
 
 #choose-photo {
