@@ -296,23 +296,53 @@ var Camera = {
 	}
 };
 
-window.addEventListener( 'DOMContentLoaded', function () {
-	console.log( "event: window.DOMContentLoaded" );
+window.addEventListener( "deviceorientation", function () {
+	console.log( "event: screen.onmozorientationchange" );
 
-	document.getElementById( 'restart-button' ).addEventListener( 'click', function () {
-		console.log( "event: restart-button.click" );
+	App.handleResize();
+}, true );
+
+var resizeTimeout = null;
+
+$( window ).on( 'resize', function () {
+	clearTimeout( resizeTimeout );
+	
+	resizeTimeout = setTimeout( App.handleResize, 250 );
+} );
+
+jQuery( function ( $ ) {
+	$( '#choose-photo' ).on( 'change', function ( e ) {
+		var file = e.target.files[0];
+	
+		console.log( file );
+	
+		App.loading();
+
+		var reader = new FileReader();
+		reader.readAsDataURL( file );
+		reader.onloadend = function() {
+			App.persistentVar( 'original-photo-data-url', reader.result );
+
+			Views.show( 'capture' );
+		};
+	} );
+	
+	$( '#shutter-release' ).on( 'click', function ( evt ) {
+		console.log( "event: shutter-release.click" );
+		
+		$( this ).attr( 'disabled', 'disabled' );
+		
+		Camera.capture();
+	} );
+	
+	$( '#restart-button, #back-button' ).on( 'click', function ( e ) {
+		e.preventDefault();
 
 		Views.show( 'intro' );
 	} );
 
-	document.getElementById( 'back-button' ).addEventListener( 'click', function () {
-		console.log( "event: back-button.click" );
-
-		Views.show( 'intro' );
-	} );
-
-	document.getElementById( 'confirm-button' ).addEventListener( 'click', function ( evt ) {
-		console.log( "event: confirm-button.click" );
+	$( '#confirm-button' ).on( 'click', function ( e ) {
+		e.preventDefault();
 		
 		App.loading();
 
@@ -411,26 +441,20 @@ window.addEventListener( 'DOMContentLoaded', function () {
 
 	} );
 	
-	document.getElementById( 'cancel-button' ).addEventListener( 'click', function ( evt ) {
-		console.log( "event: cancel-button.click" );
+	$( '#cancel-button' ).on( 'click', function ( e ) {
+		e.preventDefault();
 
 		Views.show( 'capture' );
 	} );
 
-	document.getElementById( 'share-button' ).addEventListener( 'click', function ( evt ) {
-		console.log( "event: share-button.click" );
+	$( '#share-button' ).on( 'click', function ( e ) {
+		e.preventDefault();
 
 		document.location.href = App.persistentVar( 'final-photo-url' );
 	} );
 	
-	document.getElementById( 'restart-button' ).addEventListener( 'click', function ( evt ) {
-		console.log( "event: restart-button.click" );
-		
-		Views.show( 'intro' );
-	} );
-
-	document.getElementById( 'camera-mirror' ).addEventListener( 'click', function ( evt ) {
-		console.log( "event: camera-switch.click" );
+	$( '#camera-mirror' ).on( 'click', function ( e ) {
+		e.preventDefault();
 		
 		if ( $( "body" ).hasClass( 'front-facing-camera' ) ) {
 			$( "body" ).removeClass( 'front-facing-camera' );
@@ -441,53 +465,33 @@ window.addEventListener( 'DOMContentLoaded', function () {
 	} );
 
 	App.startup();
-} );
-
-window.addEventListener( "deviceorientation", function () {
-	console.log( "event: screen.onmozorientationchange" );
-
-	App.handleResize();
-}, true );
-
-var resizeTimeout = null;
-
-$( window ).on( 'resize', function () {
-	clearTimeout( resizeTimeout );
 	
-	resizeTimeout = setTimeout( App.handleResize, 250 );
-} );
+	$( document ).on( 'keydown', function ( e ) {
+		if ( e.keyCode === 27 || e.keyCode === 8 || e.keyCode === 46 ) {
+			// Escape, backspace, and delete. Same as clicking the secondary button.
+			var buttons = $( '.buttons .secondary:visible' );
 
-jQuery( function ( $ ) {
-	$( '#choose-photo' ).on( 'change', function ( e ) {
-		var file = e.target.files[0];
-	
-		console.log( file );
-	
-		App.loading();
+			console.log(buttons);
 
-		var reader = new FileReader();
-		reader.readAsDataURL( file );
-		reader.onloadend = function() {
-			App.persistentVar( 'original-photo-data-url', reader.result );
-
-			Views.show( 'capture' );
-		};
+			if ( buttons ) {
+				// Don't override if there is no secondary button, like on the intro page.
+				e.preventDefault();
+				buttons.first().click();
+			}
+		}
+		else if ( e.keyCode === 13 || e.keyCode === 32 ) {
+			e.preventDefault();
+			
+			// Enter and space bar. Same as clicking the primary button or the "Choose photo" button.
+			var buttons = $( '.buttons .primary:visible' );
+			
+			if ( buttons ) {
+				e.preventDefault();
+				console.log( buttons );
+				buttons.first().click();
+			}
+		}
 	} );
-	
-	$( '#shutter-release' ).on( 'click', function ( evt ) {
-		console.log( "event: shutter-release.click" );
-		
-		$( this ).attr( 'disabled', 'disabled' );
-		
-		Camera.capture();
-	} );
-	
-	if ( $( window ).width() > $( window ).height() ) {
-		$( 'body' ).attr( 'orientation', 'landscape' );
-	}
-	else {
-		$( 'body' ).attr( 'orientation', 'portrait' );
-	}
 } );
 
 function generateReenactedImage() {
