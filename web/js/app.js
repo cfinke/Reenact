@@ -8,8 +8,6 @@ var App = {
 	},
 
 	startup : function () {
-		console.log( "App.startup()" );
-
 		App.setOrientation();
 
 		if ( App.checkSupport() ) {
@@ -20,7 +18,6 @@ var App = {
 					var cameraCount = 0;
 		
 					devices.forEach( function ( device ) {
-						console.log( device );
 						if ( 'videoinput' === device.kind ) {
 							cameraCount++;
 						}
@@ -45,8 +42,6 @@ var App = {
 	},
 
 	showScreen : function ( screenId ) {
-		console.log( "App.showScreen()" );
-
 		var screens = document.getElementsByClassName( 'app-screen' );
 
 		for ( var i = 0; i < screens.length; i++ ) {
@@ -59,8 +54,6 @@ var App = {
 	},
 
 	setOrientation : function () {
-		console.log( "App.setOrientation()" );
-
 		if ( $( window ).width() < $( window ).height() ) {
 			document.body.setAttribute( 'orientation', 'portrait' );
 		}
@@ -106,8 +99,8 @@ var App = {
 	},
 	
 	handleResize : function () {
-		console.log( "Resize." );
 		App.setOrientation();
+		
 		Views.show( App.persistentVar( 'current-screen' ) );
 	}
 };
@@ -128,9 +121,6 @@ var Views = {
 		
 		if ( screenId in Views.viewHandlers ) {
 			Views.viewHandlers[screenId]();
-		}
-		else {
-			console.log( "No view handler for " + screenId );
 		}
 	},
 
@@ -176,8 +166,6 @@ var Views = {
 				}
 
 				originalPhoto.style.visibility = '';
-				
-				console.log("getting camera");
 
 				Camera.getCamera().then(
 					function resolved() {
@@ -209,12 +197,9 @@ var Views = {
 		},
 
 		'confirm' : function () {
-			console.log( "In confirm" );
-			
 			App.loading();
 			
 			generateReenactedImage().then( function ( url ) {
-				console.log( url );
 				$( '#photo-final-confirm' ).attr( 'src', url );
 				
 				App.loaded();
@@ -251,8 +236,6 @@ var Camera = {
 	},
 
 	capture : function () {
-		console.log( "Camera.capture()" );
-
 		// Simulate a shutter closing.
 		new Audio( 'audio/shutter.opus' ).play();
 	
@@ -309,8 +292,6 @@ jQuery( function ( $ ) {
 	$( '#choose-photo' ).on( 'change', function ( e ) {
 		var file = e.target.files[0];
 	
-		console.log( file );
-	
 		App.loading();
 
 		var reader = new FileReader();
@@ -323,8 +304,6 @@ jQuery( function ( $ ) {
 	} );
 	
 	$( '#shutter-release' ).on( 'click', function ( evt ) {
-		console.log( "event: shutter-release.click" );
-		
 		$( this ).attr( 'disabled', 'disabled' );
 		
 		Camera.capture();
@@ -341,7 +320,6 @@ jQuery( function ( $ ) {
 		
 		App.loading();
 
-		// Save the normal photo by itself.
 		App.persistentVar( 'final-photo-blob', App.persistentVar( 'last-photo' ) );
 		var filename = "reenact-" + Date.now() + ".jpg";
 
@@ -350,37 +328,25 @@ jQuery( function ( $ ) {
 			// Find the smaller image.
 			var oldImageDataURL = App.persistentVar( 'original-photo-data-url' );
 	
-			console.log( oldImageDataURL );
-	
 			var newImageDataURL = App.persistentVar( 'last-photo-data-url' );
-	
-			console.log( newImageDataURL );
 	
 			var oldImageEl = document.createElement( 'img' );
 	
 			oldImageEl.onload = function () {
-				console.log( "oldImageEl loaded" );
-		
 				var newImageEl = document.createElement( 'img' );
 		
 				var oldImageWidth = oldImageEl.naturalWidth;
 				var oldImageHeight = oldImageEl.naturalHeight;
 		
 				newImageEl.onload = function () {
-					console.log( "newImageEl loaded" );
-		
 					var newImageWidth = newImageEl.naturalWidth;
 					var newImageHeight = newImageEl.naturalHeight;
-			
-					console.log( "width / height", newImageWidth, newImageHeight );
 			
 					var canvas = document.createElement( 'canvas' );
 					var context = canvas.getContext( '2d' );
 			
 					if ( newImageWidth < newImageHeight ) {
 						// Portrait.
-						console.log( "Portrait orientation." );
-				
 						var smallestHeight = Math.min( oldImageHeight, newImageHeight );
 						var totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth );
 						var totalHeight = smallestHeight;
@@ -388,15 +354,11 @@ jQuery( function ( $ ) {
 						canvas.height = totalHeight;
 						canvas.width = totalWidth;
 				
-						console.log( "canvas height/width", canvas.height, canvas.width );
-				
 						context.drawImage( oldImageEl, 0, 0, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), ( ( smallestHeight / oldImageHeight ) * oldImageHeight ) );
 						context.drawImage( newImageEl, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), 0, ( ( smallestHeight / newImageHeight ) * newImageWidth ), ( ( smallestHeight / newImageHeight ) * newImageHeight ) );
 					}
 					else {
 						// Landscape
-						console.log( "Landscape orientation." );
-
 						var smallestWidth = Math.min( oldImageWidth, newImageWidth );
 						var totalHeight = ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) + ( ( smallestWidth / newImageWidth ) * newImageHeight );
 						var totalWidth = smallestWidth;
@@ -404,27 +366,13 @@ jQuery( function ( $ ) {
 						canvas.height = totalHeight;
 						canvas.width = totalWidth;
 				
-						console.log( "canvas height/width", canvas.height, canvas.width );
-				
 						context.drawImage( oldImageEl, 0, 0, ( ( smallestWidth / oldImageWidth ) * oldImageWidth ), ( ( smallestWidth / oldImageWidth ) * oldImageHeight ) );
 						context.drawImage( newImageEl, 0, ( ( smallestWidth / oldImageWidth ) * oldImageHeight ), ( ( smallestWidth / newImageWidth ) * newImageWidth ), ( ( smallestWidth / newImageWidth ) * newImageHeight ) );
 					}
 				
-					console.log( "Finished drawing." );
-			
 					canvas.toBlob( function ( blob ) {
-						console.log( "Blob received: ", blob );
-				
 						App.persistentVar( 'final-photo-blob', blob );
 				
-						var url = window.URL.createObjectURL(blob);
-						console.log(url);
-						var downloadLink = $( '<a/>' ).attr( 'download', filename ).attr( 'href', url );;
-						console.log(downloadLink);
-						console.log(filename);
-						downloadLink.click();
-//						window.URL.revokeObjectURL(url);
-
 						Views.show( 'next-step' );
 					}, "image/jpeg" );
 				};
@@ -466,8 +414,6 @@ jQuery( function ( $ ) {
 			// Escape, backspace, and delete. Same as clicking the secondary button.
 			var buttons = $( '.buttons .secondary:visible' );
 
-			console.log(buttons);
-
 			if ( buttons ) {
 				// Don't override if there is no secondary button, like on the intro page.
 				e.preventDefault();
@@ -482,7 +428,7 @@ jQuery( function ( $ ) {
 			
 			if ( buttons ) {
 				e.preventDefault();
-				console.log( buttons );
+
 				buttons.first().click();
 			}
 		}
@@ -501,26 +447,17 @@ function generateReenactedImage() {
 
 			var newImageDataURL = App.persistentVar( 'last-photo-data-url' );
 			
-			console.log( oldImageDataURL );
-			console.log( newImageDataURL );
-
 			var oldImageEl = document.createElement( 'img' );
 
 			oldImageEl.onload = function () {
-				console.log( "oldImageEl loaded" );
-
 				var newImageEl = document.createElement( 'img' );
 
 				var oldImageWidth = oldImageEl.naturalWidth;
 				var oldImageHeight = oldImageEl.naturalHeight;
 
 				newImageEl.onload = function () {
-					console.log( "newImageEl loaded" );
-
 					var newImageWidth = newImageEl.naturalWidth;
 					var newImageHeight = newImageEl.naturalHeight;
-	
-					console.log( "width / height", newImageWidth, newImageHeight );
 	
 					var canvas = document.createElement( 'canvas' );
 					var context = canvas.getContext( '2d' );
@@ -533,16 +470,10 @@ function generateReenactedImage() {
 					canvas.height = totalHeight;
 					canvas.width = totalWidth;
 	
-					console.log( "canvas height/width", canvas.height, canvas.width );
-	
 					context.drawImage( oldImageEl, 0, 0, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), ( ( smallestHeight / oldImageHeight ) * oldImageHeight ) );
 					context.drawImage( newImageEl, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), 0, ( ( smallestHeight / newImageHeight ) * newImageWidth ), ( ( smallestHeight / newImageHeight ) * newImageHeight ) );
 		
-					console.log( "Finished drawing." );
-	
 					canvas.toBlob( function ( blob ) {
-						console.log( "Blob received: ", blob );
-		
 						App.persistentVar( 'final-photo-blob', blob );
 						var url = window.URL.createObjectURL(blob);
 						App.persistentVar( 'final-photo-url', url );
