@@ -296,21 +296,16 @@ var Camera = {
 	}
 };
 
-window.addEventListener( "deviceorientation", function () {
-	console.log( "event: screen.onmozorientationchange" );
-
-	App.handleResize();
-}, true );
-
-var resizeTimeout = null;
-
-$( window ).on( 'resize', function () {
-	clearTimeout( resizeTimeout );
-	
-	resizeTimeout = setTimeout( App.handleResize, 250 );
-} );
 
 jQuery( function ( $ ) {
+	var resizeTimeout = null;
+
+	$( window ).on( 'resize', function () {
+		clearTimeout( resizeTimeout );
+	
+		resizeTimeout = setTimeout( App.handleResize, 250 );
+	} );
+
 	$( '#choose-photo' ).on( 'change', function ( e ) {
 		var file = e.target.files[0];
 	
