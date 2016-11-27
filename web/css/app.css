@@ -10,10 +10,6 @@
 	}
 }
 
-#browser-lacks-capability {
-	display: none;
-}
-
 html, body {
 	margin: 0;
 	padding: 0;
@@ -69,8 +65,16 @@ body {
 	text-align: center;
 }
 
+body.unsupported #screen-intro {
+	background-image: url(../img/icons/icon-sad512x512.png);
+}
+
 body[orientation=landscape] #screen-intro {
 	background-size: auto 50%;
+}
+
+#browser-lacks-capability {
+	display: none;
 }
 
 #choose-instructions, #browser-lacks-capability {
@@ -87,6 +91,18 @@ body[orientation=landscape] #screen-intro {
 	padding: .75ex 3ex;
 	box-shadow: 0px 3px 9px -3px rgba(0,0,0,0.5);
 	max-width: 50%;
+}
+
+#choose-instructions {
+	cursor: pointer;
+}
+
+body.unsupported #choose-instructions {
+	display: none;
+}
+
+body.unsupported #browser-lacks-capability {
+	display: block;
 }
 
 #choose-photo {
@@ -272,7 +288,7 @@ body[cameraCount='1'] #camera-switch {
 	
 	body[orientation=portrait] div.buttons .tertiary {
 		position: absolute;
-		top: calc( ( 1.in - .6in ) / 2 );
+		top: calc( ( 1.5in - .6in ) / 2 );
 		right: 5%;
 	}
 	

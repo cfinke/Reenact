@@ -4,7 +4,7 @@ var App = {
 	persistentVars : { },
 
 	checkSupport : function () {
-		return navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
+		return navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.URL && window.URL.createObjectURL;
 	},
 
 	startup : function () {
@@ -13,13 +13,30 @@ var App = {
 		App.setOrientation();
 
 		if ( App.checkSupport() ) {
-			$( '#choose-instructions' ).show();
-			$( '#browser-lacks-capability' ).hide();
+			$( 'body' ).removeClass( 'unsupported' );
+			
+			if ( navigator.mediaDevices.enumerateDevices ) {
+				navigator.mediaDevices.enumerateDevices().then( function ( devices ) {
+					var cameraCount = 0;
+		
+					devices.forEach( function ( device ) {
+						if ( 'videoinput' === device.kind ) {
+							cameraCount++;
+						}
+					} );
+			
+					App.persistentVar( 'cameraCount', cameraCount );
+					$( 'body' ).attr( 'cameraCount', cameraCount );
+				} );
+			}
+			else {
+				App.persistentVar( 'cameraCount', 1 );
+			}
 		}
 		else {
-			$( '#choose-instructions' ).hide();
-			$( '#browser-lacks-capability' ).show();
+			$( 'body' ).addClass( 'unsupported' );
 		}
+
 
 		Views.show( 'intro' );
 	},
@@ -272,20 +289,8 @@ var Camera = {
 				}, true );
 				
 				video.play();
+				
 			} );
-			
-			$( 'body' ).attr( 'cameraCount', '1' );
-			
-			/*
-			if ( availableCameras.length > 1 ) {
-				document.getElementById( 'camera-switch' ).style.display = '';
-			}
-			else {
-				document.getElementById( 'camera-switch' ).style.display = 'none';
-			}
-
-			Camera.cameraCount = availableCameras.length;
-			*/
 		} );
 	}
 };
@@ -428,7 +433,7 @@ window.addEventListener( 'DOMContentLoaded', function () {
 
 		var cameraIndex = parseInt( App.cache( 'cameraIndex' ), 10 ) || 0;
 		cameraIndex++;
-		cameraIndex %= Camera.cameraCount;
+		cameraIndex %= App.persistentVar( 'cameraCount' );
 		App.cache( 'cameraIndex', cameraIndex );
 
 		Views.show( 'capture' );
