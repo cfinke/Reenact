@@ -5,6 +5,9 @@ var App = {
 
 	videoStream : null,
 
+	// A guess as to whether the shared camera is front-facing and we should flip it.
+	cameraIsFrontFacing : false,
+
 	checkSupport : function () {
 		return navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.URL && window.URL.createObjectURL;
 	},
@@ -28,12 +31,21 @@ var App = {
 					if ( cameraCount === 0 ) {
 						$( 'body' ).addClass( 'no-camera' );
 					}
+					else if ( cameraCount === 1 ){
+						// I think every device with a rear camera also has a selfie camera.
+						App.cameraIsFrontFacing = true;
+					}
 					
 					Views.show( 'intro' );
 				} );
 			}
 			else {
 				Views.show( 'intro' );
+				
+				if ( ! ( 'ontouchstart' in window ) ) {
+					// Assume any non-touchscreen device is a desktop browser that will default to selfie camera.
+					App.cameraIsFrontFacing = true;
+				}
 			}
 		}
 		else {
@@ -111,6 +123,7 @@ var App = {
 			var video = document.getElementById( 'viewfinder' );
 			
 			navigator.mediaDevices.getUserMedia( { video: true } ).then( function ( stream ) {
+				console.log( stream );
 				App.videoStream = stream;
 				
 				video.src = window.URL.createObjectURL( stream );
@@ -189,6 +202,12 @@ var Views = {
 			document.getElementById( 'shutter-release' ).removeAttribute( 'disabled' );
 			
 			document.getElementById( 'viewfinder' ).setAttribute( 'class', 'fading' );
+			
+			$( 'body' ).removeClass( 'front-facing-camera' );
+			
+			if ( App.cameraIsFrontFacing ) {
+				$( '#camera-mirror' ).click();
+			}
 		},
 		
 		'next-step' : function () {
