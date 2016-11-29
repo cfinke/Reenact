@@ -91,6 +91,7 @@ body[orientation=landscape] #screen-intro {
 	padding: .75ex 3ex;
 	box-shadow: 0px 3px 9px -3px rgba(0,0,0,0.5);
 	max-width: 50%;
+	line-height: 150%;
 }
 
 #choose-instructions {
@@ -227,6 +228,62 @@ div.buttons a.primary:active {
 	position: static;
 	top: 1ex;
 	text-align: center
+}
+
+#screen-help {
+	background-image: url(../img/icons/icon512x512.png);
+	background-size: 20%;
+	background-position: center 20%;
+	background-repeat: no-repeat;
+	background-color: #00c755;
+}
+
+#screen-help a {
+	color: #fff;
+}
+
+#screen-help > p {
+	position: absolute;
+	left: 50%;
+	bottom: 15%;
+	background-color: #000;
+	border-radius: 2px;
+	border-color: transparent;
+	border-style: solid;
+	transform: translateX(-50%);
+	padding: 3ex;
+	box-shadow: 0px 3px 9px -3px rgba(0,0,0,0.5);
+	max-width: 50%;
+	background-color: #000;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	max-width: 50%;
+	line-height: 125%;
+}
+
+a#help-button, a#help-cancel-button {
+	position: absolute;
+	top: 10%;
+	right: 10%;
+	font-weight: bold;
+	text-align: center;
+	cursor: pointer;
+	width: 3ex;
+	height: 3ex;
+	line-height: 3.25ex;
+	color: #00c755;
+	background-color: #fff;
+	opacity: .5;
+	border-radius: 50%;
+}
+
+#help-button:before {
+	content: "?";
+}
+
+#help-cancel-button:before {
+	content: "X";
 }
 
 	body[orientation=landscape] .content-area {

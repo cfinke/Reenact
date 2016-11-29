@@ -370,6 +370,19 @@ jQuery( function ( $ ) {
 			$( "body" ).addClass( "front-facing-camera" );
 		}
 	} );
+	
+	$( '#help-button' ).on( 'click', function ( e ) {
+		e.preventDefault();
+		
+		Views.show( 'help' );
+	} );
+
+
+	$( '#help-cancel-button' ).on( 'click', function ( e ) {
+		e.preventDefault();
+		
+		Views.show( 'intro' );
+	} );
 
 	App.startup();
 	
