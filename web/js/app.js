@@ -91,11 +91,11 @@ var App = {
 	},
 	
 	loading : function () {
-		document.getElementById( 'loading' ).style.display = 'block';
+		$( 'body' ).addClass( 'loading' ).removeClass( 'loaded' );
 	},
 	
 	loaded : function () {
-		document.getElementById( 'loading' ).style.display = 'none';
+		$( 'body' ).addClass( 'loaded' ).removeClass( 'loading' );
 	},
 	
 	persistentVar : function ( key, val ) {
@@ -312,6 +312,10 @@ jQuery( function ( $ ) {
 		clearTimeout( resizeTimeout );
 	
 		resizeTimeout = setTimeout( App.handleResize, 250 );
+	} );
+	
+	$( '#choose-instructions' ).on( 'click', function ( e ) {
+		App.loading();
 	} );
 
 	$( '#choose-photo' ).on( 'change', function ( e ) {

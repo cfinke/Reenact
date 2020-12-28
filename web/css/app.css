@@ -25,18 +25,6 @@ body {
 	color: #fff;
 }
 
-#loading {
-	display: none;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translateX(-50%) translateY(-50%);
-	opacity: .75;
-	background-color: #000;
-	border-radius: 50%;
-	z-index: 100;
-}
-
 .content-area {
 	margin: 0;
 	text-align: center;
@@ -212,6 +200,7 @@ div.buttons a[disabled] {
 	border-radius: 50%;
 	box-shadow: 0 0 0 5px #fff;
 	box-sizing: border-box;
+	z-index: 2;
 }
 
 #shutter-release:active {
@@ -371,3 +360,16 @@ a#help-button, a#help-cancel-button {
 		top: 50%;
 		transform: translateY(-50%);
 	}
+	
+body.loaded .loading {
+	display: none;
+}
+
+body.loading .loaded {
+	display: none;
+}
+
+#capture-loading {
+	background-image: url( ../img/icons/loading.svg );
+	z-index: 1;
+}

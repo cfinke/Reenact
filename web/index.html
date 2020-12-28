@@ -21,7 +21,7 @@
 	</head>
 	<body orientation="landscape">
 		<section id="screen-intro" class="app-screen">
-			<label for="choose-photo" data-l10n-id="choose-instructions" id="choose-instructions" class="intro-message"></label>
+			<label for="choose-photo" id="choose-instructions" class="intro-message"><span data-l10n-id="choose-instructions" class="loaded"></span><span data-l10n-id="choose-instructions-waiting" class="loading"></span></label>
 			<input type="file" id="choose-photo" accept="image/*">
 			<p id="browser-lacks-capability" data-l10n-id="browser-lacks-capability" class="intro-roadblock intro-message"></p>
 			<p id="no-camera" data-l10n-id="no-camera" class="intro-roadblock intro-message"></p>
@@ -43,6 +43,7 @@
 			<div class="buttons">
 				<a id="back-button" class="secondary" title="Go back"></a>
 				<a id="shutter-release" class="primary" title="Take the photo" data-relies-on-camera="true"></a>
+				<a id="capture-loading" class="primary" title="Waiting for camera access..."></a>
 				<a id="camera-mirror" class="tertiary" title="Flip camera" data-relies-on-camera="true"></a>
 			</div>
 		</section>
@@ -65,8 +66,5 @@
 				<a id="download-button" class="tertiary" download="reenact.jpg" href="#" title="Download photo"></a>
 			</div>
 		</section>
-		<div id="loading">
-			<img src="img/icons/loading.svg" />
-		</div>
 	</body>
 </html>
