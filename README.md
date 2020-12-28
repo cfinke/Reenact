@@ -3,7 +3,7 @@ Reenact
 
 A camera app for reenacting photos: Young Me, Now Me; daily timelapses; pregnancy belly pictures -- if you need to take two pictures from the same angle, Reenact them.
 
-Reenact can be installed on Firefox OS by visiting the Firefox Marketplace: https://marketplace.firefox.com/app/reenact/  It requires at least version 2.5 of Firefox OS.
+Reenact can be run directly from your browser by visiting https://app.reenact.me/ It was previously available as an iOS app, an Android app, and a Firefox OS app.
 
 ![](screenshots/firefox-os/intro.png)
 ![](screenshots/firefox-os/pick.png)
