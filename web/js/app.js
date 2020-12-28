@@ -124,14 +124,20 @@ var App = {
 			
 			navigator.mediaDevices.getUserMedia( { audio: false, video: true } ).then( function ( stream ) {
 				App.videoStream = stream;
-				
+			
 				video.srcObject = stream;
-				
+			
 				video.addEventListener( "playing", function () {
 					resolve();
 				}, true );
-				
+			
 				video.play();
+			} ).catch( function ( e ) {
+				$( 'body' ).addClass( 'no-camera' );
+				Views.show( 'intro' );
+				
+				// Alternatively:
+				// reject( 'Reenact must have access to the camera to function.' );
 			} );
 		} );
 	},
