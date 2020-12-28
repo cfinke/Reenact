@@ -195,10 +195,11 @@ var Views = {
 
 	preViewHandlers : {
 		'capture' : function () {
+			$( '[data-relies-on-camera]' ).attr( 'disabled', 'disabled' );
+			
 			document.getElementById( 'reenacter' ).style.visibility = '';
 			
 			document.getElementById( 'original-photo' ).style.visibility = 'hidden';
-			document.getElementById( 'shutter-release' ).removeAttribute( 'disabled' );
 			
 			document.getElementById( 'viewfinder' ).setAttribute( 'class', 'fading' );
 			
@@ -248,6 +249,8 @@ var Views = {
 
 				App.getCamera().then(
 					function resolved() {
+						$( '[data-relies-on-camera]' ).removeAttr( 'disabled' );
+						
 						var video = document.getElementById( 'viewfinder' );
 						
 						if ( video.videoWidth / video.videoHeight < maxWidth / maxHeight ) {

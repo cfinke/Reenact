@@ -186,6 +186,10 @@ div.buttons a.primary:active {
 	background-size: 100%;
 }
 
+div.buttons a[disabled] {
+	display: none;
+}
+
 #back-button {
 	background-image: url(../img/icons/ic_arrow_back_white_48dp.png);
 }
