@@ -81,17 +81,23 @@ body[orientation=landscape] #screen-intro {
 	position: absolute;
 	left: 50%;
 	bottom: 15%;
+	border: 2px dashed rgba( 255, 255, 255, 0.75 );
 	background-color: #000;
-	border-radius: 2px;
-	border-color: transparent;
-	border-style: solid;
 	text-transform: uppercase;
 	transform: translateX(-50%);
 	font-size: 80%;
-	padding: .75ex 3ex;
-	box-shadow: 0px 3px 9px -3px rgba(0,0,0,0.5);
+	padding: 3ex;
 	max-width: 50%;
 	line-height: 150%;
+	outline: 1ex solid black;
+}
+
+.intro-message:hover {
+	border-color: #fff;
+}
+
+.intro-message:active {
+	opacity: .5;
 }
 
 #choose-instructions {
