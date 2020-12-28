@@ -195,10 +195,7 @@ div.buttons a.primary:active {
 }
 
 #share-button {
-	background-image: url(../img/icons/ic_share_white_48dp.png);
-	border-radius: 50%;
-	background-color: #00c755;
-	background-size: 75%;
+	background-image: url(../img/icons/share-192.png);
 }
 
 #camera-mirror {
