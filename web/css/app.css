@@ -168,8 +168,8 @@ div.buttons a {
 
 div.buttons a.primary {
 	background-size: 100%;
-	width: 1in;
-	height: 1in;
+	width: .75in;
+	height: .75in;
 }
 
 div.buttons a.secondary {
@@ -180,10 +180,6 @@ div.buttons a.secondary {
 div.buttons a.tertiary {
 	width: .6in;
 	height: .6in;
-}
-
-div.buttons a:active {
-	opacity: .75;
 }
 
 div.buttons a.primary:active {
@@ -210,12 +206,15 @@ div.buttons a.primary:active {
 }
 
 #shutter-release {
-	background-image: url(../img/icons/ic_camera_white_48dp.png);
+	background-color: #fff;
+	border: 3px solid #1b1b1b;    
+	border-radius: 50%;
+	box-shadow: 0 0 0 5px #fff;
+	box-sizing: border-box;
 }
 
 #shutter-release:active {
-	background-image: url(../img/icons/ic_camera_white_48dp.png);
-	background-size: 80%;
+	border: 8px solid #1b1b1b;    
 }
 
 #cancel-button {
@@ -309,7 +308,7 @@ a#help-button, a#help-cancel-button {
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
-		left: calc( ( 1.5in - 1in ) / 2 );
+		left: calc( ( 1.5in - .75in ) / 2 );
 	}
 	
 	body[orientation=landscape] div.buttons .secondary {
@@ -349,7 +348,7 @@ a#help-button, a#help-cancel-button {
 		position: absolute;
 		left: 50%;
 		transform: translateX(-50%);
-		top: calc( ( 1.5in - 1in ) / 2 );
+		top: calc( ( 1.5in - .75in ) / 2 );
 	}
 	
 	body[orientation=portrait] div.buttons .secondary {
