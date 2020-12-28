@@ -122,8 +122,7 @@ var App = {
 		return new Promise( function ( resolve, reject ) {
 			var video = document.getElementById( 'viewfinder' );
 			
-			navigator.mediaDevices.getUserMedia( { video: true } ).then( function ( stream ) {
-				console.log( stream );
+			navigator.mediaDevices.getUserMedia( { audio: false, video: true } ).then( function ( stream ) {
 				App.videoStream = stream;
 				
 				video.srcObject = stream;
