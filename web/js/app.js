@@ -126,7 +126,7 @@ var App = {
 				console.log( stream );
 				App.videoStream = stream;
 				
-				video.src = window.URL.createObjectURL( stream );
+				video.srcObject = stream;
 				
 				video.addEventListener( "playing", function () {
 					resolve();
