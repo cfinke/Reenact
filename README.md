@@ -8,10 +8,10 @@ Reenact can be run directly from your browser by visiting https://app.reenact.me
 ![](screenshots/web/intro.png)
 ![](screenshots/web/pick.png)
 ![](screenshots/web/gallery.png)
-![](screenshots/firefox-os/capture-init.png)
-![](screenshots/firefox-os/capture.png)
-![](screenshots/firefox-os/confirm.png)
-![](screenshots/firefox-os/share.png)
+![](screenshots/web/capture-init.png)
+![](screenshots/web/capture.png)
+![](screenshots/web/confirm.png)
+![](screenshots/web/share.png)
 
 The icons in `/img/icons/` (except the app icons and the files noted below) are from the Android Asset Studio (https://romannurik.github.io/AndroidAssetStudio/) and are licensed under the Apache license.
 
