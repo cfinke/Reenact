@@ -5,9 +5,9 @@ A camera app for reenacting photos: Young Me, Now Me; daily timelapses; pregnanc
 
 Reenact can be run directly from your browser by visiting https://app.reenact.me/ It was previously available as an iOS app, an Android app, and a Firefox OS app.
 
-![](screenshots/firefox-os/intro.png)
-![](screenshots/firefox-os/pick.png)
-![](screenshots/firefox-os/gallery.png)
+![](screenshots/web/intro.png)
+![](screenshots/web/pick.png)
+![](screenshots/web/gallery.png)
 ![](screenshots/firefox-os/capture-init.png)
 ![](screenshots/firefox-os/capture.png)
 ![](screenshots/firefox-os/confirm.png)
