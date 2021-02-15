@@ -18,3 +18,5 @@ The icons in `/img/icons/` (except the app icons and the files noted below) are 
 `/audio/shutter.opus` is from the stock Firefox OS camera app: https://github.com/mozilla-b2g/gaia/blob/master/apps/camera/resources/sounds/shutter.opus
 
 `/web/img/icons/share-192.png` is "Share" by Agni from the Noun Project.
+
+`/web/img/icons/switch-camera-192.png` is "Switch Camera" by Vicons Design from the Noun Project.

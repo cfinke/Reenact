@@ -1,58 +1,34 @@
 "use strict";
 
+// 			if ( ! ( 'ontouchstart' in window ) ) {
+// 				// Assume any non-touchscreen device is a desktop browser that will default to selfie camera.
+
+
 var App = {
 	persistentVars : { },
 
 	videoStream : null,
 
+	selectedCameraIndex : null,
+	availableCameras : [],
+
 	// A guess as to whether the shared camera is front-facing and we should flip it.
 	cameraIsFrontFacing : false,
 
 	checkSupport : function () {
-		return navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.URL && window.URL.createObjectURL;
+		return navigator.mediaDevices && navigator.mediaDevices.enumerateDevices && navigator.mediaDevices.getUserMedia && window.URL && window.URL.createObjectURL;
 	},
 
 	startup : function () {
 		App.setOrientation();
 
+		$( 'body' ).addClass( 'unsupported' );
+
 		if ( App.checkSupport() ) {
 			$( 'body' ).removeClass( 'unsupported' );
-			
-			if ( navigator.mediaDevices.enumerateDevices ) {
-				navigator.mediaDevices.enumerateDevices().then( function ( devices ) {
-					var cameraCount = 0;
+		}
 		
-					devices.forEach( function ( device ) {
-						if ( 'videoinput' === device.kind ) {
-							cameraCount++;
-						}
-					} );
-					
-					if ( cameraCount === 0 ) {
-						$( 'body' ).addClass( 'no-camera' );
-					}
-					else if ( cameraCount === 1 ){
-						// I think every device with a rear camera also has a selfie camera.
-						App.cameraIsFrontFacing = true;
-					}
-					
-					Views.show( 'intro' );
-				} );
-			}
-			else {
-				Views.show( 'intro' );
-				
-				if ( ! ( 'ontouchstart' in window ) ) {
-					// Assume any non-touchscreen device is a desktop browser that will default to selfie camera.
-					App.cameraIsFrontFacing = true;
-				}
-			}
-		}
-		else {
-			$( 'body' ).addClass( 'unsupported' );
-			
-			Views.show( 'intro' );
-		}
+		Views.show( 'intro' );
 	},
 
 	showScreen : function ( screenId ) {
@@ -120,22 +96,59 @@ var App = {
 	
 	getCamera : function () {
 		return new Promise( function ( resolve, reject ) {
-			var video = document.getElementById( 'viewfinder' );
-			
+			// This call is just to get the permissions prompt, without which iOS won't show all cameras when calling enumerateDevices.
 			navigator.mediaDevices.getUserMedia( { audio: false, video: true } ).then( function ( stream ) {
-				App.videoStream = stream;
+				// Then we can enumerate the cameras to find out if there are multiple cameras, causing us to show the "switch camera" icon.
+				navigator.mediaDevices.enumerateDevices().then( function ( devices ) {
+					var video = document.getElementById( 'viewfinder' );
+				
+					devices.forEach( function ( device ) {
+						if ( 'videoinput' === device.kind ) {
+							App.availableCameras.push( device );
+						}
+					} );
 			
-				video.srcObject = stream;
+					if ( App.availableCameras.length === 0 ) {
+						throw 'No camera available.';
+					}
+					else {
+						if ( App.availableCameras.length === 1 ){
+							// I think every device with a rear camera also has a selfie camera, so if there's only one, it's probably forward-facing.
+							App.cameraIsFrontFacing = true;
+							
+							$( '#camera-switch' ).hide();
+						}
+						else if ( ! ( 'ontouchstart' in window ) ) {
+							// Assume any non-touchscreen device is a desktop browser that will default to selfie camera.
+							App.cameraIsFrontFacing = true;
+						}
+					
+						if ( App.selectedCameraIndex === null ) {
+							// If App.availableCameras is empty, then choose the first available camera.
+							// If it's not, then we're switching between cameras.
+							App.selectedCameraIndex = 0;
+						}
+					
+						var video = document.getElementById( 'viewfinder' );
 			
-				video.addEventListener( "playing", function () {
-					resolve();
-				}, true );
+						// Then we can call getUserMedia on the right camera, so we can switch between cameras.
+						navigator.mediaDevices.getUserMedia( { audio: false, video: { deviceId : App.availableCameras[ App.selectedCameraIndex ].deviceId } } ).then( function ( stream ) {
+							App.videoStream = stream;
 			
-				video.play();
+							video.srcObject = stream;
+			
+							video.addEventListener( "playing", function () {
+								resolve();
+							}, true );
+			
+							video.play();
+						} );
+					}
+				} );
 			} ).catch( function ( e ) {
 				$( 'body' ).addClass( 'no-camera' );
 				Views.show( 'intro' );
-				
+		
 				// Alternatively:
 				// reject( 'Reenact must have access to the camera to function.' );
 			} );
@@ -381,6 +394,36 @@ jQuery( function ( $ ) {
 		else {
 			$( "body" ).addClass( "front-facing-camera" );
 		}
+	} );
+	
+	$( '#camera-switch' ).on( 'click', function ( e ) {
+		e.preventDefault();
+		
+		var nextCameraIndex;
+		
+		if ( null === App.selectedCameraIndex ) {
+			nextCameraIndex = 0;
+		}
+		else {
+			nextCameraIndex = ( App.selectedCameraIndex + 1 ) % App.availableCameras.length;
+		}
+		
+		App.selectedCameraIndex = nextCameraIndex;
+		
+		if ( App.videoStream ) {
+			if ( App.videoStream.getVideoTracks ) {
+				App.videoStream.getVideoTracks().forEach( function ( track ) {
+					track.stop();
+				} );
+			}
+			else {
+				App.videoStream.stop();
+			}
+			
+			App.videoStream = null;
+		}
+		
+		Views.show( 'capture' );
 	} );
 	
 	$( '#help-button' ).on( 'click', function ( e ) {

@@ -121,7 +121,7 @@ body.no-camera #no-camera {
 	animation-timing-function: linear;   
 }
 
-body.front-facing-camera #reenacter {
+body.front-facing-camera #reenacter #viewfinder {
 	-moz-transform: scaleX(-1);
 	-o-transform: scaleX(-1);
 	-webkit-transform: scaleX(-1);
@@ -166,8 +166,8 @@ div.buttons a.secondary {
 }
 
 div.buttons a.tertiary {
-	width: .6in;
-	height: .6in;
+	width: .5in;
+	height: .5in;
 }
 
 div.buttons a.primary:active {
@@ -192,6 +192,10 @@ div.buttons a[disabled] {
 
 #camera-mirror {
 	background-image: url(../img/icons/ic_switch_camera_white_48dp.png);
+}
+
+#camera-switch {
+	background-image: url(../img/icons/switch-camera-192.png);
 }
 
 #shutter-release {
@@ -283,9 +287,10 @@ a#help-button, a#help-cancel-button {
 
 	body[orientation=landscape] .content-area {
 		height: 100%;
-		width: calc( 100% - 1.5in );
+		width: calc( 100% - 2.5in );
+		top: 0;
 	}
-
+	
 	body[orientation=landscape] div.buttons {
 		height: 100%;
 		width: 1.5in;
@@ -294,6 +299,14 @@ a#help-button, a#help-cancel-button {
 		top: 0;
 	}
 
+	body[orientation=landscape] div.buttons.top {
+		height: 100%;
+		width: 1in;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+	
 	body[orientation=landscape] div.buttons .primary {
 		position: absolute;
 		top: 50%;
@@ -309,7 +322,13 @@ a#help-button, a#help-cancel-button {
 	
 	body[orientation=landscape] div.buttons .tertiary {
 		position: absolute;
-		right: calc( ( 1.5in - .6in ) / 2 );
+		right: calc( ( 1.5in - .5in ) / 2 );
+		top: 5%;
+	}
+	
+	body[orientation=landscape] div.buttons.top .tertiary {
+		position: absolute;
+		right: calc( ( 1in - .5in ) / 2 );
 		top: 5%;
 	}
 	
@@ -321,10 +340,10 @@ a#help-button, a#help-cancel-button {
 		transform: translateY(-50%);
 	}
 
-
 	body[orientation=portrait] .content-area {
 		width: 100%;
-		height: calc( 100% - 1.5in );
+		height: calc( 100% - 2.5in );
+		top: 1in;
 	}
 
 	body[orientation=portrait] div.buttons {
@@ -332,6 +351,13 @@ a#help-button, a#help-cancel-button {
 		height: 1.5in;
 		position: absolute;
 		bottom: 0;
+	}
+	
+	body[orientation=portrait] div.buttons.top {
+		width: 100%;
+		height: 1in;
+		position: absolute;
+		top: 0;
 	}
 
 	body[orientation=portrait] div.buttons .primary {
@@ -349,7 +375,13 @@ a#help-button, a#help-cancel-button {
 	
 	body[orientation=portrait] div.buttons .tertiary {
 		position: absolute;
-		top: calc( ( 1.5in - .6in ) / 2 );
+		top: calc( ( 1.5in - .5in ) / 2 );
+		right: 5%;
+	}
+	
+	body[orientation=portrait] div.buttons.top .tertiary {
+		position: absolute;
+		top: calc( ( 1in - .5in ) / 2 );
 		right: 5%;
 	}
 	
