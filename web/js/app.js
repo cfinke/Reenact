@@ -11,6 +11,11 @@ var App = {
 	// A guess as to whether the shared camera is front-facing and we should flip it.
 	cameraIsFrontFacing : false,
 
+	currentImageSettings : {
+		width : 0,
+		height : 0,
+	},
+
 	currentStreamSettings : {
 		width : 0,
 		height : 0,
@@ -102,8 +107,8 @@ var App = {
 				{
 					audio: false,
 					video: {
-						width: { ideal: 9999 },
-						height: { ideal: 9999 }
+						width: { ideal: App.currentImageSettings.width },
+						height: { ideal: App.currentImageSettings.height }
 					}
 				}
 			).then( function ( stream ) {
@@ -143,7 +148,15 @@ var App = {
 						var video = document.getElementById( 'viewfinder' );
 			
 						// Then we can call getUserMedia on the right camera, so we can switch between cameras.
-						navigator.mediaDevices.getUserMedia( { audio: false, video: { deviceId : App.availableCameras[ App.selectedCameraIndex ].deviceId } } ).then( function ( stream ) {
+						navigator.mediaDevices.getUserMedia(
+							{
+								audio: false,
+								video: {
+									deviceId : App.availableCameras[ App.selectedCameraIndex ].deviceId,
+									width: { ideal: App.currentImageSettings.width },
+									height: { ideal: App.currentImageSettings.height }
+								}
+							} ).then( function ( stream ) {
 							App.currentStreamSettings = stream.getVideoTracks()[0].getSettings();
 
 							App.videoStream = stream;
@@ -273,6 +286,9 @@ var Views = {
 
 				var realImageWidth = originalPhoto.naturalWidth;
 				var realImageHeight = originalPhoto.naturalHeight;
+
+				App.currentImageSettings.width = realImageWidth;
+				App.currentImageSettings.height = realImageHeight;
 
 				// Center the image, making it as big as possible.
 				if ( realImageWidth / realImageHeight < maxWidth / maxHeight ) {
@@ -510,7 +526,7 @@ function generateReenactedImage() {
 				newImageEl.onload = function () {
 					var newImageWidth = newImageEl.naturalWidth;
 					var newImageHeight = newImageEl.naturalHeight;
-	
+
 					var canvas = document.createElement( 'canvas' );
 					var context = canvas.getContext( '2d' );
 	
