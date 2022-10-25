@@ -1,9 +1,5 @@
 "use strict";
 
-// 			if ( ! ( 'ontouchstart' in window ) ) {
-// 				// Assume any non-touchscreen device is a desktop browser that will default to selfie camera.
-
-
 var App = {
 	persistentVars : { },
 
@@ -15,6 +11,11 @@ var App = {
 	// A guess as to whether the shared camera is front-facing and we should flip it.
 	cameraIsFrontFacing : false,
 
+	currentStreamSettings : {
+		width : 0,
+		height : 0,
+	},
+	
 	checkSupport : function () {
 		return navigator.mediaDevices && navigator.mediaDevices.enumerateDevices && navigator.mediaDevices.getUserMedia && window.URL && window.URL.createObjectURL;
 	},
@@ -97,7 +98,17 @@ var App = {
 	getCamera : function () {
 		return new Promise( function ( resolve, reject ) {
 			// This call is just to get the permissions prompt, without which iOS won't show all cameras when calling enumerateDevices.
-			navigator.mediaDevices.getUserMedia( { audio: false, video: true } ).then( function ( stream ) {
+			navigator.mediaDevices.getUserMedia(
+				{
+					audio: false,
+					video: {
+						width: { ideal: 9999 },
+						height: { ideal: 9999 }
+					}
+				}
+			).then( function ( stream ) {
+				App.currentStreamSettings = stream.getVideoTracks()[0].getSettings();
+
 				// Then we can enumerate the cameras to find out if there are multiple cameras, causing us to show the "switch camera" icon.
 				navigator.mediaDevices.enumerateDevices().then( function ( devices ) {
 					var video = document.getElementById( 'viewfinder' );
@@ -122,7 +133,7 @@ var App = {
 							// Assume any non-touchscreen device is a desktop browser that will default to selfie camera.
 							App.cameraIsFrontFacing = true;
 						}
-					
+
 						if ( App.selectedCameraIndex === null ) {
 							// If App.availableCameras is empty, then choose the first available camera.
 							// If it's not, then we're switching between cameras.
@@ -133,6 +144,8 @@ var App = {
 			
 						// Then we can call getUserMedia on the right camera, so we can switch between cameras.
 						navigator.mediaDevices.getUserMedia( { audio: false, video: { deviceId : App.availableCameras[ App.selectedCameraIndex ].deviceId } } ).then( function ( stream ) {
+							App.currentStreamSettings = stream.getVideoTracks()[0].getSettings();
+
 							App.videoStream = stream;
 			
 							video.srcObject = stream;
@@ -166,9 +179,16 @@ var App = {
 		
 			var video = document.getElementById( 'viewfinder' );
 			var canvas = document.createElement( 'canvas' );
-			canvas.width = video.videoWidth;
-			canvas.height = video.videoHeight;
-		
+
+			if ( document.body.getAttribute( 'orientation' ) == 'portrait' ) {
+				canvas.width = Math.min( App.currentStreamSettings.width, App.currentStreamSettings.height );
+				canvas.height = Math.max( App.currentStreamSettings.width, App.currentStreamSettings.height );
+			}
+			else {
+				canvas.width = Math.max( App.currentStreamSettings.width, App.currentStreamSettings.height );
+				canvas.height = Math.min( App.currentStreamSettings.width, App.currentStreamSettings.height );
+			}
+
 			var context = canvas.getContext( '2d' );
 			var video = document.getElementById( 'viewfinder' );
 			context.drawImage( video, 0, 0, canvas.width, canvas.height );
