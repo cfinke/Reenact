@@ -201,17 +201,13 @@ var App = {
 			var video = document.getElementById( 'viewfinder' );
 			var canvas = document.createElement( 'canvas' );
 
-			if ( document.body.getAttribute( 'orientation' ) == 'portrait' ) {
-				canvas.width = Math.min( App.currentStreamSettings.width, App.currentStreamSettings.height );
-				canvas.height = Math.max( App.currentStreamSettings.width, App.currentStreamSettings.height );
-			}
-			else {
-				canvas.width = Math.max( App.currentStreamSettings.width, App.currentStreamSettings.height );
-				canvas.height = Math.min( App.currentStreamSettings.width, App.currentStreamSettings.height );
-			}
+			// The video's intrinsic dimensions reflect the frames as they're actually being
+			// rendered (including any rotation the browser applied for device orientation),
+			// so capturing at exactly this size can never stretch or squash the image.
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
 
 			var context = canvas.getContext( '2d' );
-			var video = document.getElementById( 'viewfinder' );
 			context.drawImage( video, 0, 0, canvas.width, canvas.height );
 
 			document.getElementById( 'viewfinder' ).removeAttribute( 'class' );
