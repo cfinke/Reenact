@@ -116,8 +116,14 @@ var App = {
 
 				// Then we can enumerate the cameras to find out if there are multiple cameras, causing us to show the "switch camera" icon.
 				navigator.mediaDevices.enumerateDevices().then( function ( devices ) {
+					// This stream was only needed to trigger the permissions prompt; stop it so that
+					// the camera is free when we request the specific device we want below.
+					stream.getVideoTracks().forEach( function ( track ) {
+						track.stop();
+					} );
+
 					var video = document.getElementById( 'viewfinder' );
-				
+
 					devices.forEach( function ( device ) {
 						if ( 'videoinput' === device.kind ) {
 							App.availableCameras.push( device );
