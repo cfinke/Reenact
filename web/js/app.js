@@ -527,19 +527,17 @@ jQuery( function ( $ ) {
 			// Escape, backspace, and delete. Same as clicking the secondary button.
 			var buttons = $( '.buttons .secondary:visible' );
 
-			if ( buttons ) {
+			if ( buttons.length ) {
 				// Don't override if there is no secondary button, like on the intro page.
 				e.preventDefault();
 				buttons.first().click();
 			}
 		}
 		else if ( e.keyCode === 13 || e.keyCode === 32 ) {
-			e.preventDefault();
-			
 			// Enter and space bar. Same as clicking the primary button or the "Choose photo" button.
 			var buttons = $( '.buttons .primary:visible' );
-			
-			if ( buttons ) {
+
+			if ( buttons.length ) {
 				e.preventDefault();
 
 				buttons.first().click();
