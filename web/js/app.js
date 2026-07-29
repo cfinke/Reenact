@@ -104,6 +104,9 @@ var App = {
 
 	getCamera : function () {
 		return new Promise( function ( resolve, reject ) {
+			// A previous attempt may have failed; this attempt gets a clean slate.
+			document.body.classList.remove( 'no-camera' );
+
 			// This call is just to get the permissions prompt, without which iOS won't show all cameras when calling enumerateDevices.
 			navigator.mediaDevices.getUserMedia(
 				{

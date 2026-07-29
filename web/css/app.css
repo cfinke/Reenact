@@ -92,7 +92,7 @@ body[orientation=landscape] #screen-intro {
 	cursor: pointer;
 }
 
-body.unsupported #choose-instructions, body.no-camera #choose-instructions {
+body.unsupported #choose-instructions {
 	display: none;
 }
 
@@ -102,6 +102,9 @@ body.unsupported #browser-lacks-capability {
 
 body.no-camera #no-camera {
 	display: block;
+
+	/* Sit above the choose-photo button, which stays available for retrying. */
+	bottom: 40%;
 }
 
 #choose-photo {
