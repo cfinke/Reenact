@@ -160,7 +160,7 @@ var App = {
 							{
 								audio: false,
 								video: {
-									deviceId : App.availableCameras[ App.selectedCameraIndex ].deviceId,
+									deviceId : { exact: App.availableCameras[ App.selectedCameraIndex ].deviceId },
 									width: { ideal: App.currentImageSettings.width },
 									height: { ideal: App.currentImageSettings.height }
 								}
@@ -208,6 +208,14 @@ var App = {
 			canvas.height = video.videoHeight;
 
 			var context = canvas.getContext( '2d' );
+
+			// When the viewfinder is mirrored via CSS, mirror the capture too so that the
+			// saved photo matches what the user aligned on screen.
+			if ( $( 'body' ).hasClass( 'front-facing-camera' ) ) {
+				context.translate( canvas.width, 0 );
+				context.scale( -1, 1 );
+			}
+
 			context.drawImage( video, 0, 0, canvas.width, canvas.height );
 
 			document.getElementById( 'viewfinder' ).removeAttribute( 'class' );
