@@ -278,6 +278,9 @@ var Views = {
 	viewHandlers : {
 		'intro' : function () {
 			App.persistentVar( 'original-photo', null );
+
+			// Clear the file input so that choosing the same photo again fires another change event.
+			document.getElementById( 'choose-photo' ).value = '';
 		},
 
 		'capture' : function () {
@@ -377,13 +380,13 @@ jQuery( function ( $ ) {
 		resizeTimeout = setTimeout( App.handleResize, 250 );
 	} );
 	
-	$( '#choose-instructions' ).on( 'click', function ( e ) {
-		App.loading();
-	} );
-
 	$( '#choose-photo' ).on( 'change', function ( e ) {
 		var file = e.target.files[0];
-	
+
+		if ( ! file ) {
+			return;
+		}
+
 		App.loading();
 
 		var reader = new FileReader();
