@@ -20,7 +20,7 @@ var App = {
 		width : 0,
 		height : 0,
 	},
-	
+
 	checkSupport : function () {
 		return navigator.mediaDevices && navigator.mediaDevices.enumerateDevices && navigator.mediaDevices.getUserMedia && window.URL && window.URL.createObjectURL;
 	},
@@ -28,12 +28,12 @@ var App = {
 	startup : function () {
 		App.setOrientation();
 
-		$( 'body' ).addClass( 'unsupported' );
+		document.body.classList.add( 'unsupported' );
 
 		if ( App.checkSupport() ) {
-			$( 'body' ).removeClass( 'unsupported' );
+			document.body.classList.remove( 'unsupported' );
 		}
-		
+
 		Views.show( 'intro' );
 	},
 
@@ -50,7 +50,7 @@ var App = {
 	},
 
 	setOrientation : function () {
-		if ( $( window ).width() < $( window ).height() ) {
+		if ( window.innerWidth < window.innerHeight ) {
 			document.body.setAttribute( 'orientation', 'portrait' );
 		}
 		else {
@@ -71,15 +71,17 @@ var App = {
 			}
 		}
 	},
-	
+
 	loading : function () {
-		$( 'body' ).addClass( 'loading' ).removeClass( 'loaded' );
+		document.body.classList.add( 'loading' );
+		document.body.classList.remove( 'loaded' );
 	},
-	
+
 	loaded : function () {
-		$( 'body' ).addClass( 'loaded' ).removeClass( 'loading' );
+		document.body.classList.add( 'loaded' );
+		document.body.classList.remove( 'loading' );
 	},
-	
+
 	persistentVar : function ( key, val ) {
 		if ( arguments.length === 1 ) {
 			return App.persistentVars[key];
@@ -93,13 +95,13 @@ var App = {
 			}
 		}
 	},
-	
+
 	handleResize : function () {
 		App.setOrientation();
-		
+
 		Views.show( App.persistentVar( 'current-screen' ) );
 	},
-	
+
 	getCamera : function () {
 		return new Promise( function ( resolve, reject ) {
 			// This call is just to get the permissions prompt, without which iOS won't show all cameras when calling enumerateDevices.
@@ -132,7 +134,7 @@ var App = {
 							App.availableCameras.push( device );
 						}
 					} );
-			
+
 					if ( App.availableCameras.length === 0 ) {
 						throw 'No camera available.';
 					}
@@ -140,8 +142,8 @@ var App = {
 						if ( App.availableCameras.length === 1 ){
 							// I think every device with a rear camera also has a selfie camera, so if there's only one, it's probably forward-facing.
 							App.cameraIsFrontFacing = true;
-							
-							$( '#camera-switch' ).hide();
+
+							document.getElementById( 'camera-switch' ).style.display = 'none';
 						}
 						else if ( ! ( 'ontouchstart' in window ) ) {
 							// Assume any non-touchscreen device is a desktop browser that will default to selfie camera.
@@ -153,9 +155,9 @@ var App = {
 							// camera no longer exists; fall back to the first available camera.
 							App.selectedCameraIndex = 0;
 						}
-					
+
 						var video = document.getElementById( 'viewfinder' );
-			
+
 						// Then we can call getUserMedia on the right camera, so we can switch between cameras.
 						return navigator.mediaDevices.getUserMedia(
 							{
@@ -175,36 +177,36 @@ var App = {
 							}
 
 							App.videoStream = stream;
-			
+
 							video.srcObject = stream;
-			
+
 							video.addEventListener( "playing", function () {
 								resolve();
 							}, true );
-			
+
 							video.play();
 						} );
 					}
 				} );
 			} ).catch( function ( e ) {
-				$( 'body' ).addClass( 'no-camera' );
+				document.body.classList.add( 'no-camera' );
 				Views.show( 'intro' );
-		
+
 				// Alternatively:
 				// reject( 'Reenact must have access to the camera to function.' );
 			} );
 		} );
 	},
-	
+
 	capture : function () {
 		return new Promise( function ( resolve ) {
 			// Simulate a shutter closing.
 			new Audio( 'audio/shutter.opus' ).play();
-	
+
 			document.getElementById( 'reenacter' ).style.visibility = 'hidden';
-		
+
 			App.loading();
-		
+
 			var video = document.getElementById( 'viewfinder' );
 			var canvas = document.createElement( 'canvas' );
 
@@ -218,7 +220,7 @@ var App = {
 
 			// When the viewfinder is mirrored via CSS, mirror the capture too so that the
 			// saved photo matches what the user aligned on screen.
-			if ( $( 'body' ).hasClass( 'front-facing-camera' ) ) {
+			if ( document.body.classList.contains( 'front-facing-camera' ) ) {
 				context.translate( canvas.width, 0 );
 				context.scale( -1, 1 );
 			}
@@ -229,7 +231,7 @@ var App = {
 
 			canvas.toBlob( function ( imageData ) {
 				App.persistentVar( 'last-photo', imageData );
-		
+
 				resolve();
 			} );
 		} );
@@ -243,7 +245,7 @@ var Views = {
 
 	show : function ( screenId ) {
 		App.loaded();
-		
+
 		if ( App.videoStream ) {
 			if ( App.videoStream.getVideoTracks ) {
 				App.videoStream.getVideoTracks().forEach( function ( track ) {
@@ -253,16 +255,16 @@ var Views = {
 			else {
 				App.videoStream.stop();
 			}
-			
+
 			App.videoStream = null;
 		}
-		
+
 		if ( screenId in Views.preViewHandlers ) {
 			Views.preViewHandlers[screenId]();
 		}
 
 		App.showScreen( screenId );
-		
+
 		if ( screenId in Views.viewHandlers ) {
 			Views.viewHandlers[screenId]();
 		}
@@ -270,19 +272,21 @@ var Views = {
 
 	preViewHandlers : {
 		'capture' : function () {
-			$( '[data-relies-on-camera]' ).attr( 'disabled', 'disabled' );
-			
+			document.querySelectorAll( '[data-relies-on-camera]' ).forEach( function ( el ) {
+				el.setAttribute( 'disabled', 'disabled' );
+			} );
+
 			document.getElementById( 'reenacter' ).style.visibility = '';
-			
+
 			document.getElementById( 'original-photo' ).style.visibility = 'hidden';
-			
+
 			document.getElementById( 'viewfinder' ).setAttribute( 'class', 'fading' );
-			
-			$( 'body' ).removeClass( 'front-facing-camera' );
+
+			document.body.classList.remove( 'front-facing-camera' );
 		},
-		
+
 		'next-step' : function () {
-			$( '#download-button' ).attr( 'download', 'reenact-' + Date.now() + '.jpg' );
+			document.getElementById( 'download-button' ).setAttribute( 'download', 'reenact-' + Date.now() + '.jpg' );
 
 			// Only show the share button if the browser can share the photo; the download
 			// button is always available as an alternative.
@@ -292,12 +296,7 @@ var Views = {
 				canSharePhoto = navigator.canShare( { files: [ Views.finalPhotoAsFile() ] } );
 			}
 
-			if ( canSharePhoto ) {
-				$( '#share-button' ).show();
-			}
-			else {
-				$( '#share-button' ).hide();
-			}
+			document.getElementById( 'share-button' ).style.display = canSharePhoto ? '' : 'none';
 		}
 	},
 
@@ -311,7 +310,7 @@ var Views = {
 
 		'capture' : function () {
 			App.loading();
-			
+
 			var photoDataURL = App.persistentVar( 'original-photo-data-url' );
 			var originalPhoto = document.getElementById( 'original-photo' );
 
@@ -341,29 +340,32 @@ var Views = {
 
 				App.getCamera().then(
 					function resolved() {
-						$( '[data-relies-on-camera]' ).removeAttr( 'disabled' );
+						document.querySelectorAll( '[data-relies-on-camera]' ).forEach( function ( el ) {
+							el.removeAttribute( 'disabled' );
+						} );
 
 						// This can't be decided until now, since it isn't known which camera
 						// will be used (or which way it faces) until getCamera() finishes.
 						if ( App.cameraIsFrontFacing ) {
-							$( 'body' ).addClass( 'front-facing-camera' );
+							document.body.classList.add( 'front-facing-camera' );
 						}
-						
+
 						var video = document.getElementById( 'viewfinder' );
-						
+						var reenacter = document.getElementById( 'reenacter' );
+
 						if ( video.videoWidth / video.videoHeight < maxWidth / maxHeight ) {
 							video.style.height = '100%';
 							video.style.width = 'auto';
-							video.style.left = Math.floor( ( $( '#reenacter' ).width() - $( '#viewfinder' ).width() ) / 2 ) + "px";
+							video.style.left = Math.floor( ( reenacter.offsetWidth - video.offsetWidth ) / 2 ) + "px";
 							video.style.top = '0';
 						}
 						else {
 							video.style.width = '100%';
 							video.style.height = 'auto';
-							video.style.top = Math.floor( ( $( '#reenacter' ).height() - $( '#viewfinder' ).height() ) / 2 ) + "px";
+							video.style.top = Math.floor( ( reenacter.offsetHeight - video.offsetHeight ) / 2 ) + "px";
 							video.style.left = '0';
 						}
-						
+
 						App.loaded();
 					},
 					function rejected( reason ) {
@@ -378,41 +380,41 @@ var Views = {
 
 		'confirm' : function () {
 			App.loading();
-			
+
 			generateReenactedImage().then( function ( url ) {
-				$( '#photo-final-confirm' ).attr( 'src', url );
-				
+				document.getElementById( 'photo-final-confirm' ).setAttribute( 'src', url );
+
 				App.loaded();
 			}, function () {
 				alert( "Error" );
 			} );
 		},
-		
+
 		'next-step' : function () {
 			App.loading();
-			
+
 			// This is generated by the confirm screen.
 			var url = App.persistentVar( 'final-photo-url' );
 
-			$( '#photo-final' ).attr( 'src', url );
-			
-			$( '#download-button' ).attr( 'href', url );
-				
+			document.getElementById( 'photo-final' ).setAttribute( 'src', url );
+
+			document.getElementById( 'download-button' ).setAttribute( 'href', url );
+
 			App.loaded();
 		},
 	}
 };
 
-jQuery( function ( $ ) {
+document.addEventListener( 'DOMContentLoaded', function () {
 	var resizeTimeout = null;
 
-	$( window ).on( 'resize', function () {
+	window.addEventListener( 'resize', function () {
 		clearTimeout( resizeTimeout );
-	
+
 		resizeTimeout = setTimeout( App.handleResize, 250 );
 	} );
-	
-	$( '#choose-photo' ).on( 'change', function ( e ) {
+
+	document.getElementById( 'choose-photo' ).addEventListener( 'change', function ( e ) {
 		var file = e.target.files[0];
 
 		if ( ! file ) {
@@ -429,68 +431,65 @@ jQuery( function ( $ ) {
 			Views.show( 'capture' );
 		};
 	} );
-	
-	$( '#shutter-release' ).on( 'click', function ( evt ) {
-		$( this ).attr( 'disabled', 'disabled' );
-		
+
+	document.getElementById( 'shutter-release' ).addEventListener( 'click', function ( evt ) {
+		this.setAttribute( 'disabled', 'disabled' );
+
 		App.capture().then( function () {
 			Views.show( 'confirm' );
 		} );
 	} );
-	
-	$( '#restart-button, #back-button' ).on( 'click', function ( e ) {
-		e.preventDefault();
 
-		Views.show( 'intro' );
+	document.querySelectorAll( '#restart-button, #back-button' ).forEach( function ( el ) {
+		el.addEventListener( 'click', function ( e ) {
+			e.preventDefault();
+
+			Views.show( 'intro' );
+		} );
 	} );
 
-	$( '#confirm-button' ).on( 'click', function ( e ) {
+	document.getElementById( 'confirm-button' ).addEventListener( 'click', function ( e ) {
 		e.preventDefault();
-		
+
 		App.loading();
 
 		Views.show( 'next-step' );
 	} );
-	
-	$( '#cancel-button' ).on( 'click', function ( e ) {
+
+	document.getElementById( 'cancel-button' ).addEventListener( 'click', function ( e ) {
 		e.preventDefault();
 
 		Views.show( 'capture' );
 	} );
 
-	$( '#share-button' ).on( 'click', function ( e ) {
+	document.getElementById( 'share-button' ).addEventListener( 'click', function ( e ) {
 		e.preventDefault();
 
 		navigator.share( { files: [ Views.finalPhotoAsFile() ] } ).catch( function () {
 			// The user backing out of the share sheet rejects the promise; there's nothing to handle.
 		} );
 	} );
-	
-	$( '#camera-mirror' ).on( 'click', function ( e ) {
+
+	document.getElementById( 'camera-mirror' ).addEventListener( 'click', function ( e ) {
 		e.preventDefault();
-		
-		if ( $( "body" ).hasClass( 'front-facing-camera' ) ) {
-			$( "body" ).removeClass( 'front-facing-camera' );
-		}
-		else {
-			$( "body" ).addClass( "front-facing-camera" );
-		}
+
+		document.body.classList.toggle( 'front-facing-camera' );
 	} );
-	
-	$( '#camera-switch' ).on( 'click', function ( e ) {
+
+	document.getElementById( 'camera-switch' ).addEventListener( 'click', function ( e ) {
 		e.preventDefault();
-		
+
 		var nextCameraIndex;
-		
+
 		if ( null === App.selectedCameraIndex ) {
 			nextCameraIndex = 0;
 		}
 		else {
 			nextCameraIndex = ( App.selectedCameraIndex + 1 ) % App.availableCameras.length;
 		}
-		
+
 		App.selectedCameraIndex = nextCameraIndex;
-		
+
 		if ( App.videoStream ) {
 			if ( App.videoStream.getVideoTracks ) {
 				App.videoStream.getVideoTracks().forEach( function ( track ) {
@@ -500,47 +499,57 @@ jQuery( function ( $ ) {
 			else {
 				App.videoStream.stop();
 			}
-			
+
 			App.videoStream = null;
 		}
-		
+
 		Views.show( 'capture' );
 	} );
-	
-	$( '#help-button' ).on( 'click', function ( e ) {
+
+	document.getElementById( 'help-button' ).addEventListener( 'click', function ( e ) {
 		e.preventDefault();
-		
+
 		Views.show( 'help' );
 	} );
 
 
-	$( '#help-cancel-button' ).on( 'click', function ( e ) {
+	document.getElementById( 'help-cancel-button' ).addEventListener( 'click', function ( e ) {
 		e.preventDefault();
-		
+
 		Views.show( 'intro' );
 	} );
 
 	App.startup();
-	
-	$( document ).on( 'keydown', function ( e ) {
-		if ( e.keyCode === 27 || e.keyCode === 8 || e.keyCode === 46 ) {
-			// Escape, backspace, and delete. Same as clicking the secondary button.
-			var buttons = $( '.buttons .secondary:visible' );
+
+	// A replacement for jQuery's :visible - an element is visible if it or an
+	// ancestor isn't hidden via display: none.
+	function visibleElements( selector ) {
+		return Array.prototype.filter.call( document.querySelectorAll( selector ), function ( el ) {
+			return null !== el.offsetParent;
+		} );
+	}
+
+	document.addEventListener( 'keydown', function ( e ) {
+		var buttons;
+
+		if ( 'Escape' === e.key || 'Backspace' === e.key || 'Delete' === e.key ) {
+			// Same as clicking the secondary button.
+			buttons = visibleElements( '.buttons .secondary' );
 
 			if ( buttons.length ) {
 				// Don't override if there is no secondary button, like on the intro page.
 				e.preventDefault();
-				buttons.first().click();
+				buttons[0].click();
 			}
 		}
-		else if ( e.keyCode === 13 || e.keyCode === 32 ) {
-			// Enter and space bar. Same as clicking the primary button or the "Choose photo" button.
-			var buttons = $( '.buttons .primary:visible' );
+		else if ( 'Enter' === e.key || ' ' === e.key ) {
+			// Same as clicking the primary button or the "Choose photo" button.
+			buttons = visibleElements( '.buttons .primary' );
 
 			if ( buttons.length ) {
 				e.preventDefault();
 
-				buttons.first().click();
+				buttons[0].click();
 			}
 		}
 	} );
@@ -550,14 +559,14 @@ function generateReenactedImage() {
 	return new Promise( function ( resolve, reject ) {
 		// Find the smaller image.
 		var oldImageDataURL = App.persistentVar( 'original-photo-data-url' );
-		
+
 		var reader = new FileReader();
 		reader.readAsDataURL( App.persistentVar( 'last-photo' ) );
 		reader.onloadend = function() {
 			App.persistentVar( 'last-photo-data-url', reader.result );
 
 			var newImageDataURL = App.persistentVar( 'last-photo-data-url' );
-			
+
 			var oldImageEl = document.createElement( 'img' );
 
 			oldImageEl.onload = function () {
@@ -572,23 +581,23 @@ function generateReenactedImage() {
 
 					var canvas = document.createElement( 'canvas' );
 					var context = canvas.getContext( '2d' );
-	
+
 					// Portrait.
 					var smallestHeight = Math.min( oldImageHeight, newImageHeight );
 					var totalWidth = ( ( smallestHeight / oldImageHeight ) * oldImageWidth ) + ( ( smallestHeight / newImageHeight ) * newImageWidth );
 					var totalHeight = smallestHeight;
-	
+
 					canvas.height = totalHeight;
 					canvas.width = totalWidth;
-	
+
 					context.drawImage( oldImageEl, 0, 0, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), ( ( smallestHeight / oldImageHeight ) * oldImageHeight ) );
 					context.drawImage( newImageEl, ( ( smallestHeight / oldImageHeight ) * oldImageWidth ), 0, ( ( smallestHeight / newImageHeight ) * newImageWidth ), ( ( smallestHeight / newImageHeight ) * newImageHeight ) );
-		
+
 					canvas.toBlob( function ( blob ) {
 						App.persistentVar( 'final-photo-blob', blob );
 						var url = window.URL.createObjectURL(blob);
 						App.persistentVar( 'final-photo-url', url );
-				
+
 						resolve( url );
 					}, "image/jpeg" );
 				};
