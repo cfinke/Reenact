@@ -237,6 +237,10 @@ var App = {
 };
 
 var Views = {
+	finalPhotoAsFile : function () {
+		return new File( [ App.persistentVar( 'final-photo-blob' ) ], 'reenact-' + Date.now() + '.jpg', { type: 'image/jpeg' } );
+	},
+
 	show : function ( screenId ) {
 		App.loaded();
 		
@@ -279,6 +283,21 @@ var Views = {
 		
 		'next-step' : function () {
 			$( '#download-button' ).attr( 'download', 'reenact-' + Date.now() + '.jpg' );
+
+			// Only show the share button if the browser can share the photo; the download
+			// button is always available as an alternative.
+			var canSharePhoto = false;
+
+			if ( navigator.canShare && navigator.share ) {
+				canSharePhoto = navigator.canShare( { files: [ Views.finalPhotoAsFile() ] } );
+			}
+
+			if ( canSharePhoto ) {
+				$( '#share-button' ).show();
+			}
+			else {
+				$( '#share-button' ).hide();
+			}
 		}
 	},
 
@@ -442,7 +461,9 @@ jQuery( function ( $ ) {
 	$( '#share-button' ).on( 'click', function ( e ) {
 		e.preventDefault();
 
-		document.location.href = App.persistentVar( 'final-photo-url' );
+		navigator.share( { files: [ Views.finalPhotoAsFile() ] } ).catch( function () {
+			// The user backing out of the share sheet rejects the promise; there's nothing to handle.
+		} );
 	} );
 	
 	$( '#camera-mirror' ).on( 'click', function ( e ) {
