@@ -26,6 +26,12 @@ var App = {
 	},
 
 	startup : function () {
+		if ( 'serviceWorker' in navigator ) {
+			navigator.serviceWorker.register( 'sw.js' ).catch( function () {
+				// Offline support is a nice-to-have; the app works without it.
+			} );
+		}
+
 		App.setOrientation();
 
 		document.body.classList.add( 'unsupported' );
