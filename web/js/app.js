@@ -304,6 +304,12 @@ var Views = {
 		'intro' : function () {
 			App.persistentVar( 'original-photo', null );
 
+			// The reenacted photo can't be reached from here, so release its URL.
+			if ( App.persistentVar( 'final-photo-url' ) ) {
+				window.URL.revokeObjectURL( App.persistentVar( 'final-photo-url' ) );
+				App.persistentVar( 'final-photo-url', null );
+			}
+
 			// Clear the file input so that choosing the same photo again fires another change event.
 			document.getElementById( 'choose-photo' ).value = '';
 		},
@@ -595,6 +601,12 @@ function generateReenactedImage() {
 
 					canvas.toBlob( function ( blob ) {
 						App.persistentVar( 'final-photo-blob', blob );
+
+						// Release the previous composite's URL (if any) so its memory can be reclaimed.
+						if ( App.persistentVar( 'final-photo-url' ) ) {
+							window.URL.revokeObjectURL( App.persistentVar( 'final-photo-url' ) );
+						}
+
 						var url = window.URL.createObjectURL(blob);
 						App.persistentVar( 'final-photo-url', url );
 
