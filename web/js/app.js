@@ -124,6 +124,8 @@ var App = {
 
 					var video = document.getElementById( 'viewfinder' );
 
+					App.availableCameras = [];
+
 					devices.forEach( function ( device ) {
 						if ( 'videoinput' === device.kind ) {
 							App.availableCameras.push( device );
@@ -145,9 +147,9 @@ var App = {
 							App.cameraIsFrontFacing = true;
 						}
 
-						if ( App.selectedCameraIndex === null ) {
-							// If App.availableCameras is empty, then choose the first available camera.
-							// If it's not, then we're switching between cameras.
+						if ( App.selectedCameraIndex === null || App.selectedCameraIndex >= App.availableCameras.length ) {
+							// Either this is the first camera request or the previously selected
+							// camera no longer exists; fall back to the first available camera.
 							App.selectedCameraIndex = 0;
 						}
 					
