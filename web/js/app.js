@@ -200,8 +200,19 @@ var App = {
 
 	capture : function () {
 		return new Promise( function ( resolve ) {
-			// Simulate a shutter closing.
-			new Audio( 'audio/shutter.opus' ).play();
+			// Simulate a shutter closing. Safari can't play Opus, so fall back to AAC there.
+			var shutterSound = new Audio();
+
+			if ( shutterSound.canPlayType( 'audio/ogg; codecs="opus"' ) ) {
+				shutterSound.src = 'audio/shutter.opus';
+			}
+			else {
+				shutterSound.src = 'audio/shutter.m4a';
+			}
+
+			shutterSound.play().catch( function () {
+				// The sound effect is not worth surfacing an error over.
+			} );
 
 			document.getElementById( 'reenacter' ).style.visibility = 'hidden';
 
