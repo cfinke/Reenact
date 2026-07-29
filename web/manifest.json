@@ -1,0 +1,21 @@
+{
+	"name": "Reenact",
+	"short_name": "Reenact",
+	"description": "Reenact photos with Reenact.",
+	"start_url": "./",
+	"display": "standalone",
+	"background_color": "#00c755",
+	"theme_color": "#000000",
+	"icons": [
+		{
+			"src": "img/icons/icon128x128.png",
+			"sizes": "128x128",
+			"type": "image/png"
+		},
+		{
+			"src": "img/icons/icon512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}
