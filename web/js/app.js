@@ -125,6 +125,7 @@ var App = {
 					var video = document.getElementById( 'viewfinder' );
 
 					App.availableCameras = [];
+					App.cameraIsFrontFacing = false;
 
 					devices.forEach( function ( device ) {
 						if ( 'videoinput' === device.kind ) {
@@ -166,6 +167,12 @@ var App = {
 								}
 							} ).then( function ( stream ) {
 							App.currentStreamSettings = stream.getVideoTracks()[0].getSettings();
+
+							// If the browser reports which way this camera faces, prefer that
+							// over the guesses made above.
+							if ( App.currentStreamSettings.facingMode ) {
+								App.cameraIsFrontFacing = ( 'user' === App.currentStreamSettings.facingMode );
+							}
 
 							App.videoStream = stream;
 			
@@ -268,10 +275,6 @@ var Views = {
 			document.getElementById( 'viewfinder' ).setAttribute( 'class', 'fading' );
 			
 			$( 'body' ).removeClass( 'front-facing-camera' );
-			
-			if ( App.cameraIsFrontFacing ) {
-				$( '#camera-mirror' ).click();
-			}
 		},
 		
 		'next-step' : function () {
@@ -320,6 +323,12 @@ var Views = {
 				App.getCamera().then(
 					function resolved() {
 						$( '[data-relies-on-camera]' ).removeAttr( 'disabled' );
+
+						// This can't be decided until now, since it isn't known which camera
+						// will be used (or which way it faces) until getCamera() finishes.
+						if ( App.cameraIsFrontFacing ) {
+							$( 'body' ).addClass( 'front-facing-camera' );
+						}
 						
 						var video = document.getElementById( 'viewfinder' );
 						
